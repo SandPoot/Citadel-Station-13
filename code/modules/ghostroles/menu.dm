@@ -61,3 +61,9 @@ GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 			if(MS)
 				MS.attack_ghost(usr)
 				. = TRUE
+
+/**
+ * Call this whenever ghostrole data changes, we don't keep resending to save performance.
+ */
+/datum/ghostrole_menu/proc/queue_update()
+	addtimer(CALLBACK(src, /datum/proc/update_static_data), 0, TIMER_UNIQUE | TIMER_OVERRIDE)
