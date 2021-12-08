@@ -1,21 +1,17 @@
-/datum/spawners_menu
-	var/mob/dead/observer/owner
+GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 
-/datum/spawners_menu/New(mob/dead/observer/new_owner)
-	if(!istype(new_owner))
-		qdel(src)
-	owner = new_owner
+/datum/ghostrole_menu
 
-/datum/spawners_menu/ui_state(mob/user)
+/datum/ghostrole_menu/ui_state(mob/user)
 	return GLOB.observer_state
 
-/datum/spawners_menu/ui_interact(mob/user, datum/tgui/ui)
+/datum/ghostrole_menu/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "SpawnersMenu")
 		ui.open()
 
-/datum/spawners_menu/ui_data(mob/user)
+/datum/ghostrole_menu/ui_data(mob/user)
 	var/list/data = list()
 	data["spawners"] = list()
 	for(var/spawner in GLOB.mob_spawners)
@@ -41,8 +37,10 @@
 
 	return data
 
-/datum/spawners_menu/ui_act(action, params)
+/datum/ghostrole_menu/ui_act(action, params)
 	if(..())
+		return
+	if(!isobserver(usr))
 		return
 
 	var/group_name = params["name"]
@@ -57,9 +55,9 @@
 	switch(action)
 		if("jump")
 			if(MS)
-				owner.forceMove(get_turf(MS))
+				usr.forceMove(get_turf(MS))
 				. = TRUE
 		if("spawn")
 			if(MS)
-				MS.attack_ghost(owner)
+				MS.attack_ghost(usr)
 				. = TRUE

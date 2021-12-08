@@ -972,10 +972,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set name = "Spawners Menu"
 	set desc = "See all currently available spawners"
 	set category = "Ghost"
-	if(!spawners_menu)
-		spawners_menu = new(src)
 
-	spawners_menu.ui_interact(src)
+	GLOB.ghostrole_menu.ui_interact(src)
 
 /mob/dead/observer/verb/game_info()
 	set name = "Game info"
