@@ -1,5 +1,5 @@
 /datum/job
-	//The name of the job , used for preferences, bans and more. Make sure you know what you're doing before changing this.
+	/// The name of the job , used for preferences, bans and more. Make sure you know what you're doing before changing this.
 	var/title = "NOPE"
 
 	//Job access. The use of minimal_access or access is determined by a config setting: config.jobs_have_minimal_access
