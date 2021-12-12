@@ -11,7 +11,7 @@
 	if(!Equip(C, .))
 		qdel(.)
 		return null
-	if(!Transfer(C, .)
+	if(!Transfer(C, .))
 		qdel(.)
 		return null
 
@@ -37,7 +37,10 @@
 	return H
 
 /datum/ghostrole_instantiator/human/Equip(client/C, mob/M)
-
+	if(ispath(equip_outfit, /datum/outfit))
+		var/datum/outfit/O = new equip_outfit
+		O.equip(M)
+	#warn survival gear
 
 /datum/ghostrole_instantiator/human/random
 

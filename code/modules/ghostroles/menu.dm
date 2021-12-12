@@ -11,6 +11,10 @@ GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 		ui = new(user, src, "SpawnersMenu")
 		ui.open()
 
+/datum/ghostrole_menu/ui_static_data(mob/user)
+	. = ..()
+
+
 /datum/ghostrole_menu/ui_data(mob/user)
 	var/list/data = list()
 	data["spawners"] = list()

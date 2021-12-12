@@ -27,11 +27,11 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /datum/ghostrole
 	/// name
 	var/name = "Unnamed Role"
-	/// desc
+	/// **short** description - use spawntext for long one.
 	var/desc = "Wow, a coder fucked up."
 	/// init on server load or only when needed
 	var/lazy_init = TRUE
-	/// allow selecting the spawner, or random?
+	/// allow selecting the spawner, or random? **If the spawner gets clicked by a player, they can still spawn from it!**
 	var/allow_pick_spawner = FALSE
 	/// abstract type
 	var/abstract_type = /datum/ghostrole
@@ -41,7 +41,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	var/spawns = 0
 	/// max spawns
 	var/slots = INFINITY
-	/// default message to show on greet()
+	/// default message to show on greet(), also shows in spawners menu.
 	var/spawntext = "No spawntext defined."
 	/// should we show the standard ghostrole greeting?
 	var/show_standard_greeting = TRUE
@@ -53,7 +53,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /datum/ghostrole/New(_id)
 	if(ispath(instantiator, /datum/ghostrole_instantiator))
 		instantiator = new instantiator
-	id = _id || pathww
+	id = _id || path
 
 /datum/ghostrole/proc/Greet(mob/created)
 	if(show_standard_greeting)
@@ -68,12 +68,12 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
  *
  * Return TRUe on success, or a string of why it failed.
  */
-/datum/ghostrole/proc/AttemptSpawn(client/C)
+/datum/ghostrole/proc/AttemptSpawn(client/C, datum/component/ghostrole_spawnpoint/chosen_spawnpoint)
 	if(!AllowSpawn(C))
 		return "You can't spawn as this role; Try refreshing the ghostrole/join menu."
 	if(!PreInstantiate(C))
 		return "PreInstantiate() failed."
-	var/datum/component/spawnpoint/spawnpoint = (spawnerless && null) || GetSpawnpoint(C)
+	var/datum/component/ghostrole_spawnpoint/spawnpoint = (spawnerless && null) || chosen_spawnpoint || GetSpawnpoint(C)
 	var/atom/location = GetSpawnLoc(C, spawnpoint)
 	if(!location)
 		return "Couldn't get a spawn location."
@@ -81,6 +81,8 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	if(!created)
 		return "Mob instantiation failed."
 	PostInstantiate(created, spawnpoint)
+	GLOB.join_menu.queue_update()
+	GLOB.ghostrole_menu.queue_update()
 	return TRUE
 
 /datum/ghostrole/proc/Instantiate(client/C, atom/loc)
@@ -146,4 +148,8 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	spawns++
 	spawnpoint?.OnSpawn(created, src)
 
-
+/**
+ * Ban check.
+ */
+/datum/ghostrole/proc/BanCheck(client/C)
+	return

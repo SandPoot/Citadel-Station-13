@@ -22,10 +22,10 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 		return
 	if(!isatom(parent))
 		return COMPONENT_INCOMPATIBLE
-	spawns_left = allowed_spawns
+	max_spawns = allowed_spawns
 	src.role_type = role_type
 	src.params = params
-	src.callback = proc_to_call_or_callback
+	src.proc_to_call_or_callback = proc_to_call_or_callback
 	if(notify_ghosts)
 		var/datum/ghostrole/role = get_ghostrole_datum(role_type)
 		if(!role)
@@ -91,3 +91,5 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 			return
 		examine_list += "<b>Click</> this ghostrole spawner to become a [role.name]!"
 
+/datum/component/ghostrole_spawnpoint/proc/GhostInteract(datum/source)
+	#warn spawner specific spawn
