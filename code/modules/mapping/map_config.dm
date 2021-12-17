@@ -53,6 +53,8 @@
 	var/list/job_override_spawn_positions
 	/// Job total position mod - type = number
 	var/list/job_override_total_positions
+	/// Job join_type override
+	var/list/job_join_type_override
 	/// Add these accesses to jobs - type = list()
 	var/list/job_access_add
 	/// Remove these accesses from jobs - type = list()

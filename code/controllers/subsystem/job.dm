@@ -3,9 +3,28 @@ SUBSYSTEM_DEF(job)
 	init_order = INIT_ORDER_JOBS
 	flags = SS_NO_FIRE
 
-	var/list/occupations = list()		//List of all jobs
-	var/list/datum/job/name_occupations = list()	//Dict of all jobs, keys are titles
-	var/list/type_occupations = list()	//Dict of all jobs, keys are types
+	// Job datum management
+	// You'll note that I used static
+	// This means that Recover() isn't needed to recover them.
+	// But.
+	// If things break horribly, this also means there's no way to automatically fix things
+	// SHOULD anyone ever fuck up the round so badly we need a Recover(), feel free to yell at me.
+	// All the Recover() would need to do is for(job in world) to recover state variables, and then manually recreate everything.
+	/// all instantiated job datums
+	var/static/list/datum/job/jobs = list()
+	/// all instantiated department datums,
+	var/static/list/datum/department/departments = list()
+	/// job datums by type
+	var/static/list/job_by_type = list()
+	/// job datums by priamry name
+	var/static/list/job_by_name = list()
+	/// departments by type
+	var/static/list/department_by_type = list()
+	/// departments by name
+	var/static/list/department_by_name = list()
+	/// alt titles to real titles lookup
+	var/static/list/alt_title_lookup = list()
+
 	var/list/unassigned = list()		//Players who need jobs
 	var/initial_players_to_assign = 0 	//used for checking against population caps
 
@@ -18,8 +37,7 @@ SUBSYSTEM_DEF(job)
 
 /datum/controller/subsystem/job/Initialize(timeofday)
 	SSmapping.HACK_LoadMapConfig()
-	if(!occupations.len)
-		SetupOccupations()
+	SetupOccupations()
 	if(CONFIG_GET(flag/load_jobs_from_txt))
 		LoadJobs()
 	generate_selectable_species()
@@ -42,24 +60,40 @@ SUBSYSTEM_DEF(job)
 		overflow_role = new_overflow_role
 		JobDebug("Overflow role set to : [new_overflow_role]")
 
-/datum/controller/subsystem/job/proc/SetupOccupations(faction = "Station")
-	occupations = list()
+/datum/controller/subsystem/job/proc/SetupOccupations()
 	var/list/all_jobs = subtypesof(/datum/job)
 	if(!all_jobs.len)
-		to_chat(world, "<span class='boldannounce'>Error setting up jobs, no job datums found</span>")
-		return 0
+		CRASH("Couldn't setup any job datums.")
+	jobs = list()
+	departments = list()
+	job_by_type = list()
+	department_by_type = list()
+	job_by_name = list()
+	department_by_name = list()
+	alt_title_lookup = list()
+	for(var/path in subtypesof(/datum/job))
+		var/datum/job/J = new path
+		if(!job.config_check())
+			continue
+		if(!J.ProcessMap(SSmapping.config))
+			continue
+		jobs += J
+		job_by_type[path] = J
+		job_by_name[J.name] = J
+	var/list/departments_temporary = list()
+	for(var/path in subtypesof(/datum/department))
+		var/datum/department/D = new path
+		departments += D
+		department_by_type[path] = D
+		department_by_name[D.name] = D
+
+	sortTim(departments_temporary, /proc/cmp_department_priority_dsc, FALSE)
+
+
+
 
 	for(var/J in all_jobs)
 		var/datum/job/job = new J()
-		if(!job)
-			continue
-		if(job.faction != faction)
-			continue
-		if(!job.config_check())
-			continue
-		if(!job.map_check(SSmapping.config))	//Even though we initialize before mapping, this is fine because the config is loaded at new
-			testing("Removed [job.type] due to map config");
-			continue
 		job.process_map_overrides(SSmapping.config)
 		occupations += job
 		name_occupations[job.title] = job
@@ -620,22 +654,6 @@ SUBSYSTEM_DEF(job)
 	unassigned -= player
 	player.ready = PLAYER_NOT_READY
 
-
-/datum/controller/subsystem/job/Recover()
-	set waitfor = FALSE
-	var/oldjobs = SSjob.occupations
-	sleep(20)
-	for (var/datum/job/J in oldjobs)
-		INVOKE_ASYNC(src, .proc/RecoverJob, J)
-
-/datum/controller/subsystem/job/proc/RecoverJob(datum/job/J)
-	var/datum/job/newjob = GetJob(J.title)
-	if (!istype(newjob))
-		return
-	newjob.total_positions = J.total_positions
-	newjob.spawn_positions = J.spawn_positions
-	newjob.current_positions = J.current_positions
-
 /atom/proc/JoinPlayerHere(mob/M, buckle)
 	// By default, just place the mob on the same turf as the marker or whatever.
 	M.forceMove(get_turf(src))
@@ -803,3 +821,63 @@ SUBSYSTEM_DEF(job)
 
 /datum/controller/subsystem/job/proc/JobDebug(message)
 	log_job_debug(message)
+
+#warn parse this portion
+
+GLOBAL_LIST_INIT(exp_jobsmap, list(
+	EXP_TYPE_CREW = list("titles" = command_positions | engineering_positions | medical_positions | science_positions | supply_positions | security_positions | civilian_positions | list("AI","Cyborg")), // crew positions
+	EXP_TYPE_COMMAND = list("titles" = command_positions),
+	EXP_TYPE_ENGINEERING = list("titles" = engineering_positions),
+	EXP_TYPE_MEDICAL = list("titles" = medical_positions),
+	EXP_TYPE_SCIENCE = list("titles" = science_positions),
+	EXP_TYPE_SUPPLY = list("titles" = supply_positions),
+	EXP_TYPE_SECURITY = list("titles" = security_positions),
+	EXP_TYPE_SILICON = list("titles" = list("AI","Cyborg")),
+	EXP_TYPE_SERVICE = list("titles" = civilian_positions),
+))
+
+GLOBAL_LIST_INIT(exp_specialmap, list(
+	EXP_TYPE_LIVING = list(), // all living mobs
+	EXP_TYPE_ANTAG = list(),
+	EXP_TYPE_SPECIAL = list("Lifebringer","Ash Walker","Exile","Servant Golem","Free Golem","Hermit","Translocated Vet","Escaped Prisoner","Hotel Staff","SuperFriend","Space Syndicate","Ancient Crew","Space Doctor","Space Bartender","Beach Bum","Skeleton","Zombie","Space Bar Patron","Lavaland Syndicate","Ghost Role", "Ghost Cafe Visitor"), // Ghost roles
+	EXP_TYPE_GHOST = list() // dead people, observers
+))
+GLOBAL_PROTECT(exp_jobsmap)
+GLOBAL_PROTECT(exp_specialmap)
+
+/proc/guest_jobbans(job)
+	return ((job in GLOB.command_positions) || (job in GLOB.nonhuman_positions) || (job in GLOB.security_positions))
+
+/proc/get_full_job_name(job)
+	var/static/regex/cap_expand = new("cap(?!tain)")
+	var/static/regex/cmo_expand = new("cmo")
+	var/static/regex/hos_expand = new("hos")
+	var/static/regex/hop_expand = new("hop")
+	var/static/regex/rd_expand = new("rd")
+	var/static/regex/ce_expand = new("ce")
+	var/static/regex/qm_expand = new("qm")
+	var/static/regex/sec_expand = new("(?<!security )officer")
+	var/static/regex/engi_expand = new("(?<!station )engineer")
+	var/static/regex/atmos_expand = new("atmos tech")
+	var/static/regex/doc_expand = new("(?<!medical )doctor|medic(?!al)")
+	var/static/regex/mine_expand = new("(?<!shaft )miner")
+	var/static/regex/chef_expand = new("chef")
+	var/static/regex/borg_expand = new("(?<!cy)borg")
+
+	job = lowertext(job)
+	job = cap_expand.Replace(job, "captain")
+	job = cmo_expand.Replace(job, "chief medical officer")
+	job = hos_expand.Replace(job, "head of security")
+	job = hop_expand.Replace(job, "head of personnel")
+	job = rd_expand.Replace(job, "research director")
+	job = ce_expand.Replace(job, "chief engineer")
+	job = qm_expand.Replace(job, "quartermaster")
+	job = sec_expand.Replace(job, "security officer")
+	job = engi_expand.Replace(job, "station engineer")
+	job = atmos_expand.Replace(job, "atmospheric technician")
+	job = doc_expand.Replace(job, "medical doctor")
+	job = mine_expand.Replace(job, "shaft miner")
+	job = chef_expand.Replace(job, "cook")
+	job = borg_expand.Replace(job, "cyborg")
+	return job
+

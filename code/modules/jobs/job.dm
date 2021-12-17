@@ -1,40 +1,38 @@
 /datum/job
 	/// The name of the job , used for preferences, bans and more. Make sure you know what you're doing before changing this.
 	var/title = "NOPE"
+	/// Description of the job
+	var/desc = "No description provided."
+	/// Alt titles - typepaths. Properly instantiated after the job is made.
+	var/list/alt_titles = list()
+	/// Departments we're in - generated at runtime
+	var/list/departments
+	/// Departments we supervise - generated at runtime
+	var/list/departments_supervised
+	/// Determines if this job can be spawned into by players
+	var/join_types = JOB_ROUNDSTART | JOB_LATEJOIN
+
+	// !!Stateful variables!! - If Recover() is ever implemented, these need to be carried over.
+	/// How many players have this job
+	var/current_positions = 0
+	/// How many players can be this job
+	var/total_positions = 0
+	/// How many players can spawn in as this job
+	var/roundstart_positions = 0
+	/// Should this job be allowed to be picked for the bureaucratic error event?
+	var/allow_bureaucratic_error = TRUE
 
 	//Job access. The use of minimal_access or access is determined by a config setting: config.jobs_have_minimal_access
 	var/list/minimal_access = list()		//Useful for servers which prefer to only have access given to the places a job absolutely needs (Larger server population)
 	var/list/access = list()				//Useful for servers which either have fewer players, so each person needs to fill more than one role, or servers which like to give more access, so players can't hide forever in their super secure departments (I'm looking at you, chemistry!)
 
-	//Determines who can demote this position
-	var/department_head = list()
-
-	//Tells the given channels that the given mob is the new department head. See communications.dm for valid channels.
-	var/list/head_announce = null
-
-	//Bitflags for the job
-	var/flag = NONE //Deprecated
-	var/department_flag = NONE //Deprecated
-//	var/auto_deadmin_role_flags = NONE
-
 	//Players will be allowed to spawn in as jobs that are set to "Station"
 	var/faction = "None"
 
-	//How many players can be this job
-	var/total_positions = 0
 
-	//How many players can spawn in as this job
-	var/spawn_positions = 0
-
-	//How many players have this job
-	var/current_positions = 0
-
-	//Supervisors, who this person answers to directly
-	var/supervisors = ""
 
 	//Sellection screen color
 	var/selection_color = "#ffffff"
-
 
 	//If this is set to 1, a text is printed to the player when jobs are assigned, telling him that he should let admins know that he has to disconnect.
 	var/req_admin_notify
@@ -63,9 +61,6 @@
 	var/list/mind_traits // Traits added to the mind of the mob assigned this job
 	var/list/blacklisted_quirks		//list of quirk typepaths blacklisted.
 
-/// Should this job be allowed to be picked for the bureaucratic error event?
-	var/allow_bureaucratic_error = TRUE
-
 	var/display_order = JOB_DISPLAY_ORDER_DEFAULT
 
 	//If a job complies with dresscodes, loadout items will not be equipped instead of the job's outfit, instead placing the items into the player's backpack.
@@ -83,15 +78,13 @@
 	var/considered_combat_role = FALSE
 
 /**
-  * Checks if we should be created on a certain map
-  */
-/datum/job/proc/map_check(datum/map_config/C)
-	return (length(C.job_whitelist)? (type in C.job_whitelist) : !(type in C.job_blacklist))
-
-/**
   * Processes map specific overrides
+  * Return FALSE to prevent this job from being instantiated.
   */
-/datum/job/proc/process_map_overrides(datum/map_config/C)
+/datum/job/proc/ProcessMap(datum/map_config/C)
+	. = (length(C.job_whitelist)? (type in C.job_whitelist) : !(type in C.job_blacklist))
+	if(!.)
+		return
 	if(type in C.job_override_spawn_positions)
 		spawn_positions = C.job_override_spawn_positions[type]
 	if(type in C.job_override_total_positions)
@@ -106,6 +99,30 @@
 		if(type in C.job_access_remove)
 			access -= C.job_access_add[type]
 			minimal_access -= C.job_access_remove[type]
+	if(type in C.job_join_type_override)
+		join_type = C.job_join_type_override[type]
+
+/**
+ * Get the name of the job
+ */
+/datum/job/proc/GetName()
+	return title
+
+/**
+ * Get the description of the job
+ */
+/datum/job/proc/GetDesc()
+	return desc
+
+/**
+ * Get possible alt titles names, associated to their descriptions
+ */
+/datum/job/proc/GetTitles()
+	. = list()
+	.[GetName()] = GetDesc()
+	for(var/path in alt_titles)
+		var/datum/alt_title/T = path
+		.[initial(T.name)] = initial(T.desc)
 
 //Only override this proc
 //H is usually a human unless an /equip override transformed it
@@ -323,3 +340,14 @@
 	if(CONFIG_GET(flag/security_has_maint_access))
 		return list(ACCESS_MAINT_TUNNELS)
 	return list()
+
+/**
+ * Alt title datums
+ */
+/datum/alt_title
+	/// Alt title
+	var/name = "Alt Title"
+	/// Alt outfit, if any
+	var/datum/outfit/outfit
+	/// Alt description
+	var/desc = "Broken Alt Title"
