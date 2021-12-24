@@ -41,18 +41,6 @@ SUBSYSTEM_DEF(job)
 
 
 
-
-/datum/controller/subsystem/job/proc/GetJob(rank)
-	RETURN_TYPE(/datum/job)
-	if(!occupations.len)
-		SetupOccupations()
-	return name_occupations[rank]
-
-/datum/controller/subsystem/job/proc/GetJobType(jobtype)
-	if(!occupations.len)
-		SetupOccupations()
-	return type_occupations[jobtype]
-
 /datum/controller/subsystem/job/proc/AssignRole(mob/dead/new_player/player, rank, latejoin = FALSE)
 	JobDebug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
 	if(player && player.mind && rank)
@@ -712,52 +700,6 @@ SUBSYSTEM_DEF(job)
 						I.forceMove(get_turf(M)) // If everything fails, just put it on the floor under the mob.
 					else
 						qdel(I)
-
-/datum/controller/subsystem/job/proc/FreeRole(rank)
-	if(!rank)
-		return
-	var/datum/job/job = GetJob(rank)
-	if(!job)
-		return FALSE
-	job.current_positions = max(0, job.current_positions - 1)
-
-///////////////////////////////////
-//Keeps track of all living heads//
-///////////////////////////////////
-/datum/controller/subsystem/job/proc/get_living_heads()
-	. = list()
-	for(var/mob/living/carbon/human/player in GLOB.alive_mob_list)
-		if(player.stat != DEAD && player.mind && (player.mind.assigned_role in GLOB.command_positions))
-			. |= player.mind
-
-
-////////////////////////////
-//Keeps track of all heads//
-////////////////////////////
-/datum/controller/subsystem/job/proc/get_all_heads()
-	. = list()
-	for(var/i in GLOB.mob_list)
-		var/mob/player = i
-		if(player.mind && (player.mind.assigned_role in GLOB.command_positions))
-			. |= player.mind
-
-//////////////////////////////////////////////
-//Keeps track of all living security members//
-//////////////////////////////////////////////
-/datum/controller/subsystem/job/proc/get_living_sec()
-	. = list()
-	for(var/mob/living/carbon/human/player in GLOB.carbon_list)
-		if(player.stat != DEAD && player.mind && (player.mind.assigned_role in GLOB.security_positions))
-			. |= player.mind
-
-////////////////////////////////////////
-//Keeps track of all  security members//
-////////////////////////////////////////
-/datum/controller/subsystem/job/proc/get_all_sec()
-	. = list()
-	for(var/mob/living/carbon/human/player in GLOB.carbon_list)
-		if(player.mind && (player.mind.assigned_role in GLOB.security_positions))
-			. |= player.mind
 
 /datum/controller/subsystem/job/proc/JobDebug(message)
 	log_job_debug(message)
