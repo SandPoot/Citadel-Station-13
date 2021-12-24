@@ -651,5 +651,5 @@
 /obj/effect/turf_decal/snowdin_station_sign/up/seven
 	icon_state = "AOPU7"
 
-/obj/effect/landmark/vr_spawn/snowdin
+/atom/movable/landmark/vr_spawn/snowdin
 	vr_outfit = /datum/outfit/vr/snowtide

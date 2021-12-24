@@ -340,7 +340,7 @@ SUBSYSTEM_DEF(ticker)
 	setup_done = TRUE
 
 	for(var/i in GLOB.start_landmarks_list)
-		var/obj/effect/landmark/start/S = i
+		var/atom/movable/landmark/start/S = i
 		if(istype(S))							//we can not runtime here. not in this important of a proc.
 			S.after_round_start()
 		else

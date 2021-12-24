@@ -3,11 +3,13 @@
 	var/title = "NOPE"
 	/// Description of the job
 	var/desc = "No description provided."
+	/// Abstract type
+	var/abstract_type = /datum/job
 	/// Alt titles - typepaths. Properly instantiated after the job is made.
 	var/list/alt_titles = list()
-	/// Departments we're in - generated at runtime
+	/// Departments we're in - generated at runtime. List of typepaths, not references.
 	var/list/departments
-	/// Departments we supervise - generated at runtime
+	/// Departments we supervise - generated at runtime. List of typepaths, not referneces.
 	var/list/departments_supervised
 	/// Determines if this job can be spawned into by players
 	var/join_types = JOB_ROUNDSTART | JOB_LATEJOIN
@@ -27,10 +29,9 @@
 	var/list/access = list()				//Useful for servers which either have fewer players, so each person needs to fill more than one role, or servers which like to give more access, so players can't hide forever in their super secure departments (I'm looking at you, chemistry!)
 
 	//Players will be allowed to spawn in as jobs that are set to "Station"
-	var/faction = "None"
+	var/faction = JOB_FACTION_STATION
 
-
-
+	////////////// Legacy vars below /////////////////
 	//Sellection screen color
 	var/selection_color = "#ffffff"
 

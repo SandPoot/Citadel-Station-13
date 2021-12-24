@@ -3,27 +3,6 @@ SUBSYSTEM_DEF(job)
 	init_order = INIT_ORDER_JOBS
 	flags = SS_NO_FIRE
 
-	// Job datum management
-	// You'll note that I used static
-	// This means that Recover() isn't needed to recover them.
-	// But.
-	// If things break horribly, this also means there's no way to automatically fix things
-	// SHOULD anyone ever fuck up the round so badly we need a Recover(), feel free to yell at me.
-	// All the Recover() would need to do is for(job in world) to recover state variables, and then manually recreate everything.
-	/// all instantiated job datums
-	var/static/list/datum/job/jobs = list()
-	/// all instantiated department datums,
-	var/static/list/datum/department/departments = list()
-	/// job datums by type
-	var/static/list/job_by_type = list()
-	/// job datums by priamry name
-	var/static/list/job_by_name = list()
-	/// departments by type
-	var/static/list/department_by_type = list()
-	/// departments by name
-	var/static/list/department_by_name = list()
-	/// alt titles to real titles lookup
-	var/static/list/alt_title_lookup = list()
 
 	var/list/unassigned = list()		//Players who need jobs
 	var/initial_players_to_assign = 0 	//used for checking against population caps
@@ -60,46 +39,7 @@ SUBSYSTEM_DEF(job)
 		overflow_role = new_overflow_role
 		JobDebug("Overflow role set to : [new_overflow_role]")
 
-/datum/controller/subsystem/job/proc/SetupOccupations()
-	var/list/all_jobs = subtypesof(/datum/job)
-	if(!all_jobs.len)
-		CRASH("Couldn't setup any job datums.")
-	jobs = list()
-	departments = list()
-	job_by_type = list()
-	department_by_type = list()
-	job_by_name = list()
-	department_by_name = list()
-	alt_title_lookup = list()
-	for(var/path in subtypesof(/datum/job))
-		var/datum/job/J = new path
-		if(!job.config_check())
-			continue
-		if(!J.ProcessMap(SSmapping.config))
-			continue
-		jobs += J
-		job_by_type[path] = J
-		job_by_name[J.name] = J
-	var/list/departments_temporary = list()
-	for(var/path in subtypesof(/datum/department))
-		var/datum/department/D = new path
-		departments += D
-		department_by_type[path] = D
-		department_by_name[D.name] = D
 
-	sortTim(departments_temporary, /proc/cmp_department_priority_dsc, FALSE)
-
-
-
-
-	for(var/J in all_jobs)
-		var/datum/job/job = new J()
-		job.process_map_overrides(SSmapping.config)
-		occupations += job
-		name_occupations[job.title] = job
-		type_occupations[J] = job
-
-	return 1
 
 
 /datum/controller/subsystem/job/proc/GetJob(rank)
@@ -283,7 +223,7 @@ SUBSYSTEM_DEF(job)
 	if(SSticker.triai)
 		for(var/datum/job/ai/A in occupations)
 			A.spawn_positions = 3
-		for(var/obj/effect/landmark/start/ai/secondary/S in GLOB.start_landmarks_list)
+		for(var/atom/movable/landmark/start/ai/secondary/S in GLOB.start_landmarks_list)
 			S.latejoin_active = TRUE
 
 	//Get the players who are ready
@@ -464,7 +404,7 @@ SUBSYSTEM_DEF(job)
 	//If we joined at roundstart we should be positioned at our workstation
 	if(!joined_late)
 		var/obj/S = null
-		for(var/obj/effect/landmark/start/sloc in GLOB.start_landmarks_list)
+		for(var/atom/movable/landmark/start/sloc in GLOB.start_landmarks_list)
 			if(!sloc.job_spawnpoint)
 				continue
 			if(sloc.name != rank)
