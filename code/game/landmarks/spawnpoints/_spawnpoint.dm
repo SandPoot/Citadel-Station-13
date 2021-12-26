@@ -1,5 +1,6 @@
 /atom/movable/landmark/spawnpoint
 	name = "unknown spawnpoint"
+	icon = 'icons/mapping/landmarks/spawnpoints.dmi'
 	/// prevent stacking of mobs
 	var/prevent_mob_stack = TRUE
 	/// Spawns left
@@ -43,6 +44,7 @@
  */
 /atom/movable/landmark/spawnpoint/job
 	name = "unknown job spawnpoint"
+	spawns_left = 1
 	/// Job path
 	var/job_path
 	/// Roundstart?
