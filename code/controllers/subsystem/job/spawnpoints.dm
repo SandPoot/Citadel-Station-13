@@ -124,35 +124,27 @@
  */
 /datum/controller/subsystem/job/proc/PossibleLatejoinSpawnpoints(client/C, job_path, faction)
 	. = list()
-	// Priority 1: Job specific spawnpoints
+	// Get all job specific methods, and allow for override if needed
 	if(job_path && length(job_spawnpoints[job_path]))
 		for(var/atom/movable/landmark/spawnpoint/job/J as anything in job_spawnpoints[job_path])
 			if(!J.latejoin)
 				continue
 			if(J.latejoin_override)
 				return list(J.method)
-			if(J.Available(null, C))
+			if(J.Available(null, C, TRUE))
 				continue
-			return J
-	// Priority 2: Latejoin spawnpoints, if latejoin
+			. |= J.method
+	// Get all standard latejoin methods
 	if(!roundstart && length(latejoin_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/latejoin/S as anything in latejoin_spawnpoints[faction])
-			if(!S.Available(null, C))
+			if(!S.Available(null, C, TRUE))
 				continue
-			if(method && (S.method != method))
-				continue
-			return S
-	// Priority 3: OVerflow spawnpoints as a last resort
-	if(length(overflow_spawnpoints[faction]))
+			. |= S.method
+	// If there's none, add overflow method if overflow spawnpoints exist
+	if(!length(.) && length(overflow_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/overflow/S as anything in overflow_spawnpoints[faction])
-			if(!S.Available(null, C))
-				continue
-			return S
-	if(!harder)
-		stack_trace("[THIS_PROC_TYPE] failed to get a spawnpoint, trying against with harder = TRUE")
-		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
-	else
-		CRASH("[THIS_PROC_TYPE] failed to get a spawnpoint.")
+			if(S.Available(null, C, TRUE))
+				return list("Overflow")
 
 /**
  * Gets a valid custom spawnpoint to use by key
