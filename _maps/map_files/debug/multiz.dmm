@@ -1275,7 +1275,7 @@
 /turf/open/floor/plasteel,
 /area/commons/storage/primary)
 "dI" = (
-/atom/movable/landmark/latejoin,
+/atom/movable/landmark/spawnpoint/latejoin/station,
 /turf/open/floor/plasteel,
 /area/commons/storage/primary)
 "dJ" = (

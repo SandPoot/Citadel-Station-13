@@ -50,7 +50,7 @@
 	// Priority 1: Job specific spawnpoints
 	if(length(job_spawnpoints[job_path]))
 		for(var/atom/movable/landmark/spawnpoint/job/J as anything in job_spawnpoints[job_path])
-			if((roundstart && !J.roundstart) || (!roundstart && !J.latejoin)
+			if((roundstart && !J.roundstart) || (!roundstart && !J.latejoin))
 				continue
 			if(J.Available(M))
 				continue

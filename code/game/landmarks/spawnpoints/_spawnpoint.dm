@@ -1,7 +1,7 @@
 /atom/movable/landmark/spawnpoint
 	name = "unknown spawnpoint"
-	#warn port icons over
 	icon = 'icons/mapping/landmarks/spawnpoints.dmi'
+	icon_state = ""
 	/// prevent stacking of mobs
 	var/prevent_mob_stack = TRUE
 	/// Spawns left
@@ -72,6 +72,7 @@
  */
 /atom/movable/landmark/spawnpoint/job
 	name = "unknown job spawnpoint"
+	icon = 'icons/mapping/landmarks/job_spawnpoints.dmi'
 	spawns_left = 1
 	/// Job path
 	var/job_path

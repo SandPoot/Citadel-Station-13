@@ -100,7 +100,7 @@ GLOBAL_DATUM(ai_camera_room_landmark, /atom/movable/landmark/ai_multicam_room)
 
 /atom/movable/landmark/ai_multicam_room
 	name = "ai camera room"
-	icon = 'icons/mob/landmarks.dmi'
+	icon = 'icons/effects/landmarks_static.dmi'
 	icon_state = "x"
 
 /atom/movable/landmark/ai_multicam_room/Initialize()

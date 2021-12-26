@@ -1,6 +1,6 @@
 /atom/movable/landmark/start
 	name = "start"
-	icon = 'icons/mob/landmarks.dmi'
+	icon = 'icons/effects/landmarks_static.dmi'
 	icon_state = "x"
 	anchored = TRUE
 	layer = MOB_LAYER
@@ -88,11 +88,3 @@ INITIALIZE_IMMEDIATE(/atom/movable/landmark/start/new_player)
 	name = "minibomb or bombanana spawner"
 	nukie_path = /obj/item/storage/box/minibombs
 	clown_path = /obj/item/storage/box/bombananas
-
-/atom/movable/landmark/latejoin
-	name = "JoinLate"
-
-/atom/movable/landmark/latejoin/Initialize(mapload)
-	..()
-	SSjob.latejoin_trackers += loc
-	return INITIALIZE_HINT_QDEL
