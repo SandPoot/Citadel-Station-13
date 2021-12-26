@@ -51,7 +51,7 @@
 		for(var/atom/movable/landmark/spawnpoint/job/J as anything in job_spawnpoints[job_path])
 			if(!S.roundstart)
 				continue
-			if(J.Available(M, C, harder))
+			if(!J.Available(M, C, harder))
 				continue
 			return J
 	// Priority 2: Overflow spawnpoints as a last resort
@@ -87,7 +87,7 @@
 				continue
 			if(!J.latejoin_override && method && (method != J.method))
 				continue
-			if(J.Available(null, C))
+			if(!J.Available(null, C))
 				continue
 			return J
 	// Priority 2: Latejoin spawnpoints, if latejoin
@@ -123,15 +123,49 @@
  * - faction - what faction the player is in terms of job factions
  */
 /datum/controller/subsystem/job/proc/PossibleLatejoinSpawnpoints(client/C, job_path, faction)
-
+	. = list()
+	// Priority 1: Job specific spawnpoints
+	if(job_path && length(job_spawnpoints[job_path]))
+		for(var/atom/movable/landmark/spawnpoint/job/J as anything in job_spawnpoints[job_path])
+			if(!J.latejoin)
+				continue
+			if(J.latejoin_override)
+				return list(J.method)
+			if(J.Available(null, C))
+				continue
+			return J
+	// Priority 2: Latejoin spawnpoints, if latejoin
+	if(!roundstart && length(latejoin_spawnpoints[faction]))
+		for(var/atom/movable/landmark/spawnpoint/latejoin/S as anything in latejoin_spawnpoints[faction])
+			if(!S.Available(null, C))
+				continue
+			if(method && (S.method != method))
+				continue
+			return S
+	// Priority 3: OVerflow spawnpoints as a last resort
+	if(length(overflow_spawnpoints[faction]))
+		for(var/atom/movable/landmark/spawnpoint/overflow/S as anything in overflow_spawnpoints[faction])
+			if(!S.Available(null, C))
+				continue
+			return S
+	if(!harder)
+		stack_trace("[THIS_PROC_TYPE] failed to get a spawnpoint, trying against with harder = TRUE")
+		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
+	else
+		CRASH("[THIS_PROC_TYPE] failed to get a spawnpoint.")
 
 /**
  * Gets a valid custom spawnpoint to use by key
+ *
+ * @params
+ * - M - (optional) mob being spawned
+ * - C - (optional) client of player
+ * - key - spawnpoint key to look for
  */
-/datum/controller/subsystem/job/proc/GetCustomSpawnpoint(mob/M, key)
+/datum/controller/subsystem/job/proc/GetCustomSpawnpoint(mob/M, client/C, key)
 	if(!length(custom_spawnpoints[key]))
 		return
 	for(var/atom/movable/landmark/spawnpoint/S as anything in custom_spawnpoints[key])
-		if(!S.Available(M))
+		if(!S.Available(M, C))
 			continue
 		return S
