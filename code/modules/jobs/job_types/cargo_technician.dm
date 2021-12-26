@@ -1,6 +1,5 @@
 /datum/job/cargo_tech
 	title = "Cargo Technician"
-	flag = CARGOTECH
 	department_head = list("Quartermaster")
 	faction = "Station"
 	total_positions = 3

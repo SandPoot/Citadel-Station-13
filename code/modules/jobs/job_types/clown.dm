@@ -1,6 +1,5 @@
 /datum/job/clown
 	title = "Clown"
-	flag = CLOWN
 	department_head = list("Head of Personnel")
 	faction = "Station"
 	total_positions = 1

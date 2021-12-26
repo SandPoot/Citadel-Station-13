@@ -1,6 +1,5 @@
 /datum/job/virologist
 	title = "Virologist"
-	flag = VIROLOGIST
 	department_head = list("Chief Medical Officer")
 	faction = "Station"
 	total_positions = 1

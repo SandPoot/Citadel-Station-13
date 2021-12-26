@@ -1,6 +1,5 @@
 /datum/job/chemist
 	title = "Chemist"
-	flag = CHEMIST
 	department_head = list("Chief Medical Officer")
 	faction = "Station"
 	total_positions = 2

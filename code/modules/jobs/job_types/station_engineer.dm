@@ -1,6 +1,5 @@
 /datum/job/engineer
 	title = "Station Engineer"
-	flag = ENGINEER
 	department_head = list("Chief Engineer")
 	faction = "Station"
 	total_positions = 5

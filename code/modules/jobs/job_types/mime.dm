@@ -1,6 +1,5 @@
 /datum/job/mime
 	title = "Mime"
-	flag = MIME
 	department_head = list("Head of Personnel")
 	faction = "Station"
 	total_positions = 1

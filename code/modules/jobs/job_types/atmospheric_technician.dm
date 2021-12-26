@@ -1,6 +1,5 @@
 /datum/job/atmos
 	title = "Atmospheric Technician"
-	flag = ATMOSTECH
 	department_head = list("Chief Engineer")
 	faction = "Station"
 	total_positions = 3

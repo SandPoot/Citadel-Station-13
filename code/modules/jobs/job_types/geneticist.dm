@@ -1,6 +1,5 @@
 /datum/job/geneticist
 	title = "Geneticist"
-	flag = GENETICIST
 	department_head = list("Chief Medical Officer", "Research Director")
 	faction = "Station"
 	total_positions = 2
