@@ -4,10 +4,8 @@
 	icon_state = "x"
 	anchored = TRUE
 	layer = MOB_LAYER
-	var/jobspawn_override = FALSE
 	var/delete_after_roundstart = TRUE
 	var/used = FALSE
-	var/job_spawnpoint = TRUE //Is it a potential job spawnpoint or should we skip it?
 
 /atom/movable/landmark/start/proc/after_round_start()
 	if(delete_after_roundstart)
@@ -15,10 +13,6 @@
 
 /atom/movable/landmark/start/New()
 	GLOB.start_landmarks_list += src
-	if(jobspawn_override)
-		if(!GLOB.jobspawn_overrides[name])
-			GLOB.jobspawn_overrides[name] = list()
-		GLOB.jobspawn_overrides[name] += src
 	..()
 	if(name != "start")
 		tag = "start*[name]"

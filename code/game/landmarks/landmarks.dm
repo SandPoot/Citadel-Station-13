@@ -6,16 +6,6 @@
 	layer = MID_LANDMARK_LAYER
 	invisibility = INVISIBILITY_ABSTRACT
 
-/atom/movable/landmark/singularity_act()
-	return
-
-// Please stop bombing the Observer-Start landmark.
-/atom/movable/landmark/ex_act(severity, target, origin)
-	return
-
-/atom/movable/landmark/singularity_pull()
-	return
-
 INITIALIZE_IMMEDIATE(/atom/movable/landmark)
 
 /atom/movable/landmark/Initialize()
@@ -23,8 +13,15 @@ INITIALIZE_IMMEDIATE(/atom/movable/landmark)
 	GLOB.landmarks_list += src
 
 /atom/movable/landmark/Destroy()
+	log_debug("[src] ([type]) was deleted.")
 	GLOB.landmarks_list -= src
 	return ..()
+
+/**
+ * Called when the round is finished setting up directly from SSticker
+ */
+/atom/movable/landmark/proc/OnRoundstart()
+	return
 
 // carp.
 /atom/movable/landmark/carpspawn

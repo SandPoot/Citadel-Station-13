@@ -339,13 +339,8 @@ SUBSYSTEM_DEF(ticker)
 	send2adminchat("Server", "Round [GLOB.round_id ? "#[GLOB.round_id]:" : "of"] [hide_mode ? "secret":"[mode.name]"] has started[allmins.len ? ".":" with no active admins online!"]")
 	setup_done = TRUE
 
-	for(var/i in GLOB.start_landmarks_list)
-		var/atom/movable/landmark/start/S = i
-		if(istype(S))							//we can not runtime here. not in this important of a proc.
-			S.after_round_start()
-		else
-			stack_trace("[S] [S.type] found in start landmarks list, which isn't a start landmark!")
-
+	for(var/atom/movable/landmark/L in GLOB.landmarks_list)
+		L.OnRoundstart()
 
 //These callbacks will fire after roundstart key transfer
 /datum/controller/subsystem/ticker/proc/OnRoundstart(datum/callback/cb)
