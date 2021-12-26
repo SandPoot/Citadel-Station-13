@@ -2,7 +2,6 @@
 	title = "Virologist"
 	flag = VIROLOGIST
 	department_head = list("Chief Medical Officer")
-	department_flag = MEDSCI
 	faction = "Station"
 	total_positions = 1
 	spawn_positions = 1

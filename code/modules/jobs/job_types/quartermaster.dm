@@ -2,7 +2,6 @@
 	title = "Quartermaster"
 	flag = QUARTERMASTER
 	department_head = list("Captain")
-	department_flag = CIVILIAN
 	head_announce = list(RADIO_CHANNEL_SUPPLY)
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
 	faction = "Station"

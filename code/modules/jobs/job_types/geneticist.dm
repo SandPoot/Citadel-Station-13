@@ -2,7 +2,6 @@
 	title = "Geneticist"
 	flag = GENETICIST
 	department_head = list("Chief Medical Officer", "Research Director")
-	department_flag = MEDSCI
 	faction = "Station"
 	total_positions = 2
 	spawn_positions = 2

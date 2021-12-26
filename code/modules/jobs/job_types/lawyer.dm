@@ -2,7 +2,6 @@
 	title = "Lawyer"
 	flag = LAWYER
 	department_head = list("Head of Personnel")
-	department_flag = CIVILIAN
 	faction = "Station"
 	total_positions = 2
 	spawn_positions = 2

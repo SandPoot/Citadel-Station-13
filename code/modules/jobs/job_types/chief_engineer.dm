@@ -3,7 +3,6 @@
 	flag = CHIEF
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
 	department_head = list("Captain")
-	department_flag = ENGSEC
 	head_announce = list(RADIO_CHANNEL_ENGINEERING)
 	faction = "Station"
 	total_positions = 1
