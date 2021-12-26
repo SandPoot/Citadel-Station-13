@@ -315,7 +315,7 @@
 /turf/open/space,
 /area/solars/starboard)
 "aK" = (
-/atom/movable/landmark/start/chaplain,
+/atom/movable/landmark/spawnpoint/job/chaplain,
 /obj/machinery/atmospherics/pipe/simple/supply/hidden/layer1{
 	dir = 4
 	},
@@ -1665,7 +1665,7 @@
 /turf/open/floor/plating,
 /area/maintenance/central)
 "eo" = (
-/atom/movable/landmark/start/assistant,
+/atom/movable/landmark/spawnpoint/job/assistant,
 /obj/structure/chair/stool,
 /obj/effect/turf_decal/tile/bar,
 /obj/effect/turf_decal/tile/bar{
@@ -3614,7 +3614,7 @@
 /obj/structure/cable{
 	icon_state = "1-2"
 	},
-/atom/movable/landmark/start/bartender,
+/atom/movable/landmark/spawnpoint/job/bartender,
 /turf/open/floor/plasteel,
 /area/service/bar)
 "jE" = (
@@ -5017,7 +5017,7 @@
 /obj/structure/chair/office/dark{
 	dir = 8
 	},
-/atom/movable/landmark/start/botanist,
+/atom/movable/landmark/spawnpoint/job/botanist,
 /obj/effect/turf_decal/trimline/green/filled/line{
 	dir = 5
 	},
@@ -5375,7 +5375,7 @@
 /turf/open/floor/carpet,
 /area/service/hydroponics/garden)
 "nS" = (
-/atom/movable/landmark/start/cook,
+/atom/movable/landmark/spawnpoint/job/cook,
 /obj/effect/turf_decal/tile/bar{
 	dir = 8
 	},
@@ -5666,7 +5666,7 @@
 /turf/open/floor/plasteel,
 /area/hallway/primary/central)
 "oH" = (
-/atom/movable/landmark/start/botanist,
+/atom/movable/landmark/spawnpoint/job/botanist,
 /obj/effect/turf_decal/trimline/green/filled/line{
 	dir = 8
 	},
@@ -6417,7 +6417,7 @@
 /turf/open/space,
 /area/solars/starboard)
 "qv" = (
-/atom/movable/landmark/start/chaplain,
+/atom/movable/landmark/spawnpoint/job/chaplain,
 /obj/structure/chair/comfy/black,
 /turf/open/floor/carpet,
 /area/service/chapel/office)
@@ -7830,7 +7830,7 @@
 /obj/machinery/light/small{
 	dir = 1
 	},
-/atom/movable/landmark/start/assistant,
+/atom/movable/landmark/spawnpoint/job/assistant,
 /obj/machinery/button/door{
 	id = "Toilet4";
 	name = "Lock Control";
@@ -8472,7 +8472,7 @@
 /turf/open/floor/plasteel,
 /area/hallway/primary/central)
 "vT" = (
-/atom/movable/landmark/start/assistant,
+/atom/movable/landmark/spawnpoint/job/assistant,
 /obj/effect/turf_decal/tile/neutral,
 /obj/effect/turf_decal/tile/neutral{
 	dir = 4
@@ -8890,7 +8890,7 @@
 /turf/open/floor/plating,
 /area/maintenance/department/crew_quarters/dorms)
 "xf" = (
-/atom/movable/landmark/start/botanist,
+/atom/movable/landmark/spawnpoint/job/botanist,
 /turf/open/floor/plasteel,
 /area/service/hydroponics)
 "xg" = (
@@ -9564,7 +9564,7 @@
 /area/service/hydroponics/garden)
 "yT" = (
 /obj/effect/decal/cleanable/dirt,
-/atom/movable/landmark/start/janitor,
+/atom/movable/landmark/spawnpoint/job/janitor,
 /obj/structure/chair{
 	dir = 8
 	},
@@ -13424,7 +13424,7 @@
 /turf/open/floor/plating,
 /area/maintenance/solars/starboard/fore)
 "IF" = (
-/atom/movable/landmark/start/cook,
+/atom/movable/landmark/spawnpoint/job/cook,
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
@@ -14092,7 +14092,7 @@
 /turf/open/floor/plating,
 /area/maintenance/department/crew_quarters/dorms)
 "Kh" = (
-/atom/movable/landmark/start/janitor,
+/atom/movable/landmark/spawnpoint/job/janitor,
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/cable{
 	icon_state = "4-8"
@@ -16072,7 +16072,7 @@
 /obj/structure/chair{
 	dir = 4
 	},
-/atom/movable/landmark/start/chaplain,
+/atom/movable/landmark/spawnpoint/job/chaplain,
 /obj/machinery/atmospherics/components/unary/vent_pump/on/layer1{
 	dir = 4
 	},
@@ -16889,7 +16889,7 @@
 /area/commons/toilet)
 "Rj" = (
 /obj/structure/chair/stool,
-/atom/movable/landmark/start/assistant,
+/atom/movable/landmark/spawnpoint/job/assistant,
 /turf/open/floor/plasteel,
 /area/commons/locker)
 "Rk" = (
@@ -17158,7 +17158,7 @@
 /turf/open/floor/plasteel/cafeteria,
 /area/service/kitchen)
 "RT" = (
-/atom/movable/landmark/start/clown,
+/atom/movable/landmark/spawnpoint/job/clown,
 /obj/structure/cable{
 	icon_state = "1-2"
 	},
@@ -18236,7 +18236,7 @@
 /area/service/kitchen)
 "UH" = (
 /obj/machinery/atmospherics/pipe/simple/scrubbers/hidden/layer3,
-/atom/movable/landmark/start/cook,
+/atom/movable/landmark/spawnpoint/job/cook,
 /obj/effect/turf_decal/tile/bar{
 	dir = 8
 	},
@@ -18841,7 +18841,7 @@
 /turf/open/floor/wood,
 /area/commons/dorms)
 "Wb" = (
-/atom/movable/landmark/start/mime,
+/atom/movable/landmark/spawnpoint/job/mime,
 /turf/open/floor/carpet,
 /area/service/theater)
 "Wc" = (
@@ -19291,7 +19291,7 @@
 /turf/open/floor/plasteel,
 /area/hallway/primary/central)
 "Xr" = (
-/atom/movable/landmark/start/bartender,
+/atom/movable/landmark/spawnpoint/job/bartender,
 /obj/machinery/atmospherics/components/unary/vent_pump/on/layer1{
 	dir = 1
 	},
@@ -19818,7 +19818,7 @@
 /turf/open/floor/plasteel,
 /area/service/cafeteria)
 "YE" = (
-/atom/movable/landmark/start/assistant,
+/atom/movable/landmark/spawnpoint/job/assistant,
 /obj/structure/cable{
 	icon_state = "4-8"
 	},

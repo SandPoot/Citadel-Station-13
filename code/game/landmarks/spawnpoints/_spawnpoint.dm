@@ -1,5 +1,6 @@
 /atom/movable/landmark/spawnpoint
 	name = "unknown spawnpoint"
+	#warn port icons over
 	icon = 'icons/mapping/landmarks/spawnpoints.dmi'
 	/// prevent stacking of mobs
 	var/prevent_mob_stack = TRUE

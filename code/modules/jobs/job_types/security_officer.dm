@@ -52,30 +52,31 @@ GLOBAL_LIST_INIT(available_depts, list(SEC_DEPT_ENGINEERING, SEC_DEPT_MEDICAL, S
 	var/list/dep_access = null
 	var/destination = null
 	var/spawn_point = null
+	#warn fix this
 	switch(department)
 		if(SEC_DEPT_SUPPLY)
 			ears = /obj/item/radio/headset/headset_sec/alt/department/supply
 			dep_access = list(ACCESS_MAILSORTING, ACCESS_MINING, ACCESS_MINING_STATION, ACCESS_CARGO)
 			destination = /area/security/checkpoint/supply
-			spawn_point = locate(/atom/movable/landmark/start/depsec/supply) in GLOB.department_security_spawns
+			spawn_point = locate(/atom/movable/landmark/spawnpoint/depsec/supply) in GLOB.department_security_spawns
 			accessory = /obj/item/clothing/accessory/armband/cargo
 		if(SEC_DEPT_ENGINEERING)
 			ears = /obj/item/radio/headset/headset_sec/alt/department/engi
 			dep_access = list(ACCESS_CONSTRUCTION, ACCESS_ENGINE, ACCESS_ATMOSPHERICS)
 			destination = /area/security/checkpoint/engineering
-			spawn_point = locate(/atom/movable/landmark/start/depsec/engineering) in GLOB.department_security_spawns
+			spawn_point = locate(/atom/movable/landmark/spawnpoint/depsec/engineering) in GLOB.department_security_spawns
 			accessory = /obj/item/clothing/accessory/armband/engine
 		if(SEC_DEPT_MEDICAL)
 			ears = /obj/item/radio/headset/headset_sec/alt/department/med
 			dep_access = list(ACCESS_MEDICAL, ACCESS_MORGUE, ACCESS_SURGERY, ACCESS_CLONING)
 			destination = /area/security/checkpoint/medical
-			spawn_point = locate(/atom/movable/landmark/start/depsec/medical) in GLOB.department_security_spawns
+			spawn_point = locate(/atom/movable/landmark/spawnpoint/depsec/medical) in GLOB.department_security_spawns
 			accessory =  /obj/item/clothing/accessory/armband/medblue
 		if(SEC_DEPT_SCIENCE)
 			ears = /obj/item/radio/headset/headset_sec/alt/department/sci
 			dep_access = list(ACCESS_RESEARCH, ACCESS_TOX)
 			destination = /area/security/checkpoint/science
-			spawn_point = locate(/atom/movable/landmark/start/depsec/science) in GLOB.department_security_spawns
+			spawn_point = locate(/atom/movable/landmark/spawnpoint/depsec/science) in GLOB.department_security_spawns
 			accessory = /obj/item/clothing/accessory/armband/science
 
 	if(accessory)

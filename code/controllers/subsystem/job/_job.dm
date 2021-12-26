@@ -214,7 +214,7 @@ SUBSYSTEM_DEF(job)
 	if(SSticker.triai)
 		for(var/datum/job/ai/A in occupations)
 			A.spawn_positions = 3
-		for(var/atom/movable/landmark/start/ai/secondary/S in GLOB.start_landmarks_list)
+		for(var/atom/movable/landmark/spawnpoint/job/ai/secondary/S in GLOB.start_landmarks_list)
 			S.latejoin_active = TRUE
 
 	//Get the players who are ready
