@@ -649,159 +649,29 @@
 						      But it looks beautiful in-game
 						                -Nodrak
 	************************************WARNING!***********************************/
-		var/counter = 0
-//Regular jobs
-	//Command (Blue)
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr align='center' bgcolor='ccccff'><th colspan='[length(GLOB.command_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=commanddept;jobban4=[REF(M)]'>Command Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.command_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='15%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='15%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
 
-			if(counter >= 6) //So things dont get squiiiiished!
-				dat += "</tr><tr>"
-				counter = 0
-		dat += "</tr></table>"
+	// 1. no, it's not beautiful
+	// 2. yes, this is disgusting
+	// ~silicons, 12/27/21
 
-	//Security (Red)
-		counter = 0
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr bgcolor='ffddf0'><th colspan='[length(GLOB.security_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=securitydept;jobban4=[REF(M)]'>Security Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.security_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
+#define JOBS_PER_ROW 5
+		for(var/datum/department/D in SSjob.departments)
+			var/counter = 0
+			dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
+			dat += "<tr align='center' bgcolor='[D.color]'><th colspan='[length(D.jobs)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=[D.type];jobban4=[REF(M)]'>[D.name]</a></th></tr><tr align='center'>"
+			for(var/id in D.jobs)
+				var/datum/job/J = SSjob.GetJobType(id)
+				if(!J)
+					continue
+				var/banned = jobban_isbanned(M, J.title)
+				dat += "<td width='15%'><a href='>src=[REF(src)];[HrefToken()];jobban=[J.title];jobban4=[REF(m)]'>[banned? "<font color='red'>[J.title]</font>" : "[J.title]"]</a></td>"
+				if(++counter >= JOBS_PER_ROW)
+					dat += "</tr><tr>"
+					counter = 0
+			dat += "</tr></table?"
+#undef JOBS_PER_ROW
 
-			if(counter >= 5) //So things dont get squiiiiished!
-				dat += "</tr><tr align='center'>"
-				counter = 0
-		dat += "</tr></table>"
-
-	//Engineering (Yellow)
-		counter = 0
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr bgcolor='fff5cc'><th colspan='[length(GLOB.engineering_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=engineeringdept;jobban4=[REF(M)]'>Engineering Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.engineering_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
-
-			if(counter >= 5) //So things dont get squiiiiished!
-				dat += "</tr><tr align='center'>"
-				counter = 0
-		dat += "</tr></table>"
-
-	//Medical (White)
-		counter = 0
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr bgcolor='ffeef0'><th colspan='[length(GLOB.medical_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=medicaldept;jobban4=[REF(M)]'>Medical Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.medical_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
-
-			if(counter >= 5) //So things dont get squiiiiished!
-				dat += "</tr><tr align='center'>"
-				counter = 0
-		dat += "</tr></table>"
-
-	//Science (Purple)
-		counter = 0
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr bgcolor='e79fff'><th colspan='[length(GLOB.science_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=sciencedept;jobban4=[REF(M)]'>Science Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.science_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
-
-			if(counter >= 5) //So things dont get squiiiiished!
-				dat += "</tr><tr align='center'>"
-				counter = 0
-		dat += "</tr></table>"
-
-	//Supply (Brown)
-		counter = 0
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr bgcolor='DDAA55'><th colspan='[length(GLOB.supply_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=supplydept;jobban4=[REF(M)]'>Supply Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.supply_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
-
-			if(counter >= 5) //So things dont get COPYPASTE!
-				dat += "</tr><tr align='center'>"
-				counter = 0
-		dat += "</tr></table>"
-
-	//Civilian (Grey)
-		counter = 0
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr bgcolor='dddddd'><th colspan='[length(GLOB.civilian_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=civiliandept;jobban4=[REF(M)]'>Civilian Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.civilian_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
-
-			if(counter >= 5) //So things dont get squiiiiished!
-				dat += "</tr><tr align='center'>"
-				counter = 0
-		dat += "</tr></table>"
-
-	//Non-Human (Green)
-		counter = 0
-		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		dat += "<tr bgcolor='ccffcc'><th colspan='[length(GLOB.nonhuman_positions)]'><a href='?src=[REF(src)];[HrefToken()];jobban3=nonhumandept;jobban4=[REF(M)]'>Non-human Positions</a></th></tr><tr align='center'>"
-		for(var/jobPos in GLOB.nonhuman_positions)
-			if(!jobPos)
-				continue
-			if(jobban_isbanned(M, jobPos))
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'><font color=red>[jobPos]</font></a></td>"
-				counter++
-			else
-				dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[jobPos];jobban4=[REF(M)]'>[jobPos]</a></td>"
-				counter++
-
-			if(counter >= 5) //So things dont get squiiiiished!
-				dat += "</tr><tr align='center'>"
-				counter = 0
-
-		dat += "</tr></table>"
+	#warn why don't we see if it's feasible to ghostrole for loop too huh
 
 		//Ghost Roles (light light gray)
 		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
@@ -964,57 +834,23 @@
 			return
 		//get jobs for department if specified, otherwise just return the one job in a list.
 		var/list/joblist = list()
-		switch(href_list["jobban3"])
-			if("commanddept")
-				for(var/jobPos in GLOB.command_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("securitydept")
-				for(var/jobPos in GLOB.security_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("engineeringdept")
-				for(var/jobPos in GLOB.engineering_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("medicaldept")
-				for(var/jobPos in GLOB.medical_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("sciencedept")
-				for(var/jobPos in GLOB.science_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("supplydept")
-				for(var/jobPos in GLOB.supply_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("civiliandept")
-				for(var/jobPos in GLOB.civilian_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("nonhumandept")
-				for(var/jobPos in GLOB.nonhuman_positions)
-					if(!jobPos)
-						continue
-					joblist += jobPos
-			if("ghostroles")
-				joblist += list(ROLE_PAI, ROLE_POSIBRAIN, ROLE_DRONE , ROLE_DEATHSQUAD, ROLE_LAVALAND, ROLE_SENTIENCE)
-			if("teamantags")
-				joblist += list(ROLE_OPERATIVE, ROLE_REV, ROLE_CULTIST, ROLE_SERVANT_OF_RATVAR, ROLE_ABDUCTOR, ROLE_ALIEN, ROLE_GANG)
-			if("convertantags")
-				joblist += list(ROLE_REV, ROLE_CULTIST, ROLE_SERVANT_OF_RATVAR, ROLE_ALIEN)
-			if("otherroles")
-				joblist += list(ROLE_MIND_TRANSFER)
-			else
-				joblist += href_list["jobban3"]
+		// first, check if it's a dept
+		var/department = text2path(href_list["jobban3"])
+		if(ispath(department, /datum/department))
+			var/datum/department/D = SSjob.GetDepartmentType(department)
+			joblist = D.GetJobNames()
+		else
+			switch(href_list["jobban3"])
+				if("ghostroles")
+					joblist += list(ROLE_PAI, ROLE_POSIBRAIN, ROLE_DRONE , ROLE_DEATHSQUAD, ROLE_LAVALAND, ROLE_SENTIENCE)
+				if("teamantags")
+					joblist += list(ROLE_OPERATIVE, ROLE_REV, ROLE_CULTIST, ROLE_SERVANT_OF_RATVAR, ROLE_ABDUCTOR, ROLE_ALIEN, ROLE_GANG)
+				if("convertantags")
+					joblist += list(ROLE_REV, ROLE_CULTIST, ROLE_SERVANT_OF_RATVAR, ROLE_ALIEN)
+				if("otherroles")
+					joblist += list(ROLE_MIND_TRANSFER)
+				else
+					joblist += href_list["jobban3"]
 
 		//Create a list of unbanned jobs within joblist
 		var/list/notbannedlist = list()
