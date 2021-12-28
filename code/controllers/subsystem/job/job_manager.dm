@@ -141,7 +141,7 @@
 	for(var/mob/M as anything in GLOB.mob_list)
 		if(mob_typecache_filter && !mob_typecache_filter[M.type])
 			continue
-		if(M.mind?.assigned_role == J.name)
+		if(M.mind?.assigned_role == J.GetName())
 			. += M.mind
 
 /datum/controller/subsystem/job/proc/GetLivingJobMinds(path, list/mob_typecache_filter)
@@ -153,7 +153,7 @@
 	for(var/mob/M as anything in GLOB.alive_mob_list)
 		if(mob_typecache_filter && !mob_typecache_filter[M.type])
 			continue
-		if(M.mind?.assigned_role == J.name)
+		if(M.mind?.assigned_role == J.GetName())
 			. += M.mind
 
 /**

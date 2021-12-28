@@ -1,7 +1,6 @@
 /datum/job/hop
 	title = "Head of Personnel"
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
-	department_head = list("Captain")
 	head_announce = list(RADIO_CHANNEL_SERVICE)
 	faction = JOB_FACTION_STATION
 	total_positions = 1

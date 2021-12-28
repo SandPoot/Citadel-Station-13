@@ -1,6 +1,5 @@
 /datum/job/chemist
 	title = "Chemist"
-	department_head = list("Chief Medical Officer")
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 2

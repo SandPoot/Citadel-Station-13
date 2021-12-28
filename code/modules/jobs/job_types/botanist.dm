@@ -1,6 +1,5 @@
 /datum/job/hydro
 	title = "Botanist"
-	department_head = list("Head of Personnel")
 	faction = JOB_FACTION_STATION
 	total_positions = 3
 	roundstart_positions = 2

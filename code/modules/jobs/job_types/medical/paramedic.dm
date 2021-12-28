@@ -1,6 +1,6 @@
 /datum/job/paramedic
 	title = "Paramedic"
-	department_head = list("Chief Medical Officer")
+	desc = "Paramedics are tasked with bringing far-away patients to the Medbay for proper treatment."
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 2

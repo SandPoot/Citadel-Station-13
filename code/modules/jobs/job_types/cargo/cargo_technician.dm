@@ -1,6 +1,6 @@
 /datum/job/cargo_tech
 	title = "Cargo Technician"
-	department_head = list("Quartermaster")
+	desc = "Cargo Technicians assist in the day-to-day of the supply division, keeping the station's crew supplied with whatever they require for their duties."
 	faction = JOB_FACTION_STATION
 	total_positions = 3
 	roundstart_positions = 2

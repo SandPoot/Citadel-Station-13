@@ -1,7 +1,7 @@
 /datum/job/chief_engineer
 	title = "Chief Engineer"
+	desc = "The Chief Engineer runs the engineering division, and is tasked with keeping the station well-maintained."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
-	department_head = list("Captain")
 	head_announce = list(RADIO_CHANNEL_ENGINEERING)
 	faction = JOB_FACTION_STATION
 	total_positions = 1

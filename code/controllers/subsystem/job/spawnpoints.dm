@@ -11,7 +11,7 @@
 /**
  * Fully resets spawnpoints list and ensures validity
  */
-/datum/controller/subsystem/job/proc/ReconstructSpawnpoint()
+/datum/controller/subsystem/job/proc/ReconstructSpawnpoints()
 	job_spawnpoints = list()
 	latejoin_spawnpoints = list()
 	overflow_spawnpoints = list()

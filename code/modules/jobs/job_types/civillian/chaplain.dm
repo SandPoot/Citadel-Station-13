@@ -1,6 +1,6 @@
 /datum/job/chaplain
 	title = "Chaplain"
-	department_head = list("Head of Personnel")
+	desc = "The station's ambassador in religious affairs.. or in reality, just someone for the crew to talk to."
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1
@@ -15,7 +15,6 @@
 	paycheck_department = ACCOUNT_CIV
 
 	threat = 0.5
-
 
 /datum/job/chaplain/after_spawn(mob/living/H, mob/M)
 	. = ..()

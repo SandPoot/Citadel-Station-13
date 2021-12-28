@@ -1,5 +1,6 @@
 /datum/job/captain
 	title = "Captain"
+	desc = "The Captain is the top authority on the station, tasked with maintaining order and guiding day to day operations."
 	supervisor_text_override = "Standard Procedure and Space Law"
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD|DEADMIN_POSITION_SECURITY //:eyes:
 	faction = JOB_FACTION_STATION

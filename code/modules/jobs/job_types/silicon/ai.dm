@@ -1,5 +1,6 @@
 /datum/job/ai
 	title = "AI"
+	desc = "The governing intelligence of an installation; bound to a set of company-provided laws and tasked with assisting the crew."
 	supervisor_text_override = "your laws"
 //	auto_deadmin_role_flags = DEADMIN_POSITION_SILICON
 	faction = JOB_FACTION_STATION

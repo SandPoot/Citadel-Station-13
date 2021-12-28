@@ -3,6 +3,7 @@ Assistant
 */
 /datum/job/assistant
 	title = "Assistant"
+	desc = "Generic assistants hired aboard stations; Your task is to assist the crew whereever needed."
 	supervisor_text_override = "absolutely everyone"
 	faction = JOB_FACTION_STATION
 	total_positions = 5

@@ -1,6 +1,6 @@
 /datum/job/curator
 	title = "Curator"
-	department_head = list("Head of Personnel")
+	desc = "The Curator runs the station's library, and occasionally goes on adventures with their trusty whip and hat."
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1

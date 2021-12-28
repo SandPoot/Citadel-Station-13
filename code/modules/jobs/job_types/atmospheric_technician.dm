@@ -1,6 +1,5 @@
 /datum/job/atmos
 	title = "Atmospheric Technician"
-	department_head = list("Chief Engineer")
 	faction = JOB_FACTION_STATION
 	total_positions = 3
 	roundstart_positions = 3

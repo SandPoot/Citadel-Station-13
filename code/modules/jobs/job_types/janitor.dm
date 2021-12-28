@@ -1,6 +1,5 @@
 /datum/job/janitor
 	title = "Janitor"
-	department_head = list("Head of Personnel")
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 1

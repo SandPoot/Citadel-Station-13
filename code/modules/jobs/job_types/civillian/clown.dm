@@ -1,6 +1,10 @@
 /datum/job/clown
 	title = "Clown"
-	department_head = list("Head of Personnel")
+	desc = "The clown 'supposedly' entertains the crew and 'supposedly' improves morale."
+	alt_titles = list(
+		/datum/alt_title/clown/fool,
+		/datum/alt_title/clown/
+	)
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1
@@ -57,3 +61,11 @@
 		H.fully_replace_character_name(H.real_name, pick(GLOB.clown_names))
 	H.dna.add_mutation(CLOWNMUT)
 	H.dna.add_mutation(SMILE)
+
+/datum/alt_title/clown
+
+/datum/alt_title/clown/fool
+	name = "Fool"
+
+/datum/alt_title/clown/jester
+	name = "Jester"

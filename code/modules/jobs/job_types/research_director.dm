@@ -2,7 +2,6 @@
 	title = "Research Director"
 	flag = RD_JF
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
-	department_head = list("Captain")
 	head_announce = list(RADIO_CHANNEL_SCIENCE)
 	faction = JOB_FACTION_STATION
 	total_positions = 1

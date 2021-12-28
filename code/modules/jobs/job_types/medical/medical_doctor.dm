@@ -1,6 +1,6 @@
 /datum/job/doctor
 	title = "Medical Doctor"
-	department_head = list("Chief Medical Officer")
+	desc = "The Medical Doctor is in charge of keeping the crew healthy and running the Medbay."
 	faction = JOB_FACTION_STATION
 	total_positions = 5
 	roundstart_positions = 3
