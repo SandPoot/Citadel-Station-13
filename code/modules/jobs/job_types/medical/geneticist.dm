@@ -1,5 +1,6 @@
 /datum/job/geneticist
 	title = "Geneticist"
+	desc = "The Geneticist conducts genetics research under the Medical and Science divisions."
 	department_head = list("Chief Medical Officer", "Research Director")
 	faction = JOB_FACTION_STATION
 	total_positions = 2

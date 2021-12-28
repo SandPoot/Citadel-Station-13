@@ -82,6 +82,12 @@
 			else
 				var/datum/job/J = job_type_lookup[D.supervisor]
 				J.departments_supervised += D.type
+	// sweep up any jobs without departments
+	var/datum/department/misc/misc_department = department_type_lookup[/datum/department/misc]
+	for(var/datum/job/J as anything in jobs)
+		if(!LAZYLEN(J.departments))
+			J.departments = list(/datum/department/misc)
+		misc_department.jobs += J.type
 	return TRUE
 
 /datum/controller/subsystem/job/proc/GetJobType(path)

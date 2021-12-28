@@ -6,3 +6,4 @@
 		/datum/job/ai,
 		/datum/job/cyborg
 	)
+	color = rgb(100,250,100)

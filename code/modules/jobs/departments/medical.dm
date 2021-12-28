@@ -13,3 +13,4 @@
 	supervisor_announce_channels = list(
 		RADIO_CHANNEL_MEDICAL
 	)
+	color = rgb(200,200,255)

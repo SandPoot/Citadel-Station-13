@@ -1,5 +1,6 @@
 /datum/job/cook
 	title = "Cook"
+	desc = "The Cook keeps the crew well fed, and runs the kitchen."
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 1

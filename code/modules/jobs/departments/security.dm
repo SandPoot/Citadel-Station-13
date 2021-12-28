@@ -11,3 +11,4 @@
 	supervisor_announce_channels = list(
 		RADIO_CHANNEL_SECURITY
 	)
+	color = "#ffaaa0"

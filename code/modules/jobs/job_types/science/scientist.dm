@@ -1,5 +1,6 @@
 /datum/job/scientist
 	title = "Scientist"
+	desc = "Scientists are tasked with conducting research and solving the more abstract issues encountered by the crew."
 	faction = JOB_FACTION_STATION
 	total_positions = 5
 	roundstart_positions = 3

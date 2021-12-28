@@ -15,3 +15,4 @@
 	supervisor_announce_channels = list(
 		RADIO_CHANNEL_COMMAND
 	)
+	color = rgb(125,125,255)

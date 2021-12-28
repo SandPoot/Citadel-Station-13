@@ -1,5 +1,6 @@
 /datum/job/janitor
 	title = "Janitor"
+	desc = "The Janitor keeps the station clean and tidy of both debris and pests."
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 1

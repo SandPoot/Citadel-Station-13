@@ -7,3 +7,4 @@
 		/datum/job/qm
 	)
 	supervisor = /datum/job/qm
+	color = rgb(250,175,100)

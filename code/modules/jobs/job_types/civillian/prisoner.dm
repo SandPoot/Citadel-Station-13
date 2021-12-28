@@ -1,5 +1,6 @@
 /datum/job/prisoner
 	title = "Prisoner"
+	desc = "Outsourced prisoners shipped to the station; Try to behave, as it's probably more pleasant here than whereever you were from."
 	faction = JOB_FACTION_STATION
 	total_positions = 0
 	roundstart_positions = 0

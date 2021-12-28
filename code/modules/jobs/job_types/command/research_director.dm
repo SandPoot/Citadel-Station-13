@@ -1,8 +1,7 @@
 /datum/job/rd
 	title = "Research Director"
-	flag = RD_JF
+	desc = "The Research Director is tasked with running the Science division, both keeping their department safe from the station, and the other way around."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
-	head_announce = list(RADIO_CHANNEL_SCIENCE)
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1

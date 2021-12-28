@@ -1,5 +1,6 @@
 /datum/job/chemist
 	title = "Chemist"
+	desc = "The Chemist is tasked with synthesizing useful medicines and chemicals for the station."
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 2

@@ -17,6 +17,8 @@
 	var/unlisted = FALSE
 	/// List of channels to announce supervisor joins to
 	var/list/supervisor_announce_channels
+	/// primary color theme - DO NOT MAKE THIS TOO DARK
+	var/color = rgb(150,150,150)
 
 /datum/department/New()
 	if(SQL_name == "DEFAULT")

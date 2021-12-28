@@ -261,8 +261,6 @@
 			playsound(computer, 'sound/machines/terminal_prompt_deny.ogg', 50, FALSE)
 			return TRUE
 
-
-
 /datum/computer_file/program/card_mod/ui_static_data(mob/user)
 	var/list/data = list()
 	data["station_name"] = station_name()
@@ -274,13 +272,13 @@
 		departments = list("CentCom" = get_all_centcom_jobs())
 	else if(isnull(departments))
 		departments = list(
-			CARDCON_DEPARTMENT_COMMAND = list("Captain"),//lol
-			CARDCON_DEPARTMENT_ENGINEERING = GLOB.engineering_positions,
-			CARDCON_DEPARTMENT_MEDICAL = GLOB.medical_positions,
-			CARDCON_DEPARTMENT_SCIENCE = GLOB.science_positions,
-			CARDCON_DEPARTMENT_SECURITY = GLOB.security_positions,
-			CARDCON_DEPARTMENT_SUPPLY = GLOB.supply_positions,
-			CARDCON_DEPARTMENT_SERVICE = GLOB.civilian_positions
+			CARDCON_DEPARTMENT_COMMAND = SSjob.GetJobType(/datum/job/captain).GetName(),//lol
+			CARDCON_DEPARTMENT_ENGINEERING = SSjob.GetDepartmentType(/datum/department/engineering).GetJobNames(),
+			CARDCON_DEPARTMENT_MEDICAL = SSjob.GetDepartmentType(/datum/department/medical).GetJobNames(),
+			CARDCON_DEPARTMENT_SCIENCE = SSjob.GetDepartmentType(/datum/department/science).GetJobNames(),
+			CARDCON_DEPARTMENT_SECURITY = SSjob.GetDepartmentType(/datum/department/security).GetJobNames(),
+			CARDCON_DEPARTMENT_SUPPLY = SSjob.GetDepartmentType(/datum/department/supply).GetJobNames(),
+			CARDCON_DEPARTMENT_SERVICE = SSjob.GetDepartmentType(/datum/department/service).GetJobNames()
 		)
 	data["jobs"] = list()
 	for(var/department in departments)

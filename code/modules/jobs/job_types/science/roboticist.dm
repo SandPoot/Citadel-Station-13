@@ -1,5 +1,6 @@
 /datum/job/roboticist
 	title = "Roboticist"
+	desc = "Roboticists are tasked with constructing useful exosuits and robots of all kinds, as well as maintaining the station's synthetic workforce."
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 2

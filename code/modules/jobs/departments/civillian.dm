@@ -9,3 +9,4 @@
 		/datum/job/hop
 	)
 	supervisor = /datum/job/hop
+	color = rgb(150,150,150)
