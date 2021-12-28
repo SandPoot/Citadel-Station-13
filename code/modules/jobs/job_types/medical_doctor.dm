@@ -1,10 +1,9 @@
 /datum/job/doctor
 	title = "Medical Doctor"
 	department_head = list("Chief Medical Officer")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 5
-	spawn_positions = 3
-	supervisors = "the chief medical officer"
+	roundstart_positions = 3
 	selection_color = "#74b5e0"
 
 	outfit = /datum/outfit/job/doctor

@@ -3,10 +3,10 @@ Assistant
 */
 /datum/job/assistant
 	title = "Assistant"
-	faction = "Station"
+	supervisor_text_override = "absolutely everyone"
+	faction = JOB_FACTION_STATION
 	total_positions = 5
-	spawn_positions = 5
-	supervisors = "absolutely everyone"
+	roundstart_positions = 5
 	selection_color = "#dddddd"
 	access = list()			//See /datum/job/assistant/get_access()
 	minimal_access = list()	//See /datum/job/assistant/get_access()

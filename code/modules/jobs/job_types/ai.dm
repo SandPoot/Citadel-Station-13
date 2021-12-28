@@ -1,12 +1,11 @@
 /datum/job/ai
 	title = "AI"
-	flag = AI_JF
+	supervisor_text_override = "your laws"
 //	auto_deadmin_role_flags = DEADMIN_POSITION_SILICON
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 1
-	spawn_positions = 1
+	roundstart_positions = 1
 	selection_color = "#ccffcc"
-	supervisors = "your laws"
 	req_admin_notify = TRUE
 	minimal_player_age = 30
 	exp_requirements = 180

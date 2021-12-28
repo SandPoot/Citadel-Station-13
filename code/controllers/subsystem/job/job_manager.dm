@@ -109,6 +109,7 @@
 	return department_name_lookup[name]
 
 /datum/controller/subsystem/job/proc/GetDepartmentMinds(path, list/mob_typecache_filter)
+	RETURN_TYPE(/datum/mind)
 	. = list()
 	var/datum/department/D = ispath(path)? GetDepartmentType(path) : GetDepartmentName(path)
 	if(!D)
@@ -120,6 +121,7 @@
 			. += M.mind
 
 /datum/controller/subsystem/job/proc/GetLivingDepartmentMinds(path, list/mob_typecache_filter)
+	RETURN_TYPE(/datum/mind)
 	. = list()
 	var/datum/department/D = ispath(path)? GetDepartmentType(path) : GetDepartmentName(path)
 	if(!D)
@@ -131,6 +133,7 @@
 			. += M.mind
 
 /datum/controller/subsystem/job/proc/GetJobMinds(path, list/mob_typecache_filter)
+	RETURN_TYPE(/datum/mind)
 	. = list()
 	var/datum/job/J = ispath(path)? GetJobType(path) : GetJobName(path)
 	if(!J)
@@ -142,6 +145,7 @@
 			. += M.mind
 
 /datum/controller/subsystem/job/proc/GetLivingJobMinds(path, list/mob_typecache_filter)
+	RETURN_TYPE(/datum/mind)
 	. = list()
 	var/datum/job/J = ispath(path)? GetJobType(path) : GetJobName(path)
 	if(!J)

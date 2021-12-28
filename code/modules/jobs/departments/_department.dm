@@ -23,9 +23,34 @@
 		SQL_name = name
 
 /datum/department/proc/GetJobs()
+	RETURN_TYPE(/datum/job)
 	. = list()
 	for(var/path in jobs)
 		. += SSjob.GetJobType(path)
 
+/datum/department/proc/GetJobIDs()
+	return jobs.Copy()
+
+/datum/department/proc/GetJobNames()
+	. = list()
+	for(var/id in jobs)
+		var/datum/job/J = SSjob.job_type_lookup[id]
+		. += istype(J)? J.name : "(ERROR - [id] not found)"
+
 /datum/department/proc/GetSupervisor()
+	RETURN_TYPE(/datum/job)
 	return supervisor && SSjob.GetJobType(supervisor)
+
+/datum/department/proc/GetSupervisorName()
+	return supervisor && SSjob.GetJobType(supervisor)?.name
+
+/datum/department/proc/GetSupervisorID()
+	return supervisor
+
+/datum/department/proc/GetMinds()
+	RETURN_TYPE(/datum/mind)
+	return SSjob.GetDepartmentMinds(src)
+
+/datum/department/proc/GetLivingMinds()
+	RETURN_TYPE(/datum/mind)
+	return SSjob.GetLivingDepartmentMinds(src)

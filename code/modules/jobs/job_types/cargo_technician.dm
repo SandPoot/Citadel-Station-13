@@ -1,10 +1,9 @@
 /datum/job/cargo_tech
 	title = "Cargo Technician"
 	department_head = list("Quartermaster")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 3
-	spawn_positions = 2
-	supervisors = "the quartermaster"
+	roundstart_positions = 2
 	selection_color = "#ca8f55"
 
 	outfit = /datum/outfit/job/cargo_tech

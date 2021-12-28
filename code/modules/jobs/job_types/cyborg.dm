@@ -1,9 +1,9 @@
 /datum/job/cyborg
 	title = "Cyborg"
 //	auto_deadmin_role_flags = DEADMIN_POSITION_SILICON
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 0
-	spawn_positions = 3
+	roundstart_positions = 3
 	supervisors = "your laws and the AI"	//Nodrak
 	selection_color = "#ddffdd"
 	minimal_player_age = 21

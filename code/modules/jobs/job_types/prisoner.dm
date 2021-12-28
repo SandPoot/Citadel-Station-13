@@ -1,10 +1,9 @@
 /datum/job/prisoner
 	title = "Prisoner"
 	department_head = list("The Security Team")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 0
-	spawn_positions = 0
-	supervisors = "the security team"
+	roundstart_positions = 0
 
 	outfit = /datum/outfit/job/prisoner
 	plasma_outfit = /datum/outfit/plasmaman/prisoner

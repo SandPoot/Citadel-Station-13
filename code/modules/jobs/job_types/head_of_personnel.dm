@@ -3,10 +3,9 @@
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
 	department_head = list("Captain")
 	head_announce = list(RADIO_CHANNEL_SERVICE)
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 1
-	spawn_positions = 1
-	supervisors = "the captain"
+	roundstart_positions = 1
 	selection_color = "#3a8529"
 	req_admin_notify = 1
 	minimal_player_age = 20

@@ -1,10 +1,9 @@
 /datum/job/virologist
 	title = "Virologist"
 	department_head = list("Chief Medical Officer")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 1
-	spawn_positions = 1
-	supervisors = "the chief medical officer"
+	roundstart_positions = 1
 	selection_color = "#74b5e0"
 	exp_type = EXP_TYPE_CREW
 	exp_requirements = 60

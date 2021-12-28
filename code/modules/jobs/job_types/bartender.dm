@@ -1,10 +1,9 @@
 /datum/job/bartender
 	title = "Bartender"
 	department_head = list("Head of Personnel")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 1
-	spawn_positions = 1
-	supervisors = "the head of personnel"
+	roundstart_positions = 1
 	selection_color = "#bbe291"
 	exp_type_department = EXP_TYPE_SERVICE // This is so the jobs menu can work properly
 

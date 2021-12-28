@@ -1,10 +1,9 @@
 /datum/job/atmos
 	title = "Atmospheric Technician"
 	department_head = list("Chief Engineer")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 3
-	spawn_positions = 3
-	supervisors = "the chief engineer"
+	roundstart_positions = 3
 	selection_color = "#ff9b3d"
 	exp_requirements = 60
 	exp_type = EXP_TYPE_CREW

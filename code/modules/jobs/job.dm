@@ -28,8 +28,13 @@
 	var/list/minimal_access = list()		//Useful for servers which prefer to only have access given to the places a job absolutely needs (Larger server population)
 	var/list/access = list()				//Useful for servers which either have fewer players, so each person needs to fill more than one role, or servers which like to give more access, so players can't hide forever in their super secure departments (I'm looking at you, chemistry!)
 
-	//Players will be allowed to spawn in as jobs that are set to "Station"
+	/// Faction this job is considered part of, for the future considerations of "offmap"/offstation jobs
 	var/faction = JOB_FACTION_STATION
+
+	/// Extra text shown on spawn
+	var/custom_spawn_text
+	/// Supervisor text override
+	var/supervisor_text_override
 
 	////////////// Legacy vars below /////////////////
 	//Sellection screen color
@@ -38,8 +43,6 @@
 	//If this is set to 1, a text is printed to the player when jobs are assigned, telling him that he should let admins know that he has to disconnect.
 	var/req_admin_notify
 
-	// This is for Citadel specific tweaks to job notices.
-	var/custom_spawn_text
 
 	//If you have the use_age_restriction_for_jobs config option enabled and the database set up, this option will add a requirement for players to be at least minimal_player_age days old. (meaning they first signed in at least that many days before.)
 	var/minimal_player_age = 0
@@ -86,8 +89,8 @@
 	. = (length(C.job_whitelist)? (type in C.job_whitelist) : !(type in C.job_blacklist))
 	if(!.)
 		return
-	if(type in C.job_override_spawn_positions)
-		spawn_positions = C.job_override_spawn_positions[type]
+	if(type in C.job_override_roundstart_positions)
+		roundstart_positions = C.job_override_roundstart_positions[type]
 	if(type in C.job_override_total_positions)
 		total_positions = C.job_override_total_positions[type]
 	if(type in C.job_access_override)
@@ -124,6 +127,51 @@
 	for(var/path in alt_titles)
 		var/datum/alt_title/T = path
 		.[initial(T.name)] = initial(T.desc)
+
+/**
+ * Get deparments supervised
+ */
+/datum/job/proc/GetSupervisedDepartments()
+	RETURN_TYPE(/datum/department)
+	. = list()
+	for(var/id in departments_supervised)
+		return SSjob.GetDepartmentType(id)
+
+/**
+ * Get primary department supervised (only sensical for some jobs!)
+ */
+/datum/job/proc/GetPrimarySupervisedDepartment()
+	return LAZYLEN(departments_supervised) && SSjob.GetDepartmentType(departments_supervised[1])
+
+/**
+ * Get departments
+ */
+/datum/job/proc/GetDepartments()
+	RETURN_TYPE(/datum/department)
+	. = list()
+	for(var/id in departments)
+		return SSjob.GetDepartmentType(id)
+
+/**
+ * Get primary department
+ */
+/datum/job/proc/GetPrimaryDepartment()
+	RETURN_TYPE(/datum/department)
+	return LAZYLEN(departments) && SSjob.GetDepartmentType(departments[1])
+
+/**
+ * Get minds
+ */
+/datum/job/proc/GetMinds()
+	RETURN_TYPE(/datum/mind)
+	return SSjob.GetJobMinds(src)
+
+/**
+ * Get living minds
+ */
+/datum/job/proc/GetLivingMinds()
+	RETURN_TYPE(/datum/mind)
+	return SSjob.GetLivingJobMinds(src)
 
 //Only override this proc
 //H is usually a human unless an /equip override transformed it

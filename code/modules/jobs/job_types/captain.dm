@@ -1,11 +1,10 @@
 /datum/job/captain
 	title = "Captain"
+	supervisor_text_override = "Standard Procedure and Space Law"
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD|DEADMIN_POSITION_SECURITY //:eyes:
-	department_head = list("CentCom")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 1
-	spawn_positions = 1
-	supervisors = "Nanotrasen officials and Space law"
+	roundstart_positions = 1
 	selection_color = "#aac1ee"
 	req_admin_notify = 1
 	minimal_player_age = 20

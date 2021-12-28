@@ -1,10 +1,9 @@
 /datum/job/roboticist
 	title = "Roboticist"
 	department_head = list("Research Director")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 2
-	spawn_positions = 2
-	supervisors = "the research director"
+	roundstart_positions = 2
 	selection_color = "#9574cd"
 	exp_requirements = 60
 	exp_type = EXP_TYPE_CREW

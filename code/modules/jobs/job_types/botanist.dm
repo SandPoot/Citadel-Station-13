@@ -1,10 +1,9 @@
 /datum/job/hydro
 	title = "Botanist"
 	department_head = list("Head of Personnel")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 3
-	spawn_positions = 2
-	supervisors = "the head of personnel"
+	roundstart_positions = 2
 	selection_color = "#bbe291"
 
 	outfit = /datum/outfit/job/botanist

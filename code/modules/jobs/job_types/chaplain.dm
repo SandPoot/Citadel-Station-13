@@ -1,10 +1,9 @@
 /datum/job/chaplain
 	title = "Chaplain"
 	department_head = list("Head of Personnel")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 1
-	spawn_positions = 1
-	supervisors = "the head of personnel"
+	roundstart_positions = 1
 	selection_color = "#dddddd"
 
 	outfit = /datum/outfit/job/chaplain

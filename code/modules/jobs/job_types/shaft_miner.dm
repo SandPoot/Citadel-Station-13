@@ -1,10 +1,8 @@
 /datum/job/mining
 	title = "Shaft Miner"
-	department_head = list("Quartermaster")
-	faction = "Station"
+	faction = JOB_FACTION_STATION
 	total_positions = 3
-	spawn_positions = 3
-	supervisors = "the quartermaster"
+	roundstart_positions = 3
 	selection_color = "#ca8f55"
 	custom_spawn_text = "Remember, you are a miner, not a hunter. Hunting monsters is not a requirement of your job, the only requirement of your job is to provide materials for the station. Don't be afraid to run away if you're inexperienced with fighting the mining area's locals."
 
