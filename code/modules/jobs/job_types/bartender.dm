@@ -14,7 +14,6 @@
 	minimal_access = list(ACCESS_BAR, ACCESS_MINERAL_STOREROOM)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	display_order = JOB_DISPLAY_ORDER_BARTENDER
 	threat = 0.5
 
 /datum/outfit/job/bartender

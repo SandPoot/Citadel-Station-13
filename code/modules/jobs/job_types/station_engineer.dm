@@ -20,7 +20,6 @@
 
 	starting_modifiers = list(/datum/skill_modifier/job/level/wiring, /datum/skill_modifier/job/affinity/wiring)
 
-	display_order = JOB_DISPLAY_ORDER_STATION_ENGINEER
 
 	threat = 1
 

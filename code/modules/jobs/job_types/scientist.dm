@@ -16,7 +16,6 @@
 	paycheck = PAYCHECK_MEDIUM
 	paycheck_department = ACCOUNT_SCI
 
-	display_order = JOB_DISPLAY_ORDER_SCIENTIST
 	threat = 1.2
 
 /datum/outfit/job/scientist

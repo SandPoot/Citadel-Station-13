@@ -18,7 +18,6 @@
 
 	starting_modifiers = list(/datum/skill_modifier/job/level/wiring, /datum/skill_modifier/job/affinity/wiring)
 
-	display_order = JOB_DISPLAY_ORDER_ROBOTICIST
 	threat = 1
 
 /datum/outfit/job/roboticist

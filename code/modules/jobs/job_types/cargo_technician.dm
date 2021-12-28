@@ -15,7 +15,6 @@
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_CAR
 
-	display_order = JOB_DISPLAY_ORDER_CARGO_TECHNICIAN
 	threat = 0.2
 
 /datum/outfit/job/cargo_tech

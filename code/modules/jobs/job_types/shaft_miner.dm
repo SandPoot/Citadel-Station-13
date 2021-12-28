@@ -16,7 +16,6 @@
 	paycheck = PAYCHECK_EASY ///Not necessarily easy itself, but it can be trivial to make lot of cash on this job.
 	paycheck_department = ACCOUNT_CAR
 
-	display_order = JOB_DISPLAY_ORDER_SHAFT_MINER
 
 	threat = 1.5
 

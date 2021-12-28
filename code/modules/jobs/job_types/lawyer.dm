@@ -17,7 +17,6 @@
 
 	mind_traits = list(TRAIT_LAW_ENFORCEMENT_METABOLISM)
 
-	display_order = JOB_DISPLAY_ORDER_LAWYER
 	threat = 0.3
 
 /datum/outfit/job/lawyer

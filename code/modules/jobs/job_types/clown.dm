@@ -16,7 +16,6 @@
 
 	mind_traits = list(TRAIT_CLOWN_MENTALITY)
 
-	display_order = JOB_DISPLAY_ORDER_CLOWN
 	threat = 0 // honk
 
 /datum/outfit/job/clown

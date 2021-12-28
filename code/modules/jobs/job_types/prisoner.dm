@@ -8,7 +8,6 @@
 	outfit = /datum/outfit/job/prisoner
 	plasma_outfit = /datum/outfit/plasmaman/prisoner
 
-	display_order = JOB_DISPLAY_ORDER_PRISONER
 
 /datum/job/prisoner/after_spawn(mob/living/carbon/human/H, mob/M)
 	var/list/policies = CONFIG_GET(keyed_list/policy)

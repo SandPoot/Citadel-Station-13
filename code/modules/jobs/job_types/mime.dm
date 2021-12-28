@@ -14,7 +14,6 @@
 	paycheck = PAYCHECK_MINIMAL
 	paycheck_department = ACCOUNT_SRV
 
-	display_order = JOB_DISPLAY_ORDER_MIME
 
 	threat = 0
 

@@ -14,7 +14,6 @@
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_CIV
 
-	display_order = JOB_DISPLAY_ORDER_CURATOR
 	threat = 0.3
 
 /datum/outfit/job/curator

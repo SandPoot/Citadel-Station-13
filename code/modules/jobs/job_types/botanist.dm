@@ -13,7 +13,6 @@
 	minimal_access = list(ACCESS_HYDROPONICS, ACCESS_MORGUE, ACCESS_MINERAL_STOREROOM)
 	paycheck = PAYCHECK_EASY
 	paycheck_department = ACCOUNT_SRV
-	display_order = JOB_DISPLAY_ORDER_BOTANIST
 	threat = 1.5 // lol powergame
 
 /datum/outfit/job/botanist
