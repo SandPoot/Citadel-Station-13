@@ -4,6 +4,8 @@
 
 GLOBAL_LIST_EMPTY(preferences_datums)
 
+#warn inject alt titles.
+
 /datum/preferences
 	var/client/parent
 	//doohickeys for savefiles

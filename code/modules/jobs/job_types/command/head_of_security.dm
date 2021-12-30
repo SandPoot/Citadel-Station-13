@@ -2,7 +2,6 @@
 	title = "Head of Security"
 	desc = "The Head of Security runs the security department, and is tasked with ensuring law and order is kept."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD|DEADMIN_POSITION_SECURITY
-	head_announce = list(RADIO_CHANNEL_SECURITY)
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1

@@ -51,7 +51,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 	light_color = LIGHT_COLOR_BLUE
 
 /obj/machinery/computer/card/proc/get_jobs()
-	return get_all_jobs()
+	return SSjob.GetAllJobNames(JOB_FACTION_STATION)
 
 /obj/machinery/computer/card/centcom/get_jobs()
 	return get_all_centcom_jobs()
@@ -397,7 +397,7 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 					head_subordinates = list()
 					if(ACCESS_CHANGE_IDS in inserted_scan_id.access)
 						if(target_dept)
-							head_subordinates = get_all_jobs()
+							head_subordinates = SSjob.GetAllJobNames(JOB_FACTION_STATION)
 							region_access |= target_dept
 							authenticated = 1
 						else
@@ -571,9 +571,9 @@ GLOBAL_VAR_INIT(time_last_changed_position, 0)
 	updateUsrDialog()
 
 /obj/machinery/computer/card/proc/get_subordinates(rank)
-	for(var/datum/job/job in SSjob.occupations)
-		if(rank in job.department_head)
-			head_subordinates += job.title
+	for(var/datum/department/D in SSjob.departments)
+		if(SSjob.GetJobType(D.supervisor).GetName() == rank)
+			head_subordinates += D.GetJobNames()
 
 /obj/machinery/computer/card/centcom
 	name = "\improper CentCom identification console"

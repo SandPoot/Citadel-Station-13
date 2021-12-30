@@ -217,7 +217,7 @@ GLOBAL_PROTECT(exp_to_update)
 			if(announce_changes)
 				to_chat(src,"<span class='notice'>You got: [minutes] Living EXP!</span>")
 			if(mob.mind.assigned_role)
-				for(var/job in SSjob.name_occupations)
+				for(var/job in SSjob.job_name_lookup)
 					if(mob.mind.assigned_role == job)
 						rolefound = TRUE
 						play_records[job] += minutes

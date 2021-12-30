@@ -421,7 +421,7 @@
 		A.admin_remove(usr)
 
 	if (href_list["role_edit"])
-		var/new_role = input("Select new role", "Assigned role", assigned_role) as null|anything in get_all_jobs()
+		var/new_role = input("Select new role", "Assigned role", assigned_role) as null|anything in SSjob.GetAllJobNames()
 		if (!new_role)
 			return
 		assigned_role = new_role

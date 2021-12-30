@@ -172,3 +172,21 @@
 	if(!J)
 		CRASH("Failed to fetch job [path].")
 	J.current_positions = max(0, J.current_positions - 1)
+
+/**
+ * Gets all job names of a certain faction
+ */
+/datum/controller/subsystem/job/proc/GetAllJobNames(faction)
+	. = list()
+	for(var/name in job_name_lookup)
+		if(!faction || (job_name_lookup[name].faction == faction))
+			. += name
+
+/**
+ * Gets all job datums of a certain faction
+ */
+/datum/controller/subsystem/job/proc/GetAllJobs(faction)
+	. = list()
+	for(var/datum/job/J as anything in jobs)
+		if(!faction || (J.faction == faction))
+			. += J
