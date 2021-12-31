@@ -243,7 +243,7 @@
 	return
 
 /datum/datacore/proc/get_id_photo(mob/living/carbon/human/H, client/C, show_directions = list(SOUTH))
-	var/datum/job/J = SSjob.GetJob(H.mind.assigned_role)
+	var/datum/job/J = SSjob.GetJobName(H.mind.assigned_role)
 	var/datum/preferences/P
 	if(!C)
 		C = H.client

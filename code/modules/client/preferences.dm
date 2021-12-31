@@ -1359,7 +1359,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 /datum/preferences/proc/UpdateJobPreference(mob/user, role, desiredLvl)
 	if(!SSjob || SSjob.occupations.len <= 0)
 		return
-	var/datum/job/job = SSjob.GetJob(role)
+	var/datum/job/job = SSjob.GetJobName(role)
 
 	if(!job)
 		user << browse(null, "window=mob_occupation")

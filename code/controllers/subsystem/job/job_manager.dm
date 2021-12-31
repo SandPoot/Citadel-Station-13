@@ -42,7 +42,7 @@
 		if(initial(J.abstract_type) == path)
 			continue
 		J = new J
-		if(!job.config_check())
+		if(!J.config_check())
 			continue
 		if(!J.ProcessMap(SSmapping.config))
 			continue
@@ -196,7 +196,7 @@
 /**
  * Gets all job types of a certain faction
  */
-/datum/controller/subsystem/job/proc/GetAllJobs(faction)
+/datum/controller/subsystem/job/proc/GetAllJobTypes(faction)
 	RETURN_TYPE(/list)
 	. = list()
 	for(var/id as anything in job_type_lookup)

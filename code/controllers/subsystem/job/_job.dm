@@ -153,8 +153,7 @@ SUBSYSTEM_DEF(job)
 //This is basically to ensure that there's atleast a few heads in the round
 /datum/controller/subsystem/job/proc/FillHeadPosition()
 	for(var/level in level_order)
-		for(var/command_position in GLOB.command_positions)
-			var/datum/job/job = GetJob(command_position)
+		for(var/datum/job/job as anything in GetDepartmentJobDatums(/datum/department/command))
 			if(!job)
 				continue
 			if((job.current_positions >= job.total_positions) && job.total_positions != -1)
@@ -167,12 +166,10 @@ SUBSYSTEM_DEF(job)
 				return 1
 	return 0
 
-
 //This proc is called at the start of the level loop of DivideOccupations() and will cause head jobs to be checked before any other jobs of the same level
 //This is also to ensure we get as many heads as possible
 /datum/controller/subsystem/job/proc/CheckHeadPositions(level)
-	for(var/command_position in GLOB.command_positions)
-		var/datum/job/job = GetJob(command_position)
+	for(var/datum/job/job as anything in GetDepartmentJobDatums(/datum/department/command))
 		if(!job)
 			continue
 		if((job.current_positions >= job.total_positions) && job.total_positions != -1)
@@ -185,7 +182,7 @@ SUBSYSTEM_DEF(job)
 
 /datum/controller/subsystem/job/proc/FillAIPosition()
 	var/ai_selected = 0
-	var/datum/job/job = GetJob("AI")
+	var/datum/job/job = GetJobType(/datum/job/ai)
 	if(!job)
 		return 0
 	for(var/i = job.total_positions, i > 0, i--)
@@ -344,7 +341,7 @@ SUBSYSTEM_DEF(job)
 	for(var/required_group in required_jobs)
 		var/group_ok = TRUE
 		for(var/rank in required_group)
-			var/datum/job/J = GetJob(rank)
+			var/datum/job/J = GetJobName(rank)
 			if(!J)
 				SSticker.mode.setup_error = "Invalid job [rank] in gamemode required jobs."
 				return FALSE
@@ -378,6 +375,7 @@ SUBSYSTEM_DEF(job)
 		log_game(message)
 		message_admins(message)
 		RejectPlayer(player)
+
 //Gives the player the stuff he should have with his rank
 /datum/controller/subsystem/job/proc/EquipRank(mob/M, rank, joined_late = FALSE)
 	var/mob/dead/new_player/N
@@ -394,26 +392,14 @@ SUBSYSTEM_DEF(job)
 
 	//If we joined at roundstart we should be positioned at our workstation
 	if(!joined_late)
-		var/obj/S = null
-		for(var/atom/movable/landmark/start/sloc in GLOB.start_landmarks_list)
-			if(!sloc.job_spawnpoint)
-				continue
-			if(sloc.name != rank)
-				S = sloc //so we can revert to spawning them on top of eachother if something goes wrong
-				continue
-			if(locate(/mob/living) in sloc.loc)
-				continue
-			S = sloc
-			sloc.used = TRUE
-			break
-		if(length(GLOB.jobspawn_overrides[rank]))
-			S = pick(GLOB.jobspawn_overrides[rank])
-		if(S)
-			S.JoinPlayerHere(H, FALSE)
-		if(!S) //if there isn't a spawnpoint send them to latejoin, if there's no latejoin go yell at your mapper
-			log_world("Couldn't find a round start spawn point for [rank]")
+		var/atom/movable/landmark/spawnpoint/S = GetRoundstartSpawnpoint(H, H.client || N.client, job.type, job.faction)
+		if(!S)
+			stack_trace("Couldn't find a roundstart spawnpoint for [H] ([H.client || N.client]) - [job.type] ([job.faction]).")
 			SendToLateJoin(H)
-
+		else
+			var/atom/A = S.GetSpawnLoc()
+			H.forceMove(A)
+			S.OnSpawn(H, H.client || N.client)
 
 	if(H.mind)
 		H.mind.assigned_role = rank

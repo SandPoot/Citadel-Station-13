@@ -381,6 +381,8 @@
 	else
 		return
 
+	var/list/enemy_ranks = SSjob.GetDepartmentJobNames(/datum/department/command) | SSjob.GetDepartmentJobNames(/datum/department/security)
+
 	SSshuttle.clearHostileEnvironment(src)
 	save_members()
 
@@ -410,7 +412,7 @@
 			if (isnull(mind))
 				continue
 
-			if (!(mind.assigned_role in GLOB.command_positions + GLOB.security_positions))
+			if (!(mind.assigned_role in enemy_ranks))
 				continue
 
 			var/mob/living/carbon/target_body = mind.current
@@ -425,7 +427,7 @@
 			else
 				mind.announce_objectives()
 
-		for (var/job_name in SSjob.GetDepartmentJobNames(/datum/department/security) | SSjob.GetDepartmentJobNames(/datum/department/command))
+		for (var/job_name in enemy_ranks)
 			var/datum/job/job = SSjob.GetJob(job_name)
 			job.allow_bureaucratic_error = FALSE
 			job.total_positions = 0

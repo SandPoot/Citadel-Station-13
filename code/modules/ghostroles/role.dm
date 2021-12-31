@@ -107,7 +107,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /datum/ghostrole/proc/SpawnsLeft(client/C)
 	if(spawnerless)
 		return max(0, slots - spawns)
-	return min(max(0, slots - spawn), TallySpawnpointSlots(C))
+	return min(max(0, slots - spawns), TallySpawnpointSlots(C))
 
 /datum/ghostrole/proc/TallySpawnpointSlots(client/C)
 	var/list/datum/component/ghostrole_spawnpoint/spawnpoints = GLOB.ghostrole_spawnpoints[id]

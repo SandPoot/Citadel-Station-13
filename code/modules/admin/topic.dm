@@ -664,7 +664,7 @@
 				if(!J)
 					continue
 				var/banned = jobban_isbanned(M, J.title)
-				dat += "<td width='15%'><a href='>src=[REF(src)];[HrefToken()];jobban=[J.title];jobban4=[REF(m)]'>[banned? "<font color='red'>[J.title]</font>" : "[J.title]"]</a></td>"
+				dat += "<td width='15%'><a href='>src=[REF(src)];[HrefToken()];jobban=[J.title];jobban4=[REF(M)]'>[banned? "<font color='red'>[J.title]</font>" : "[J.title]"]</a></td>"
 				if(++counter >= JOBS_PER_ROW)
 					dat += "</tr><tr>"
 					counter = 0
@@ -1735,13 +1735,11 @@
 			return
 
 		var/Add = href_list["addjobslot"]
+		var/datum/job/job = SSjob.GetJobName(Add)
+		if(job)
+			++job.total_positions
 
-		for(var/datum/job/job in SSjob.occupations)
-			if(job.title == Add)
-				job.total_positions += 1
-				break
-
-		src.manage_free_slots()
+		manage_free_slots()
 
 
 	else if(href_list["customjobslot"])
@@ -1749,18 +1747,17 @@
 			return
 
 		var/Add = href_list["customjobslot"]
+		var/datum/job/job = SSjob.GetJobName(Add)
+		if(job)
+			var/newtime = null
+			newtime = input(usr, "How many jobs do you want?", "Add wanted posters", "[newtime]") as num|null
+			if(!newtime)
+				to_chat(owner, "Setting to amount of positions filled for the job")
+				job.total_positions = job.current_positions
+				break
+			job.total_positions = newtime
 
-		for(var/datum/job/job in SSjob.GetAllJobs())
-			if(job.title == Add)
-				var/newtime = null
-				newtime = input(usr, "How many jebs do you want?", "Add wanted posters", "[newtime]") as num|null
-				if(!newtime)
-					to_chat(src.owner, "Setting to amount of positions filled for the job")
-					job.total_positions = job.current_positions
-					break
-				job.total_positions = newtime
-
-		src.manage_free_slots()
+		manage_free_slots()
 
 	else if(href_list["removejobslot"])
 		if(!check_rights(R_ADMIN))
@@ -1768,12 +1765,11 @@
 
 		var/Remove = href_list["removejobslot"]
 
-		for(var/datum/job/job in SSjob.occupations)
-			if(job.title == Remove && job.total_positions - job.current_positions > 0)
-				job.total_positions -= 1
-				break
+		var/datum/job/job = SSjob.GetJobName(Add)
+		if(job && job.total_positions - job.current_positions > 0)
+			job.total_positions -= 1
 
-		src.manage_free_slots()
+		manage_free_slots()
 
 	else if(href_list["unlimitjobslot"])
 		if(!check_rights(R_ADMIN))
@@ -1781,25 +1777,22 @@
 
 		var/Unlimit = href_list["unlimitjobslot"]
 
-		for(var/datum/job/job in SSjob.GetAllJobs())
-			if(job.title == Unlimit)
-				job.total_positions = -1
-				break
+		var/datum/job/job = SSjob.GetJobName(Add)
+		if(job)
+			job.total_positions = -1
 
-		src.manage_free_slots()
+		manage_free_slots()
 
 	else if(href_list["limitjobslot"])
 		if(!check_rights(R_ADMIN))
 			return
 
 		var/Limit = href_list["limitjobslot"]
+		var/datum/job/job = SSjob.GetJobName(Add)
+		if(job)
+			job.total_positions = job.current_positions
 
-		for(var/datum/job/job in SSjob.GetAllJobs())
-			if(job.title == Limit)
-				job.total_positions = job.current_positions
-				break
-
-		src.manage_free_slots()
+		manage_free_slots()
 
 
 	else if(href_list["adminspawncookie"])
