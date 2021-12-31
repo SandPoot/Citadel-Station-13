@@ -4,8 +4,6 @@
 
 GLOBAL_LIST_EMPTY(preferences_datums)
 
-#warn inject alt titles.
-
 /datum/preferences
 	var/client/parent
 	//doohickeys for savefiles
@@ -1240,6 +1238,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		//The job before the current job. I only use this to get the previous jobs color when I'm filling in blank rows.
 		var/datum/job/lastJob
 
+
+#warn oh god oh fuck - redo all this and do alt titles and the help box
 		for(var/datum/job/job in sortList(SSjob.occupations, /proc/cmp_job_display_asc))
 
 			index += 1

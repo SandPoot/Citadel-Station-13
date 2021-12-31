@@ -1,5 +1,6 @@
 /datum/job/qm
 	title = "Quartermaster"
+	desc = "The Quartermaster manages the supply department."
 	head_announce = list(RADIO_CHANNEL_SUPPLY)
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
 	faction = JOB_FACTION_STATION

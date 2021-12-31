@@ -1,5 +1,6 @@
 /datum/job/warden
 	title = "Warden"
+	desc = "The Warden manages the brig."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_SECURITY
 	faction = JOB_FACTION_STATION
 	total_positions = 1

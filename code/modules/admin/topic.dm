@@ -1750,7 +1750,7 @@
 
 		var/Add = href_list["customjobslot"]
 
-		for(var/datum/job/job in SSjob.occupations)
+		for(var/datum/job/job in SSjob.GetAllJobs())
 			if(job.title == Add)
 				var/newtime = null
 				newtime = input(usr, "How many jebs do you want?", "Add wanted posters", "[newtime]") as num|null
@@ -1781,7 +1781,7 @@
 
 		var/Unlimit = href_list["unlimitjobslot"]
 
-		for(var/datum/job/job in SSjob.occupations)
+		for(var/datum/job/job in SSjob.GetAllJobs())
 			if(job.title == Unlimit)
 				job.total_positions = -1
 				break
@@ -1794,7 +1794,7 @@
 
 		var/Limit = href_list["limitjobslot"]
 
-		for(var/datum/job/job in SSjob.occupations)
+		for(var/datum/job/job in SSjob.GetAllJobs())
 			if(job.title == Limit)
 				job.total_positions = job.current_positions
 				break

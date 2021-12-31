@@ -1,5 +1,6 @@
 /datum/job/atmos
 	title = "Atmospheric Technician"
+	desc = "The Atmospherics Technician maintains the station's life support systems."
 	faction = JOB_FACTION_STATION
 	total_positions = 3
 	roundstart_positions = 3

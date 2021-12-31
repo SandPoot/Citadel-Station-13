@@ -1,5 +1,6 @@
 /datum/job/engineer
 	title = "Station Engineer"
+	desc = "The Engineer maintains and upgrades the station."
 	faction = JOB_FACTION_STATION
 	total_positions = 5
 	roundstart_positions = 5

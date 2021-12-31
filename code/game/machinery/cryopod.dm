@@ -444,7 +444,7 @@
 	if(target == user && world.time - target.client.cryo_warned > 5 MINUTES)//if we haven't warned them in the last 5 minutes
 		var/list/caught_string
 		var/addendum = ""
-		if(target.mind.assigned_role in GLOB.command_positions)
+		if(target.mind.assigned_role in SSjob.GetDepartmentJobNames(/datum/department/command))
 			LAZYADD(caught_string, "Head of Staff")
 			addendum = " Be sure to put your locker items back into your locker!"
 		if(iscultist(target) || is_servant_of_ratvar(target))

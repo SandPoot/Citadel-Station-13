@@ -36,13 +36,20 @@
 	/// Supervisor text override
 	var/supervisor_text_override
 
-	////////////// Legacy vars below /////////////////
+	// These can be flags but I don't care because they're never changed
+	/// Can you always join as this job even while respawning (should probably only be on for assistant)
+	var/always_can_respawn_as = FALSE
+	/// Is this job considered a combat role for respawning? (usually sec/command)
+	var/considered_combat_role = FALSE
+
+	/// Starting skill modifiers.
+	var/list/starting_modifiers
+
 	//Sellection screen color
 	var/selection_color = "#ffffff"
 
 	//If this is set to 1, a text is printed to the player when jobs are assigned, telling him that he should let admins know that he has to disconnect.
 	var/req_admin_notify
-
 
 	//If you have the use_age_restriction_for_jobs config option enabled and the database set up, this option will add a requirement for players to be at least minimal_player_age days old. (meaning they first signed in at least that many days before.)
 	var/minimal_player_age = 0
@@ -72,15 +79,6 @@
 	// How much threat this job is worth in dynamic. Is subtracted if the player's not an antag, added if they are.
 	var/threat = 0
 
-	/// Starting skill modifiers.
-	var/list/starting_modifiers
-
-	// These can be flags but I don't care because they're never changed
-	/// Can you always join as this job even while respawning (should probably only be on for assistant)
-	var/always_can_respawn_as = FALSE
-	/// Is this job considered a combat role for respawning? (usually sec/command)
-	var/considered_combat_role = FALSE
-
 /**
   * Processes map specific overrides
   * Return FALSE to prevent this job from being instantiated.
@@ -104,7 +102,7 @@
 			access -= C.job_access_add[type]
 			minimal_access -= C.job_access_remove[type]
 	if(type in C.job_join_type_override)
-		join_type = C.job_join_type_override[type]
+		join_types = C.job_join_type_override[type]
 
 /**
  * Get the name of the job
@@ -126,7 +124,7 @@
 	.[GetName()] = GetDesc()
 	for(var/path in alt_titles)
 		var/datum/alt_title/T = path
-		.[initial(T.name)] = initial(T.desc)
+		.[initial(T.name)] = initial(T.desc) || GetDesc()
 
 /**
  * Get deparments supervised
@@ -396,8 +394,8 @@
  */
 /datum/alt_title
 	/// Alt title
-	var/name = "Alt Title"
+	var/name = "Broken Alt Title"
 	/// Alt outfit, if any
 	var/datum/outfit/outfit
-	/// Alt description
-	var/desc = "Broken Alt Title"
+	/// Alt description - if null, defaults to job default
+	var/desc

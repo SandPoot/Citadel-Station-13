@@ -383,13 +383,12 @@ SUBSYSTEM_DEF(ticker)
 			SSticker.minds += P.new_character.mind
 		CHECK_TICK
 
-
 /datum/controller/subsystem/ticker/proc/equip_characters()
 	var/captainless=1
 	for(var/mob/dead/new_player/N in GLOB.player_list)
 		var/mob/living/carbon/human/player = N.new_character
 		if(istype(player) && player.mind && player.mind.assigned_role)
-			var/datum/job/J = SSjob.GetJob(player.mind.assigned_role)
+			var/datum/job/J = SSjob.GetJobName(player.mind.assigned_role)
 			if(J)
 				J.standard_assign_skills(player.mind)
 			if(player.mind.assigned_role == "Captain")
@@ -397,7 +396,7 @@ SUBSYSTEM_DEF(ticker)
 			if(player.mind.assigned_role != player.mind.special_role)
 				SSjob.EquipRank(N, player.mind.assigned_role, 0)
 				if(CONFIG_GET(flag/roundstart_traits) && ishuman(N.new_character))
-					SSquirks.AssignQuirks(N.new_character, N.client, TRUE, TRUE, SSjob.GetJob(player.mind.assigned_role), FALSE, N)
+					SSquirks.AssignQuirks(N.new_character, N.client, TRUE, TRUE, SSjob.GetJobName(player.mind.assigned_role), FALSE, N)
 			N.client.prefs.post_copy_to(player)
 		CHECK_TICK
 	if(captainless)

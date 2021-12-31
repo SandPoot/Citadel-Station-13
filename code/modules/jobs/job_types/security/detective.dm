@@ -1,5 +1,6 @@
 /datum/job/detective
 	title = "Detective"
+	desc = "The Detective investigates crime scenes, collects evidence, and interrogates suspects to aid the security force."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_SECURITY
 	faction = JOB_FACTION_STATION
 	total_positions = 1

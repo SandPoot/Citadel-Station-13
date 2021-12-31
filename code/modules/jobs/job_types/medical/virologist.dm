@@ -1,5 +1,6 @@
 /datum/job/virologist
 	title = "Virologist"
+	desc = "The Virologist experiments with and treats infectious diseases."
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1

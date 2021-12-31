@@ -333,8 +333,8 @@
 /datum/team/revolution/proc/update_heads()
 	if(SSticker.HasRoundStarted())
 		var/list/datum/mind/head_revolutionaries = head_revolutionaries()
-		var/list/datum/mind/heads = SSjob.get_all_heads()
-		var/list/sec = SSjob.get_all_sec()
+		var/list/datum/mind/heads = SSjob.GetDepartmentMinds(/datum/department/command)
+		var/list/sec = SSjob.GetDepartmentMinds(/datum/department/security)
 
 		if(head_revolutionaries.len < max_headrevs && head_revolutionaries.len < round(heads.len - ((8 - sec.len) / 3)))
 			var/list/datum/mind/non_heads = members - head_revolutionaries
@@ -425,7 +425,7 @@
 			else
 				mind.announce_objectives()
 
-		for (var/job_name in GLOB.command_positions + GLOB.security_positions)
+		for (var/job_name in SSjob.GetDepartmentJobNames(/datum/department/security) | SSjob.GetDepartmentJobNames(/datum/department/command))
 			var/datum/job/job = SSjob.GetJob(job_name)
 			job.allow_bureaucratic_error = FALSE
 			job.total_positions = 0

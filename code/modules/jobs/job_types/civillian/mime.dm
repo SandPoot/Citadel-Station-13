@@ -1,5 +1,6 @@
 /datum/job/mime
 	title = "Mime"
+	desc = "The Mime tries to entertain the crew with, well, miming. To varying degrees of success."
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1

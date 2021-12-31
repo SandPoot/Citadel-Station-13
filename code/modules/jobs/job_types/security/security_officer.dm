@@ -1,10 +1,11 @@
 /datum/job/officer
 	title = "Security Officer"
+	desc = "The Security Officer protects the station from threats, both external and internal."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_SECURITY
 	faction = JOB_FACTION_STATION
 	total_positions = 5 //Handled in /datum/controller/occupations/proc/setup_officer_positions()
 	roundstart_positions = 5 //Handled in /datum/controller/occupations/proc/setup_officer_positions()
-	supervisors = "the head of security, and the head of your assigned department (if applicable)"
+	supervisor_text_override = "the head of security, and the head of your assigned department (if applicable)"
 	selection_color = "#c02f2f"
 	minimal_player_age = 7
 	exp_requirements = 300

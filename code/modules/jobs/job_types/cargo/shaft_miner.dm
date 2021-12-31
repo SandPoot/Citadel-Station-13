@@ -1,5 +1,6 @@
 /datum/job/mining
 	title = "Shaft Miner"
+	desc = "The Shaft Miner procures materials for the station from mining areas."
 	faction = JOB_FACTION_STATION
 	total_positions = 3
 	roundstart_positions = 3

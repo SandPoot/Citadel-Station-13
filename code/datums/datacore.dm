@@ -104,14 +104,14 @@
 			if(!manifest_out[D.name])
 				manifest_out[D.name] = list()
 			manifest_out[D.name] += list(list(
-				"name" = name
+				"name" = name,
 				"rank" = rank
 			))
 		else
 			if(!manifest_out["ERROR"])
 				manifest_out["ERROR"] = list()
 			manifest_out["ERROR"] += list(list(
-				"name" = name
+				"name" = name,
 				"rank" = rank
 			))
 	return manifest_out

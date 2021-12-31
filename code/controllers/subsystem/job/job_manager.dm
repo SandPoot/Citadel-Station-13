@@ -115,7 +115,7 @@
 	return department_name_lookup[name]
 
 /datum/controller/subsystem/job/proc/GetDepartmentMinds(path, list/mob_typecache_filter)
-	RETURN_TYPE(/datum/mind)
+	RETURN_TYPE(/list)
 	. = list()
 	var/datum/department/D = ispath(path)? GetDepartmentType(path) : GetDepartmentName(path)
 	if(!D)
@@ -127,7 +127,7 @@
 			. += M.mind
 
 /datum/controller/subsystem/job/proc/GetLivingDepartmentMinds(path, list/mob_typecache_filter)
-	RETURN_TYPE(/datum/mind)
+	RETURN_TYPE(/list)
 	. = list()
 	var/datum/department/D = ispath(path)? GetDepartmentType(path) : GetDepartmentName(path)
 	if(!D)
@@ -139,7 +139,7 @@
 			. += M.mind
 
 /datum/controller/subsystem/job/proc/GetJobMinds(path, list/mob_typecache_filter)
-	RETURN_TYPE(/datum/mind)
+	RETURN_TYPE(/list)
 	. = list()
 	var/datum/job/J = ispath(path)? GetJobType(path) : GetJobName(path)
 	if(!J)
@@ -151,7 +151,7 @@
 			. += M.mind
 
 /datum/controller/subsystem/job/proc/GetLivingJobMinds(path, list/mob_typecache_filter)
-	RETURN_TYPE(/datum/mind)
+	RETURN_TYPE(/list)
 	. = list()
 	var/datum/job/J = ispath(path)? GetJobType(path) : GetJobName(path)
 	if(!J)
@@ -177,6 +177,7 @@
  * Gets all job names of a certain faction
  */
 /datum/controller/subsystem/job/proc/GetAllJobNames(faction)
+	RETURN_TYPE(/list)
 	. = list()
 	for(var/name in job_name_lookup)
 		if(!faction || (job_name_lookup[name].faction == faction))
@@ -186,7 +187,52 @@
  * Gets all job datums of a certain faction
  */
 /datum/controller/subsystem/job/proc/GetAllJobs(faction)
+	RETURN_TYPE(/list)
 	. = list()
 	for(var/datum/job/J as anything in jobs)
 		if(!faction || (J.faction == faction))
 			. += J
+
+/**
+ * Gets all job types of a certain faction
+ */
+/datum/controller/subsystem/job/proc/GetAllJobs(faction)
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id as anything in job_type_lookup)
+		var/datum/job/J = job_type_lookup[id]
+		if(!faction || (J.faction == faction))
+			. += id
+
+/**
+ * Gets a list of job names in a department
+ * Can use either department name or type.
+ */
+/datum/controller/subsystem/job/proc/GetDepartmentJobNames(department_id)
+	RETURN_TYPE(/list)
+	var/datum/department/D = department_type_lookup[department_id] || department_name_lookup[department_id]
+	if(!D)
+		CRASH("Failed to look up [department_id]")
+	return D.GetJobNames()
+
+/**
+ * Gets a list of job IDs in a department
+ * Can use either department name or type.
+ */
+/datum/controller/subsystem/job/proc/GetDepartmentJobIDs(department_id)
+	RETURN_TYPE(/list)
+	var/datum/department/D = department_type_lookup[department_id] || department_name_lookup[department_id]
+	if(!D)
+		CRASH("Failed to look up [department_id]")
+	return D.GetJobIDs()
+
+/**
+ * Gets a list of job datums in a department
+ * Can use either department name or type.
+ */
+/datum/controller/subsystem/job/proc/GetDepartmentJobDatums(department_id)
+	RETURN_TYPE(/list)
+	var/datum/department/D = department_type_lookup[department_id] || department_name_lookup[department_id]
+	if(!D)
+		CRASH("Failed to look up [department_id]")
+	return D.GetJobs()

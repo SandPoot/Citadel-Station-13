@@ -1,5 +1,6 @@
 /datum/job/lawyer
 	title = "Lawyer"
+	desc = "The lawyer assists with matters of law, and represents the incriminated. In theory."
 	faction = JOB_FACTION_STATION
 	total_positions = 2
 	roundstart_positions = 2
@@ -32,7 +33,6 @@
 	r_pocket = /obj/item/clothing/accessory/lawyers_badge
 
 	chameleon_extras = /obj/item/stamp/law
-
 
 /datum/outfit/job/lawyer/pre_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
 	..()

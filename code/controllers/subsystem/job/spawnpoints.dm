@@ -61,7 +61,7 @@
 				continue
 			return S
 	if(!harder)
-		stack_trace("[THIS_PROC_TYPE] failed to get a spawnpoint, trying against with harder = TRUE")
+		stack_trace("[THIS_PROC_TYPE_WEIRD] failed to get a spawnpoint, trying against with harder = TRUE")
 		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
 	else
 		CRASH("[THIS_PROC_TYPE] failed to get a spawnpoint.")
@@ -105,7 +105,7 @@
 				continue
 			return S
 	if(!harder)
-		stack_trace("[THIS_PROC_TYPE] failed to get a spawnpoint, trying against with harder = TRUE")
+		stack_trace("[THIS_PROC_TYPE_WEIRD] failed to get a spawnpoint, trying against with harder = TRUE")
 		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
 	else
 		CRASH("[THIS_PROC_TYPE] failed to get a spawnpoint.")

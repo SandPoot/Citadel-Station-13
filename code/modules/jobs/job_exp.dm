@@ -39,9 +39,9 @@ GLOBAL_PROTECT(exp_to_update)
 	return exp_type
 
 /proc/job_is_xp_locked(jobtitle)
-	if(!CONFIG_GET(flag/use_exp_restrictions_heads) && (jobtitle in (GLOB.command_positions | list("AI"))))
+	if(!CONFIG_GET(flag/use_exp_restrictions_heads) && (jobtitle in (SSjob.GetDepartmentJobNames(/datum/department/command) | list("AI"))))
 		return FALSE
-	if(!CONFIG_GET(flag/use_exp_restrictions_other) && !(jobtitle in (GLOB.command_positions | list("AI"))))
+	if(!CONFIG_GET(flag/use_exp_restrictions_other) && !(jobtitle in (SSjob.GetDepartmentJobNames(/datum/department/command) | list("AI"))))
 		return FALSE
 	return TRUE
 
@@ -102,7 +102,7 @@ GLOBAL_PROTECT(exp_to_update)
 	return_text += "</UL>"
 	var/list/jobs_locked = list()
 	var/list/jobs_unlocked = list()
-	for(var/datum/job/job in SSjob.occupations)
+	for(var/datum/job/job in SSjob.GetAllJobs())
 		if(job.exp_requirements && job.exp_type)
 			if(!job_is_xp_locked(job.title))
 				continue

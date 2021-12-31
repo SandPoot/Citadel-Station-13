@@ -19,8 +19,6 @@
 
 /atom/movable/landmark/start/Destroy()
 	GLOB.start_landmarks_list -= src
-	if(jobspawn_override)
-		GLOB.jobspawn_overrides[name] -= src
 	return ..()
 
 // START LANDMARKS FOLLOW. Don't change the names unless

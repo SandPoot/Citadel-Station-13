@@ -208,7 +208,7 @@
 		return
 	AutoListUnregister(SSjob.custom_spawnpoints[key])
 
-/atom/movable/landmark/spawnpoint/latejoin/vv_edit_var(var_name, var_value, massedit)
+/atom/movable/landmark/spawnpoint/custom/vv_edit_var(var_name, var_value, massedit)
 	if(var_name == NAMEOF(src, key))
 		Register()
 	. = ..()

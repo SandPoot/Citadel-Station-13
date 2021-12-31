@@ -1,8 +1,7 @@
 /datum/job/cmo
 	title = "Chief Medical Officer"
-	flag = CMO_JF
+	desc = "The Chief Medical Officer manages the medical department."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
-	head_announce = list(RADIO_CHANNEL_MEDICAL)
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1

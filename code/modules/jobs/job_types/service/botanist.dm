@@ -1,5 +1,6 @@
 /datum/job/hydro
 	title = "Botanist"
+	desc = "The Botanist grows useful crops for the station."
 	faction = JOB_FACTION_STATION
 	total_positions = 3
 	roundstart_positions = 2
