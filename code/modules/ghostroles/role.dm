@@ -49,6 +49,8 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	var/id
 	/// spawnerless - advanced users only. This isn't for "load in spawners in PreInstantiate()", this is for true spawnpoint-less ghostroles.
 	var/spawnerless = FALSE
+	/// assigned role. defaults to name.
+	var/assigned_role
 
 /datum/ghostrole/New(_id)
 	if(ispath(instantiator, /datum/ghostrole_instantiator))
@@ -86,7 +88,10 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	return TRUE
 
 /datum/ghostrole/proc/Instantiate(client/C, atom/loc)
-	return instantiator.Run(C, loc)
+	var/mob/living/L = instantiator.Run(C, loc)
+	. = istype(L)
+	if(.)
+		L.mind?.assigned_role = assigned_role || name
 
 /**
  * Ran before anything else is at AttemptSpawn()

@@ -26,17 +26,20 @@ GLOBAL_PROTECT(exp_to_update)
 		return (job_requirement - my_exp)
 
 /datum/job/proc/get_exp_req_amount()
-	if(title in (GLOB.command_positions | list("AI")))
+	if(jexp_considered_command_role())
 		var/uerhh = CONFIG_GET(number/use_exp_restrictions_heads_hours)
 		if(uerhh)
 			return uerhh * 60
 	return exp_requirements
 
 /datum/job/proc/get_exp_req_type()
-	if(title in (GLOB.command_positions | list("AI")))
+	if(jexp_considered_command_role())
 		if(CONFIG_GET(flag/use_exp_restrictions_heads_department) && exp_type_department)
 			return exp_type_department
 	return exp_type
+
+/datum/job/proc/jexp_considered_command_role()
+	return istype(src, /datum/job/ai) || (/datum/department/command in departments)
 
 /proc/job_is_xp_locked(jobtitle)
 	if(!CONFIG_GET(flag/use_exp_restrictions_heads) && (jobtitle in (SSjob.GetDepartmentJobNames(/datum/department/command) | list("AI"))))

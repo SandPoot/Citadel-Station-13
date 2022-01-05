@@ -52,6 +52,20 @@
 /datum/ghostrole_instantiator/human/random/proc/Randomize(mob/living/carbon/human/H)
 	return			// tgcode does this automatically
 
+/datum/ghostrole_instantiator/human/random/species
+	/// allowed species types
+	var/list/possible_species = list(
+		/datum/species/human,
+		/datum/species/lizard,
+		/datum/species/plasmaman,
+		/datum/species/jelly,
+		/datum/species/ipc,
+	)
+
+/datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H)
+	. = ..()
+	#warn impl
+
 /datum/ghostrole_instantiator/human/player_static
 	/// equip loadout
 	var/equip_loadout = TRUE

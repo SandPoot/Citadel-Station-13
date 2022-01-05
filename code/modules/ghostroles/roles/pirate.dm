@@ -59,9 +59,6 @@
 	instant = TRUE
 	random = FALSE
 
-/obj/effect/mob_spawn/human/pirate/corpse/Destroy()
-	return ..()
-
 /obj/effect/mob_spawn/human/pirate/corpse/captain
 	rank = "Captain"
 	mob_name = "Dead Space Pirate Captain"
@@ -77,7 +74,7 @@
 	return "[rank] [pick(beggings)][pick(endings)]"
 
 /obj/effect/mob_spawn/human/pirate/Destroy()
-	new/obj/structure/showcase/machinery/oldpod/used(drop_location())
+	new /obj/structure/showcase/machinery/oldpod/used(drop_location())
 	return ..()
 
 /obj/effect/mob_spawn/human/pirate/captain

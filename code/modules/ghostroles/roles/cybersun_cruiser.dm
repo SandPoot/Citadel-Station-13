@@ -1,3 +1,24 @@
+/datum/ghostrole/cybersun
+	abstract_type = /datum/ghostrole/cybersunw
+
+/datum/ghostrole/cyberstun/ship
+	name = "Cybersun Ship Operative""
+	name = "Syndicate Battlecruiser Ship Operative"
+	desc = "You are a crewmember aboard the syndicate flagship: the SBC Starfury."
+	spawntext = "Your job is to follow your captain's orders, maintain the ship, and keep the engine running. If you are not familiar with how the supermatter engine functions: do not attempt to start it. \
+	<br>Furthermore, the armory is not a candy store, and your role is not to assault the station directly, leave that work to the assault operatives."
+
+/datum/ghostrole/cybersun/assault
+	name = "Cybersun Assault Operative"
+	desc = "You are an assault operative aboard the syndicate flagship: the SBC Starfury."
+	spawntext = "Your job is to follow your captain's orders, keep intruders out of the ship, and assault Space Station 13. There is an armory, multiple assault ships, and beam cannons to attack the station with. \
+	<br>Work as a team with your fellow operatives and work out a plan of attack. If you are overwhelmed, escape back to your ship!"
+
+/datum/ghostrole/cybersun/captain
+	name = "Cybersun Ship Captain"
+	desc = "You are the captain aboard the syndicate flagship: the SBC Starfury."
+	spawntext = "Your job is to oversee your crew, defend the ship, and destroy Space Station 13. The ship has an armory, multiple ships, beam cannons, and multiple crewmembers to accomplish this goal. \
+		<br>As the captain, this whole operation falls on your shoulders. You do not need to nuke the station, causing sufficient damage and preventing your ship from being destroyed will be enough."
 
 /obj/effect/mob_spawn/human/syndicate
 	name = "Syndicate Operative"
@@ -22,10 +43,7 @@
 	H.faction |= ROLE_SYNDICATE
 
 /obj/effect/mob_spawn/human/syndicate/battlecruiser
-	name = "Syndicate Battlecruiser Ship Operative"
-	short_desc = "You are a crewmember aboard the syndicate flagship: the SBC Starfury."
-	flavour_text = "Your job is to follow your captain's orders, maintain the ship, and keep the engine running. If you are not familiar with how the supermatter engine functions: do not attempt to start it."
-	important_info = "The armory is not a candy store, and your role is not to assault the station directly, leave that work to the assault operatives."
+
 	outfit = /datum/outfit/syndicate_empty/SBC
 
 /datum/outfit/syndicate_empty/SBC
@@ -35,9 +53,7 @@
 	belt = /obj/item/storage/belt/military/assault
 
 /obj/effect/mob_spawn/human/syndicate/battlecruiser/assault
-	short_desc = "You are an assault operative aboard the syndicate flagship: the SBC Starfury."
-	flavour_text = "Your job is to follow your captain's orders, keep intruders out of the ship, and assault Space Station 13. There is an armory, multiple assault ships, and beam cannons to attack the station with."
-	important_info = "Work as a team with your fellow operatives and work out a plan of attack. If you are overwhelmed, escape back to your ship!"
+
 	outfit = /datum/outfit/syndicate_empty/SBC/assault
 
 /datum/outfit/syndicate_empty/SBC/assault
@@ -52,10 +68,6 @@
 	mask = /obj/item/clothing/mask/gas/syndicate
 
 /obj/effect/mob_spawn/human/syndicate/battlecruiser/captain
-	name = "Syndicate Battlecruiser Captain"
-	short_desc = "You are the captain aboard the syndicate flagship: the SBC Starfury."
-	flavour_text = "Your job is to oversee your crew, defend the ship, and destroy Space Station 13. The ship has an armory, multiple ships, beam cannons, and multiple crewmembers to accomplish this goal."
-	important_info = "As the captain, this whole operation falls on your shoulders. You do not need to nuke the station, causing sufficient damage and preventing your ship from being destroyed will be enough."
 	outfit = /datum/outfit/syndicate_empty/SBC/assault/captain
 	id_access_list = list(150,151)
 

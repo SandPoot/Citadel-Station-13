@@ -37,7 +37,7 @@
 	. = list()
 	for(var/id in jobs)
 		var/datum/job/J = SSjob.job_type_lookup[id]
-		. += istype(J)? J.name : "(ERROR - [id] not found)"
+		. += istype(J)? J.title : "(ERROR - [id] not found)"
 
 /datum/department/proc/GetSupervisor()
 	RETURN_TYPE(/datum/job)
