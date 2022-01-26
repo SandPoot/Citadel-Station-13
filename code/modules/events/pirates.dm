@@ -421,7 +421,7 @@
 	export_types = list(/mob/living/carbon/human)
 
 /datum/export/pirate/ransom/find_loot()
-	var/list/head_minds = SSjob.get_living_heads()
+	var/list/head_minds = SSjob.GetLivingDepartmentMinds(/datum/department/command)
 	var/list/head_mobs = list()
 	for(var/datum/mind/M in head_minds)
 		head_mobs += M.current

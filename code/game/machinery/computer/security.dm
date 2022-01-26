@@ -683,7 +683,7 @@ What a mess.*/
 						if((istype(active1, /datum/data/record) && L.Find(rank)))
 							temp = "<h5>Rank:</h5>"
 							temp += "<ul>"
-							for(var/rank in get_all_jobs())
+							for(var/rank in SSjob.GetAllJobNames(JOB_FACTION_STATION))
 								temp += "<li><a href='?src=[REF(src)];choice=Change Rank;rank=[rank]'>[rank]</a></li>"
 							temp += "</ul>"
 						else

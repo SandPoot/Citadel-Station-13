@@ -61,10 +61,10 @@
 				continue
 			return S
 	if(!harder)
-		stack_trace("[THIS_PROC_TYPE_WEIRD] failed to get a spawnpoint, trying against with harder = TRUE")
+		stack_trace("GetRoundstartSpawnpoint() failed to get a spawnpoint, trying against with harder = TRUE")
 		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
 	else
-		CRASH("[THIS_PROC_TYPE] failed to get a spawnpoint.")
+		CRASH("GetRoundstartSpawnpoint() failed to get a spawnpoint.")
 
 /**
  * Gets a spawnpoint to use for a latejoin spawn
@@ -105,10 +105,10 @@
 				continue
 			return S
 	if(!harder)
-		stack_trace("[THIS_PROC_TYPE_WEIRD] failed to get a spawnpoint, trying against with harder = TRUE")
+		stack_trace("GetLatejoinSpawnpoint() failed to get a spawnpoint, trying against with harder = TRUE")
 		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
 	else
-		CRASH("[THIS_PROC_TYPE] failed to get a spawnpoint.")
+		CRASH("GetLatejoinSpawnpoint() failed to get a spawnpoint.")
 
 /**
  * Gets a list of possible join methods

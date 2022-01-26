@@ -69,7 +69,6 @@ INITIALIZE_IMMEDIATE(/atom/movable/landmark/start/new_player)
 	name = "bomb or clown beacon spawner"
 	var/nukie_path = /obj/item/sbeacondrop/bomb
 	var/clown_path = /obj/item/sbeacondrop/clownbomb
-	job_spawnpoint = FALSE
 
 /atom/movable/landmark/start/nuclear_equipment/after_round_start()
 	var/npath = nukie_path

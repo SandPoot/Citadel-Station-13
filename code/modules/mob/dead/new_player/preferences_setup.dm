@@ -65,6 +65,6 @@
 	var/datum/job/highest_job
 	for(var/job in job_preferences)
 		if(job_preferences["[job]"] > highest_pref)
-			highest_job = SSjob.GetJob(job)
+			highest_job = SSjob.GetJobName(job)
 			highest_pref = job_preferences["[job]"]
 	return highest_job

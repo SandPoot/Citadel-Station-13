@@ -2,7 +2,7 @@
 	abstract_type = /datum/ghostrole/cybersunw
 
 /datum/ghostrole/cyberstun/ship
-	name = "Cybersun Ship Operative""
+	name = "Cybersun Ship Operative"
 	name = "Syndicate Battlecruiser Ship Operative"
 	desc = "You are a crewmember aboard the syndicate flagship: the SBC Starfury."
 	spawntext = "Your job is to follow your captain's orders, maintain the ship, and keep the engine running. If you are not familiar with how the supermatter engine functions: do not attempt to start it. \

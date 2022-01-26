@@ -48,7 +48,7 @@
 			continue
 		jobs += J
 		job_type_lookup[path] = J
-		job_name_lookup[J.name] = J
+		job_name_lookup[J.title] = J
 		J.departments = list()
 		J.departments_supervised = list()
 		for(var/apath in J.alt_titles)
@@ -56,7 +56,7 @@
 				stack_trace("[apath] on [path] is not a valid alt title path.")
 				continue
 			var/datum/alt_title/title = apath
-			alt_title_lookup[initial(title.name)] = J.name
+			alt_title_lookup[initial(title.name)] = J.title
 	// instantiate departments
 	var/list/departments_temporary = list()
 	for(var/path in subtypesof(/datum/department))
@@ -75,7 +75,7 @@
 			var/datum/job/J = job_type_lookup[path]
 			J.departments += D.type
 			LAZYOR(job_types_in_department[D.type], J.type)
-			LAZYOR(job_names_in_department[D.type], J.name)
+			LAZYOR(job_names_in_department[D.type], J.title)
 		if(D.supervisor)
 			if(!ispath(D.supervisor))
 				stack_trace("[D.supervisor] in [D.type]'s supervisor is not a typepath.")

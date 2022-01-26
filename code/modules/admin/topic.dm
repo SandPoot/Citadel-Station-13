@@ -1765,7 +1765,7 @@
 
 		var/Remove = href_list["removejobslot"]
 
-		var/datum/job/job = SSjob.GetJobName(Add)
+		var/datum/job/job = SSjob.GetJobName(Remove)
 		if(job && job.total_positions - job.current_positions > 0)
 			job.total_positions -= 1
 
@@ -1777,7 +1777,7 @@
 
 		var/Unlimit = href_list["unlimitjobslot"]
 
-		var/datum/job/job = SSjob.GetJobName(Add)
+		var/datum/job/job = SSjob.GetJobName(Unlimit)
 		if(job)
 			job.total_positions = -1
 
@@ -1788,7 +1788,7 @@
 			return
 
 		var/Limit = href_list["limitjobslot"]
-		var/datum/job/job = SSjob.GetJobName(Add)
+		var/datum/job/job = SSjob.GetJobName(Limit)
 		if(job)
 			job.total_positions = job.current_positions
 
