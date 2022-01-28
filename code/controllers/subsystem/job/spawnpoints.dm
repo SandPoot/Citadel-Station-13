@@ -87,13 +87,13 @@
 				continue
 			if(!J.latejoin_override && method && (method != J.method))
 				continue
-			if(!J.Available(null, C))
+			if(!J.Available(null, C, harder))
 				continue
 			return J
 	// Priority 2: Latejoin spawnpoints, if latejoin
 	if(!roundstart && length(latejoin_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/latejoin/S as anything in latejoin_spawnpoints[faction])
-			if(!S.Available(null, C))
+			if(!S.Available(null, C, harder))
 				continue
 			if(method && (S.method != method))
 				continue
@@ -101,12 +101,12 @@
 	// Priority 3: OVerflow spawnpoints as a last resort
 	if(length(overflow_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/overflow/S as anything in overflow_spawnpoints[faction])
-			if(!S.Available(null, C))
+			if(!S.Available(null, C, harder))
 				continue
 			return S
 	if(!harder)
 		stack_trace("GetLatejoinSpawnpoint() failed to get a spawnpoint, trying against with harder = TRUE")
-		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
+		return GetRoundstartSpawnpoint(C, job_path, faction, method, TRUE)
 	else
 		CRASH("GetLatejoinSpawnpoint() failed to get a spawnpoint.")
 

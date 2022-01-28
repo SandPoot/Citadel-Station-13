@@ -117,7 +117,7 @@
 			if(!candidates?.len)
 				continue
 			var/mob/dead/new_player/candidate = pick(candidates)
-			if(AssignRole(candidate, command_position))
+			if(AssignRole(candidate, job))
 				return 1
 	return 0
 
@@ -133,7 +133,7 @@
 		if(!candidates?.len)
 			continue
 		var/mob/dead/new_player/candidate = pick(candidates)
-		AssignRole(candidate, command_position)
+		AssignRole(candidate, job)
 
 /datum/controller/subsystem/job/proc/FillAIPosition()
 	var/ai_selected = 0

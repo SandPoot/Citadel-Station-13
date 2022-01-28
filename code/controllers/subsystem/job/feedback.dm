@@ -1,5 +1,5 @@
 /datum/controller/subsystem/job/proc/HandleFeedbackGathering()
-	for(var/datum/job/job in occupations)
+	for(var/datum/job/job in GetAllJobs())
 		var/high = 0 //high
 		var/medium = 0 //medium
 		var/low = 0 //low
