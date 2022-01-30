@@ -102,13 +102,14 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	return TRUE
 
 /**
- * Checks if the client is a valid user mob and if we can allow a spawn from the
+ * Checks if the client is a valid user mob and if we can allow a spawn from them
  */
 /datum/ghostrole/proc/AllowSpawn(client/C)
 	if(!isobserver(C) && !isnewplayer(C))
 		return FALSE
 	if(SpawnsLeft(C) <= 0)
 		return FALSE
+	#warn ban check
 	return TRUE
 
 /datum/ghostrole/proc/SpawnsLeft(client/C)

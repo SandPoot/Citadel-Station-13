@@ -13,12 +13,19 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 
 /datum/join_menu/ui_static_data(mob/user)
 	. = ..()
+	// every entry will have:
+	// - faction
+	// - department
+	// - title, and a description
+	// faction dropdown --> department dropdown --> title (slots left) with join button and dropdown for description
+	// ghostroles will be considered a ""faction"" but will use a special list.
 
 /datum/join_menu/ui_data(mob/user)
 	. = ..()
+	// common info goes into ui data
 	var/level = "green"
 	switch(GLOB.security_level)
-		if(SEC_LEVEL_GREEN)w
+		if(SEC_LEVEL_GREEN)
 			level = "green"
 		if(SEC_LEVEL_BLUE)
 			level = "blue"
@@ -40,8 +47,37 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 	.["evacuated"] = evac
 	.["charname"] = client ? client.prefs.real_name : "Unknown User"
 	// position in queue, -1 for not queued, null for no queue active, otherwise number
-	.["queue"] = null
+	// if -1, ui should present option to queue
+	// if null, ui shouldn't show queue at all or say "there is no queue" etc etc
+	.["queue"] = QueueStatus(user)
 
+/**
+ * checks if job is available
+ * if not, it shouldn't even show
+ * if so, return slots
+ */
+/datum/join_menu/proc/IsJobAvailable(job_id, client/C)
+	return prob(50)? null : rand(1, 10)
+
+/**
+ * checks if ghostrole is available
+ * if not, it shouldn't even show
+ * if so, return slots
+ */
+/datum/join_menu/proc/IsGhostroleAvailable(ghostrole_id, client/C)
+	return prob(50)? null : rand(1, 10)
+
+/**
+ * return effective title - used for alt titles - JOBS ONLY, not ghostroles
+ */
+/datum/join_menu/proc/EffectiveTitle(job_id, client/C)
+	return "Job #[rand(1, 100)]"	// i'm sorry sandpoot but atleast you get the code early..
+
+/**
+ * returns effective desc - used for alt titles - JOBS ONLY, not ghostroles
+ */
+/datum/join_menu/proc/EffectiveDesc(job_id, client/C)
+	return "PLACEHOLDER DESC"
 
 /datum/join_menu/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
@@ -57,9 +93,25 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 
 				if("ghostrole")
 		if("queue")
-			CheckQueue()
+			AttemptQueue()
 
-/datum/join_menu/proc/CheckQueue()
+/datum/join_menu/proc/QueueStatus(mob/dead/new_player/N)
+	QueueActive()? (SSticker.queued_players.Find(N) || -1) : null
+
+/datum/join_menu/proc/QueueActive()
+	var/relevant_cap = PopCap()
+	return length(SSticker.queued_players) || (relevant_cap && living_player_count() > relevant_cap)
+
+/datum/join_menu/proc/PopCap()
+	. = null
+	var/hpc = CONFIG_GET(number/hard_popcap)
+	var/epc = CONFIG_GET(number/extreme_popcap)
+	if(hpc && epc)
+		. = min(hpc, epc)
+	else
+		. = max(hpc, epc)
+
+/datum/join_menu/proc/AttemptQueue()
 	if(SSticker.queued_players.len || (relevant_cap && living_player_count() >= relevant_cap && !(ckey(key) in GLOB.admin_datums)))
 		to_chat(usr, "<span class='danger'>[CONFIG_GET(string/hard_popcap_message)]</span>")
 		var/queue_position = SSticker.queued_players.Find(usr)
