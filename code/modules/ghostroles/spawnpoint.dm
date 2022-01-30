@@ -101,6 +101,6 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 	if(var_name == NAMEOF(src, proc_to_call_or_callback))
 		if(!istype(proc_to_call_or_callback, /datum/callback))
 			if(hascall(parent, proc_to_call_or_callback))
-				proc_to_call_or_callback = new CALLBACK(parent, proc_to_call_or_callback)
+				proc_to_call_or_callback = CALLBACK(parent, proc_to_call_or_callback)
 			else
 				proc_to_call_or_callback = null

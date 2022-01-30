@@ -55,7 +55,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /datum/ghostrole/New(_id)
 	if(ispath(instantiator, /datum/ghostrole_instantiator))
 		instantiator = new instantiator
-	id = _id || path
+	id = _id || type
 
 /datum/ghostrole/proc/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
 	if(show_standard_greeting)

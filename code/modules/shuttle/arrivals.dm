@@ -48,8 +48,6 @@
 			console = locate(/obj/machinery/requests_console) in A
 		areas += A
 
-	SSjob.latejoin_trackers = new_latejoin
-
 /obj/docking_port/mobile/arrivals/check()
 	. = ..()
 
