@@ -428,7 +428,7 @@
 				mind.announce_objectives()
 
 		for (var/job_name in enemy_ranks)
-			var/datum/job/job = SSjob.GetJob(job_name)
+			var/datum/job/job = SSjob.GetJobName(job_name)
 			job.allow_bureaucratic_error = FALSE
 			job.total_positions = 0
 

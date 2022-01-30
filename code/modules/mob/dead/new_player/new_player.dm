@@ -441,7 +441,7 @@
 	return "Error: Unknown job availability."
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
-	var/datum/job/job = SSjob.GetJob(rank)
+	var/datum/job/job = SSjob.GetJobName(rank)
 	if(!job)
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
@@ -502,7 +502,7 @@
 	if(isliving(equip))	//Borgs get borged in the equip, so we need to make sure we handle the new mob.
 		character = equip
 
-	var/datum/job/job = SSjob.GetJob(rank)
+	var/datum/job/job = SSjob.GetJobName(rank)
 
 	if(job && !job.override_latejoin_spawn(character))
 		SSjob.SendToLateJoin(character)

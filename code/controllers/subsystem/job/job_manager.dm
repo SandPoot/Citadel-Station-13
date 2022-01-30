@@ -106,7 +106,7 @@
 	RETURN_TYPE(/datum/department)
 	if(!department_type_lookup[name])
 		CRASH("Failed to fetch department path: [name]")
-	return department_path_lookup[name]
+	return department_type_lookup[name]
 
 /datum/controller/subsystem/job/proc/GetDepartmentName(name)
 	RETURN_TYPE(/datum/department)

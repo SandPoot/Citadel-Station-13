@@ -25,17 +25,17 @@ SUBSYSTEM_DEF(job)
 	ReconstructSpawnpoints()
 
 /datum/controller/subsystem/job/proc/set_overflow_role(new_overflow_role)
-	var/datum/job/new_overflow = GetJob(new_overflow_role)
+	var/datum/job/new_overflow = GetJobTitle(new_overflow_role)
 	var/cap = CONFIG_GET(number/overflow_cap)
 
 	new_overflow.allow_bureaucratic_error = FALSE
-	new_overflow.spawn_positions = cap
+	new_overflow.roundstart_positions = cap
 	new_overflow.total_positions = cap
 
 	if(new_overflow_role != overflow_role)
-		var/datum/job/old_overflow = GetJob(overflow_role)
+		var/datum/job/old_overflow = GetJobTitle(overflow_role)
 		old_overflow.allow_bureaucratic_error = initial(old_overflow.allow_bureaucratic_error)
-		old_overflow.spawn_positions = initial(old_overflow.spawn_positions)
+		old_overflow.roundstart_positions = initial(old_overflow.roundstart_positions)
 		old_overflow.total_positions = initial(old_overflow.total_positions)
 		overflow_role = new_overflow_role
 		JobDebug("Overflow role set to : [new_overflow_role]")
@@ -46,11 +46,11 @@ SUBSYSTEM_DEF(job)
 
 /datum/controller/subsystem/job/proc/LoadJobs()
 	var/jobstext = file2text("[global.config.directory]/jobs.txt")
-	for(var/datum/job/J in occupations)
+	for(var/datum/job/J in GetAllJobs())
 		var/regex/jobs = new("[J.title]=(-1|\\d+),(-1|\\d+)")
 		jobs.Find(jobstext)
 		J.total_positions = text2num(jobs.group[1])
-		J.spawn_positions = text2num(jobs.group[2])
+		J.roundstart_positions = text2num(jobs.group[2])
 
 /datum/controller/subsystem/job/proc/JobDebug(message)
 	log_job_debug(message)

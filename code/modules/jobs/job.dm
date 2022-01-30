@@ -360,7 +360,7 @@
 
 	var/datum/job/J = SSjob.GetJobType(jobtype)
 	if(!J)
-		J = SSjob.GetJob(H.job)
+		J = SSjob.GetJobName(H.job)
 
 	if(H.nameless && J.dresscodecompliant)
 		if(J.title in GLOB.command_positions)

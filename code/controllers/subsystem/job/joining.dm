@@ -8,7 +8,7 @@
 	else
 		H = M
 
-	var/datum/job/job = GetJob(rank)
+	var/datum/job/job = GetJobName(rank)
 
 	H.job = rank
 
@@ -162,7 +162,7 @@
 /datum/controller/subsystem/job/proc/handle_auto_deadmin_roles(client/C, rank)
 	if(!C?.holder)
 		return TRUE
-	var/datum/job/job = GetJob(rank)
+	var/datum/job/job = GetJobName(rank)
 	if(!job)
 		return
 	if((job.auto_deadmin_role_flags & DEADMIN_POSITION_HEAD) && (CONFIG_GET(flag/auto_deadmin_heads) || (C.prefs?.toggles & DEADMIN_POSITION_HEAD)))

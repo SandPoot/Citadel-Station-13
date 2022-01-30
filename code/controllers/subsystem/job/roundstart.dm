@@ -2,7 +2,7 @@
 /datum/controller/subsystem/job/proc/AssignRole(mob/dead/new_player/player, rank, latejoin = FALSE)
 	JobDebug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
 	if(player && player.mind && rank)
-		var/datum/job/job = GetJob(rank)
+		var/datum/job/job = GetJobName(rank)
 		if(!job)
 			return FALSE
 		if(jobban_isbanned(player, rank) || QDELETED(player))
@@ -57,7 +57,7 @@
 		if(!job)
 			continue
 
-		if(istype(job, GetJob(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
+		if(istype(job, GetJobName(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
 		if(J.IsInDepartment(/datum/department/comamnd)) //If you want a command position, select it!
@@ -198,7 +198,7 @@
 
 	//People who wants to be the overflow role, sure, go on.
 	JobDebug("DO, Running Overflow Check 1")
-	var/datum/job/overflow = GetJob(SSjob.overflow_role)
+	var/datum/job/overflow = GetJobName(SSjob.overflow_role)
 	var/list/overflow_candidates = FindOccupationCandidates(overflow, JP_LOW)
 	JobDebug("AC1, Candidates: [overflow_candidates?.len]")
 	for(var/mob/dead/new_player/player in overflow_candidates)
