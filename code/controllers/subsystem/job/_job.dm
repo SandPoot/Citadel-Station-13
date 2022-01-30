@@ -26,7 +26,7 @@ SUBSYSTEM_DEF(job)
 	ReconstructSpawnpoints()
 
 /datum/controller/subsystem/job/proc/set_overflow_role(new_overflow_role)
-	var/datum/job/new_overflow = GetJobTitle(new_overflow_role)
+	var/datum/job/new_overflow = GetJobName(new_overflow_role)
 	var/cap = CONFIG_GET(number/overflow_cap)
 
 	new_overflow.allow_bureaucratic_error = FALSE
@@ -34,7 +34,7 @@ SUBSYSTEM_DEF(job)
 	new_overflow.total_positions = cap
 
 	if(new_overflow_role != overflow_role)
-		var/datum/job/old_overflow = GetJobTitle(overflow_role)
+		var/datum/job/old_overflow = GetJobName(overflow_role)
 		old_overflow.allow_bureaucratic_error = initial(old_overflow.allow_bureaucratic_error)
 		old_overflow.roundstart_positions = initial(old_overflow.roundstart_positions)
 		old_overflow.total_positions = initial(old_overflow.total_positions)

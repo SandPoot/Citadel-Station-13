@@ -67,7 +67,7 @@
 				continue
 			return S
 	if(!harder)
-		stack_trace("GetRoundstartSpawnpoint() failed to get a spawnpoint, trying against with harder = TRUE")
+		subsystem_log("GetRoundstartSpawnpoint() failed to get a spawnpoint, trying against with harder = TRUE")
 		return GetRoundstartSpawnpoint(M, C, job_path, faction, TRUE)
 	else
 		CRASH("GetRoundstartSpawnpoint() failed to get a spawnpoint.")
@@ -111,7 +111,7 @@
 				continue
 			return S
 	if(!harder)
-		stack_trace("GetLatejoinSpawnpoint() failed to get a spawnpoint, trying against with harder = TRUE")
+		subsystem_log("GetLatejoinSpawnpoint() failed to get a spawnpoint, trying against with harder = TRUE")
 		return GetRoundstartSpawnpoint(C, job_path, faction, method, TRUE)
 	else
 		CRASH("GetLatejoinSpawnpoint() failed to get a spawnpoint.")

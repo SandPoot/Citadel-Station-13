@@ -53,14 +53,14 @@
 /datum/controller/subsystem/job/proc/GiveRandomJob(mob/dead/new_player/player)
 	JobDebug("GRJ Giving random job, Player: [player]")
 	. = FALSE
-	for(var/datum/job/job in shuffle(occupations))
+	for(var/datum/job/job in shuffle(GetAllJobs()))
 		if(!job)
 			continue
 
 		if(istype(job, GetJobName(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
-		if(J.IsInDepartment(/datum/department/comamnd)) //If you want a command position, select it!
+		if(job.IsInDepartment(/datum/department/comamnd)) //If you want a command position, select it!
 			continue
 
 		if(jobban_isbanned(player, job.title) || QDELETED(player))
@@ -164,7 +164,7 @@
 
 	//Holder for Triumvirate is stored in the SSticker, this just processes it
 	if(SSticker.triai)
-		for(var/datum/job/ai/A in occupations)
+		for(var/datum/job/ai/A in GetAllJob())
 			A.roundstart_positions = 3
 		var/left = 2
 		for(var/atom/movable/landmark/spawnpoint/job/ai/secondary/S in GetAllSpawnpoints())
@@ -230,7 +230,7 @@
 	// Hopefully this will add more randomness and fairness to job giving.
 
 	// Loop through all levels from high to low
-	var/list/shuffledoccupations = shuffle(occupations)
+	var/list/shuffledoccupations = shuffle(GetAllJobs())
 	for(var/level in level_order)
 		//Check the head jobs first each level
 		CheckHeadPositions(level)

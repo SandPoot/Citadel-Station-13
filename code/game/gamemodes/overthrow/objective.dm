@@ -140,7 +140,7 @@
 		explanation_text = "Nothing."
 
 /datum/objective/overthrow/target/is_unique_objective(datum/mind/possible_target)
-	if(possible_target.assigned_role in GLOB.command_positions)
+	if(possible_target.assigned_role in SSjob.GetDepartmentJobNames(/datum/department/command))
 		return FALSE
 	return TRUE
 

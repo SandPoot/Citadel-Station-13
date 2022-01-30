@@ -18,7 +18,7 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 	. = ..()
 	var/level = "green"
 	switch(GLOB.security_level)
-		if(SEC_LEVEL_GREEN)
+		if(SEC_LEVEL_GREEN)w
 			level = "green"
 		if(SEC_LEVEL_BLUE)
 			level = "blue"

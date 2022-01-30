@@ -309,7 +309,7 @@
 	var/list/ex_revs = list()
 
 /datum/team/revolution/proc/update_objectives(initial = FALSE)
-	var/untracked_heads = SSjob.get_all_heads()
+	var/untracked_heads = SSjob.GetDepartmentMinds(/datum/department/command)
 	for(var/datum/objective/mutiny/O in objectives)
 		untracked_heads -= O.target
 	for(var/datum/mind/M in untracked_heads)
@@ -494,7 +494,7 @@
 		rev_part += printplayerlist(revs,TRUE)
 		result += rev_part.Join("<br>")
 
-	var/list/heads = SSjob.get_all_heads()
+	var/list/heads = SSjob.GetDepartmentMinds(/datum/department/command)
 	if(heads.len)
 		var/head_text = "<span class='header'>The heads of staff were:</span>"
 		head_text += "<ul class='playerlist'>"
@@ -528,7 +528,7 @@
 
 	var/heads_report = "<b>Heads of Staff</b><br>"
 	heads_report += "<table cellspacing=5>"
-	for(var/datum/mind/N in SSjob.get_living_heads())
+	for(var/datum/mind/N in SSjob.GetLivingDepartmentMinds(/datum/department/command))
 		var/mob/M = N.current
 		if(M)
 			heads_report += "<tr><td><a href='?_src_=holder;[HrefToken()];adminplayeropts=[REF(M)]'>[M.real_name]</a>[M.client ? "" : " <i>(No Client)</i>"][M.stat == DEAD ? " <b><font color=red>(DEAD)</font></b>" : ""]</td>"

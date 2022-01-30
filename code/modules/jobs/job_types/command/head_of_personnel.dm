@@ -2,7 +2,6 @@
 	title = "Head of Personnel"
 	desc = "The Head of Personnel acts as the station's human resources officer, assigning crewmembers to areas as necessary."
 //	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
-	head_announce = list(RADIO_CHANNEL_SERVICE)
 	faction = JOB_FACTION_STATION
 	total_positions = 1
 	roundstart_positions = 1

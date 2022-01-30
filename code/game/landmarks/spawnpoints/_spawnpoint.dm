@@ -54,7 +54,7 @@
  */
 /atom/movable/landmark/spawnpoint/proc/GetSpawnLoc()
 	if(!loc)
-		stack_race("Landmark: Null loc detected on GetSpawnLoc().")
+		stack_trace("Landmark: Null loc detected on GetSpawnLoc().")
 	return loc
 
 /**
