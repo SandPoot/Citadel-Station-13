@@ -321,7 +321,7 @@
 		else
 			return 0
 	if(!spawn_here)
-		SSjob.SendToLateJoin(new_xeno, FALSE)
+		SSjob.SendToLateJoin(new_xeno)
 
 	new_xeno.ckey = ckey
 	var/msg = "<span class='notice'>[key_name_admin(usr)] has spawned [ckey] as a filthy xeno [alien_caste].</span>"
@@ -380,7 +380,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 						return
 
 				if(!T)
-					SSjob.SendToLateJoin(new_xeno, FALSE)
+					SSjob.SendToLateJoin(new_xeno)
 
 				//Now to give them their mind back.
 				G_found.mind.transfer_to(new_xeno)	//be careful when doing stuff like this! I've already checked the mind isn't in use

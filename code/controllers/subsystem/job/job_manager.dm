@@ -93,7 +93,7 @@
 /datum/controller/subsystem/job/proc/GetJobType(path)
 	RETURN_TYPE(/datum/job)
 	if(istext(path))
-		path = text2path
+		path = text2path(path)
 	if(!job_type_lookup[path])
 		CRASH("Failed to fetch job path: [path]")
 	return job_type_lookup[path]
@@ -107,7 +107,7 @@
 /datum/controller/subsystem/job/proc/GetDepartmentType(path)
 	RETURN_TYPE(/datum/department)
 	if(istext(path))
-		path = text2path
+		path = text2path(path)
 	if(!department_type_lookup[path])
 		CRASH("Failed to fetch department path: [path]")
 	return department_type_lookup[path]
@@ -183,9 +183,9 @@
 /datum/controller/subsystem/job/proc/GetAllJobNames(faction)
 	RETURN_TYPE(/list)
 	. = list()
-	for(var/name in job_name_lookup)
-		if(!faction || (job_name_lookup[name].faction == faction))
-			. += name
+	for(var/datum/job/J as anything in jobs)
+		if(!faction || (J.faction == faction))
+			. += J.title
 
 /**
  * Gets all job datums of a certain faction
@@ -203,10 +203,9 @@
 /datum/controller/subsystem/job/proc/GetAllJobTypes(faction)
 	RETURN_TYPE(/list)
 	. = list()
-	for(var/id as anything in job_type_lookup)
-		var/datum/job/J = job_type_lookup[id]
+	for(var/datum/job/J as anything in jobs)
 		if(!faction || (J.faction == faction))
-			. += id
+			. += J.type
 
 /**
  * Gets a list of job names in a department
