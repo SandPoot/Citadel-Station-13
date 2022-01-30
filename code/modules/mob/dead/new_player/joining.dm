@@ -1,4 +1,4 @@
-/proc/get_job_unavailable_error_message(retval, jobtitle)
+/mob/dead/new_player/proc/get_job_unavailable_error_message(retval, jobtitle)
 	switch(retval)
 		if(JOB_AVAILABLE)
 			return "[jobtitle] is available."
@@ -16,9 +16,8 @@
 			return "Your species cannot play as a [jobtitle]."
 	return "Error: Unknown job availability."
 
-/mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
-	var/datum/job/job = SSjob.GetJobName(rank)
-	if(!job)
+/mob/dead/new_player/proc/IsJobUnavailable(datum/job/job, latejoin = FALSE)
+	if(!istype(job))
 		return JOB_UNAVAILABLE_GENERIC
 	if((job.current_positions >= job.total_positions) && job.total_positions != -1)
 		if(job.title == "Assistant")
@@ -43,7 +42,7 @@
 		return JOB_UNAVAILABLE_SPECIESLOCK
 	return JOB_AVAILABLE
 
-/mob/dead/new_player/proc/AttemptLateSpawn(rank)
+/mob/dead/new_player/proc/AttemptLateSpawn(datum/job/job)
 	var/error = IsJobUnavailable(rank)
 	if(error != JOB_AVAILABLE)
 		alert(src, get_job_unavailable_error_message(error, rank))
@@ -77,8 +76,6 @@
 	var/equip = SSjob.EquipRank(character, rank, TRUE)
 	if(isliving(equip))	//Borgs get borged in the equip, so we need to make sure we handle the new mob.
 		character = equip
-
-	var/datum/job/job = SSjob.GetJobName(rank)
 
 	if(job && !job.override_latejoin_spawn(character))
 		SSjob.SendToLateJoin(character)

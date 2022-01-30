@@ -92,6 +92,8 @@
 
 /datum/controller/subsystem/job/proc/GetJobType(path)
 	RETURN_TYPE(/datum/job)
+	if(istext(path))
+		path = text2path
 	if(!job_type_lookup[path])
 		CRASH("Failed to fetch job path: [path]")
 	return job_type_lookup[path]
@@ -102,11 +104,13 @@
 		CRASH("Failed to fetch job name: [name]")
 	return job_name_lookup[name]
 
-/datum/controller/subsystem/job/proc/GetDepartmentType(Path)
+/datum/controller/subsystem/job/proc/GetDepartmentType(path)
 	RETURN_TYPE(/datum/department)
-	if(!department_type_lookup[name])
-		CRASH("Failed to fetch department path: [name]")
-	return department_type_lookup[name]
+	if(istext(path))
+		path = text2path
+	if(!department_type_lookup[path])
+		CRASH("Failed to fetch department path: [path]")
+	return department_type_lookup[path]
 
 /datum/controller/subsystem/job/proc/GetDepartmentName(name)
 	RETURN_TYPE(/datum/department)
