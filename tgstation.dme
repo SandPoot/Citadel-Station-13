@@ -150,6 +150,7 @@
 #include "code\__DEFINES\dcs\signals.dm"
 #include "code\__DEFINES\jobs\factions.dm"
 #include "code\__DEFINES\jobs\join_types.dm"
+#include "code\__DEFINES\jobs\joining.dm"
 #include "code\__DEFINES\jobs\misc.dm"
 #include "code\__DEFINES\jobs\spawnpoints.dm"
 #include "code\__DEFINES\mapping\maploader.dm"
