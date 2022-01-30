@@ -48,17 +48,6 @@ GLOBAL_PROTECT(exp_to_update)
 		return FALSE
 	return TRUE
 
-/client/proc/calc_exp_type(exptype)
-	var/list/explist = prefs.exp.Copy()
-	var/amount = 0
-	var/list/typelist = GLOB.exp_jobsmap[exptype]
-	if(!typelist)
-		return -1
-	for(var/job in typelist["titles"])
-		if(job in explist)
-			amount += explist[job]
-	return amount
-
 // todo: port tgui exp
 /client/proc/get_exp_report()
 	if(!CONFIG_GET(flag/use_exp_tracking))
@@ -292,18 +281,16 @@ GLOBAL_PROTECT(exp_to_update)
 	qdel(flags_read)
 	return TRUE
 
-
-GLOBAL_LIST_INIT(exp_jobsmap, list(
-	EXP_TYPE_CREW = list("titles" = command_positions | engineering_positions | medical_positions | science_positions | supply_positions | security_positions | civilian_positions | list("AI","Cyborg")), // crew positions
-	EXP_TYPE_COMMAND = list("titles" = command_positions),
-	EXP_TYPE_ENGINEERING = list("titles" = engineering_positions),
-	EXP_TYPE_MEDICAL = list("titles" = medical_positions),
-	EXP_TYPE_SCIENCE = list("titles" = science_positions),
-	EXP_TYPE_SUPPLY = list("titles" = supply_positions),
-	EXP_TYPE_SECURITY = list("titles" = security_positions),
-	EXP_TYPE_SILICON = list("titles" = list("AI","Cyborg")),
-	EXP_TYPE_SERVICE = list("titles" = civilian_positions),
-))
+/client/proc/calc_exp_type(exptype)
+	var/list/explist = prefs.exp.Copy()
+	var/amount = 0
+	var/list/typelist = SSjob.job_exp_map[exptype]
+	if(!typelist)
+		return -1
+	for(var/job in typelist["titles"])
+		if(job in explist)
+			amount += explist[job]
+	return amount
 
 GLOBAL_LIST_INIT(exp_specialmap, list(
 	EXP_TYPE_LIVING = list(), // all living mobs
@@ -311,5 +298,4 @@ GLOBAL_LIST_INIT(exp_specialmap, list(
 	EXP_TYPE_SPECIAL = list("Lifebringer","Ash Walker","Exile","Servant Golem","Free Golem","Hermit","Translocated Vet","Escaped Prisoner","Hotel Staff","SuperFriend","Space Syndicate","Ancient Crew","Space Doctor","Space Bartender","Beach Bum","Skeleton","Zombie","Space Bar Patron","Lavaland Syndicate","Ghost Role", "Ghost Cafe Visitor"), // Ghost roles
 	EXP_TYPE_GHOST = list() // dead people, observers
 ))
-GLOBAL_PROTECT(exp_jobsmap)
 GLOBAL_PROTECT(exp_specialmap)

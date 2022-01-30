@@ -1,4 +1,6 @@
 /datum/controller/subsystem/job
+	/// All spawnpoints
+	var/list/spawnpoints
 	/// Job spawnpoints keyed to job id/typepath
 	var/list/job_spawnpoints
 	/// Generic latejoin spawnpoints, nested list faction = list()
@@ -12,10 +14,14 @@
  * Fully resets spawnpoints list and ensures validity
  */
 /datum/controller/subsystem/job/proc/ReconstructSpawnpoints()
+	spawnpoints = list()
 	job_spawnpoints = list()
 	latejoin_spawnpoints = list()
 	overflow_spawnpoints = list()
 	custom_spawnpoints = list()
+	// O(2n) but sue me
+	for(var/atom/movable/landmark/spawnpoint/S in GLOB.landmarks_list)
+		spawnpoints += S
 	for(var/atom/movable/landmark/spawnpoint/job/S in GLOB.landmarks_list)
 		if(!S.job_path)
 			continue
@@ -161,3 +167,9 @@
 		if(!S.Available(M, C))
 			continue
 		return S
+
+/**
+ * Get all spawnpoint landmarks
+ */
+/datum/controller/subsystem/job/proc/GetAllSpawnpoints()
+	return spawnpoints

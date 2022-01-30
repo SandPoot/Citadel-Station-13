@@ -19,6 +19,7 @@ SUBSYSTEM_DEF(job)
 	if(CONFIG_GET(flag/load_jobs_from_txt))
 		LoadJobs()
 	set_overflow_role(CONFIG_GET(string/overflow_job))
+	InitJEXPMap()
 	return ..()
 
 /datum/controller/subsystem/job/Recover()

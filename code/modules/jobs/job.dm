@@ -202,6 +202,7 @@
 	if(head_announce)
 		announce_head(H, head_announce)
 
+#warn replace with something allowing for no spawnpoints on ai
 /datum/job/proc/override_latejoin_spawn(mob/living/carbon/human/H)		//Return TRUE to force latejoining to not automatically place the person in latejoin shuttle/whatever.
 	return FALSE
 

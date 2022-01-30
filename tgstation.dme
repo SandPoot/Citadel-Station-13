@@ -396,6 +396,7 @@
 #include "code\controllers\subsystem\vote.dm"
 #include "code\controllers\subsystem\job\_job.dm"
 #include "code\controllers\subsystem\job\feedback.dm"
+#include "code\controllers\subsystem\job\jexp.dm"
 #include "code\controllers\subsystem\job\job_manager.dm"
 #include "code\controllers\subsystem\job\joining.dm"
 #include "code\controllers\subsystem\job\loadout.dm"
