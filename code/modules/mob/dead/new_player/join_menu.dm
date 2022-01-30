@@ -57,7 +57,8 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 			"id" = J.type,
 			"name" = EffectiveTitle(J, usr.client),
 			"desc" = EffectiveDesc(J, usr.client),
-			"slots" = J.SlotsRemaining()
+			"slots" = J.SlotsRemaining(),
+			"real_name" = J.title
 		)
 		department += list(data)	// wrap list
 
