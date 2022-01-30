@@ -171,6 +171,22 @@
 	RETURN_TYPE(/datum/mind)
 	return SSjob.GetLivingJobMinds(src)
 
+/**
+ * Do we supervise a department? Only works after SSjob init.
+ */
+/datum/job/proc/IsDepartmentSupervisor(id)
+	if(SSjob.initialized)
+		CRASH("SSjob not initialized.")
+	return id in departments_supervised
+
+/**
+ * Are we in a department? Only works after SSjob init.
+ */
+/datum/job/proc/IsInDepartment(id)
+	if(SSjob.initialized)
+		CRASH("SSjob not initialized.")
+	return id in departments
+
 //Only override this proc
 //H is usually a human unless an /equip override transformed it
 /datum/job/proc/after_spawn(mob/living/H, mob/M, latejoin = FALSE)

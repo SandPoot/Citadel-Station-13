@@ -13,7 +13,7 @@
 			return FALSE
 		var/position_limit = job.total_positions
 		if(!latejoin)
-			position_limit = job.spawn_positions
+			position_limit = job.roundstart_positions
 		JobDebug("Player: [player] is now Rank: [rank], JCP:[job.current_positions], JPL:[position_limit]")
 		player.mind.assigned_role = rank
 		unassigned -= player
@@ -60,7 +60,7 @@
 		if(istype(job, GetJob(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
-		if(job.title in GLOB.command_positions) //If you want a command position, select it!
+		if(J.IsInDepartment(/datum/department/comamnd)) //If you want a command position, select it!
 			continue
 
 		if(jobban_isbanned(player, job.title) || QDELETED(player))
@@ -86,7 +86,7 @@
 			JobDebug("GRJ incompatible with antagonist role, Player: [player], Job: [job.title]")
 			continue
 
-		if((job.current_positions < job.spawn_positions) || job.spawn_positions == -1)
+		if((job.current_positions < job.roundstart_positions) || job.roundstart_positions == -1)
 			JobDebug("GRJ Random job given, Player: [player], Job: [job]")
 			if(AssignRole(player, job.title))
 				return TRUE
@@ -165,7 +165,7 @@
 	//Holder for Triumvirate is stored in the SSticker, this just processes it
 	if(SSticker.triai)
 		for(var/datum/job/ai/A in occupations)
-			A.spawn_positions = 3
+			A.roundstart_positions = 3
 		for(var/atom/movable/landmark/start/ai/secondary/S in GLOB.start_landmarks_list)
 			S.latejoin_active = TRUE
 
@@ -268,7 +268,7 @@
 				// If the player wants that job on this level, then try give it to him.
 				if(player.client.prefs.job_preferences[job.title] == level)
 					// If the job isn't filled
-					if((job.current_positions < job.spawn_positions) || job.spawn_positions == -1)
+					if((job.current_positions < job.roundstart_positions) || job.roundstart_positions == -1)
 						JobDebug("DO pass, Player: [player], Level:[level], Job:[job.title]")
 						AssignRole(player, job.title)
 						unassigned -= player
@@ -333,17 +333,17 @@
 
 
 /datum/controller/subsystem/job/proc/setup_officer_positions()
-	var/datum/job/J = SSjob.GetJob("Security Officer")
+	var/datum/job/J = SSjob.GetJobType(/datum/job/officer)
 	if(!J)
 		CRASH("setup_officer_positions(): Security officer job is missing")
 
 	var/ssc = CONFIG_GET(number/security_scaling_coeff)
 	if(ssc > 0)
-		if(J.spawn_positions > 0)
-			var/officer_positions = min(12, max(J.spawn_positions, round(unassigned.len / ssc))) //Scale between configured minimum and 12 officers
+		if(J.roundstart_positions > 0)
+			var/officer_positions = min(12, max(J.roundstart_positions, round(unassigned.len / ssc))) //Scale between configured minimum and 12 officers
 			JobDebug("Setting open security officer positions to [officer_positions]")
 			J.total_positions = officer_positions
-			J.spawn_positions = officer_positions
+			J.roundstart_positions = officer_positions
 
 	//Spawn some extra eqipment lockers if we have more than 5 officers
 	var/equip_needed = J.total_positions
@@ -356,3 +356,13 @@
 			GLOB.secequipment -= spawnloc
 		else //We ran out of spare locker spawns!
 			break
+
+/datum/controller/subsystem/job/proc/RejectPlayer(mob/dead/new_player/player)
+	if(player.mind && player.mind.special_role)
+		return
+	if(PopcapReached())
+		JobDebug("Popcap overflow Check observer located, Player: [player]")
+	JobDebug("Player rejected :[player]")
+	to_chat(player, "<b>You have failed to qualify for any job you desired.</b>")
+	unassigned -= player
+	player.ready = PLAYER_ NOT_READY

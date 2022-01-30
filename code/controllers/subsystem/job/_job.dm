@@ -55,9 +55,6 @@ SUBSYSTEM_DEF(job)
 /datum/controller/subsystem/job/proc/JobDebug(message)
 	log_job_debug(message)
 
-/proc/guest_jobbans(job)
-	return ((job in GLOB.command_positions) || (job in GLOB.nonhuman_positions) || (job in GLOB.security_positions))
-
 /proc/get_full_job_name(job)
 	var/static/regex/cap_expand = new("cap(?!tain)")
 	var/static/regex/cmo_expand = new("cmo")

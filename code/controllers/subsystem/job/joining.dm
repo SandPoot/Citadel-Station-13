@@ -148,16 +148,6 @@
 		return
 	..()
 
-/datum/controller/subsystem/job/proc/RejectPlayer(mob/dead/new_player/player)
-	if(player.mind && player.mind.special_role)
-		return
-	if(PopcapReached())
-		JobDebug("Popcap overflow Check observer located, Player: [player]")
-	JobDebug("Player rejected :[player]")
-	to_chat(player, "<b>You have failed to qualify for any job you desired.</b>")
-	unassigned -= player
-	player.ready = PLAYER_ NOT_READY
-
 /datum/controller/subsystem/job/proc/PopcapReached()
 	var/hpc = CONFIG_GET(number/hard_popcap)
 	var/epc = CONFIG_GET(number/extreme_popcap)
