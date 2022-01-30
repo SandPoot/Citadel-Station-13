@@ -42,7 +42,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	/// max spawns
 	var/slots = INFINITY
 	/// default message to show on greet(), also shows in spawners menu.
-	var/spawntext = "No spawntext defined."
+	var/spawntext
 	/// should we show the standard ghostrole greeting?
 	var/show_standard_greeting = TRUE
 	/// snowflake ID for if we're not to be referred to by path - dynamically created ghostolres
@@ -57,12 +57,14 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 		instantiator = new instantiator
 	id = _id || path
 
-/datum/ghostrole/proc/Greet(mob/created)
+/datum/ghostrole/proc/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
 	if(show_standard_greeting)
 		to_chat(created, {"<center><b><font size='16px'>You have spawned as a ghostrole.</font></b></center>
 		These roles are usually more roleplay oriented than standard hard-defined antagonist roles - besure to follow spawntext (if any), as well as server rules.
 		Spawntext as follows;"})
 	if(spawntext)
+		to_chat(created, spawntext)
+	if(spawnpoint.spawntext)
 		to_chat(created, spawntext)
 
 /**
@@ -149,7 +151,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
  * Spawnpoint can be null here, if we're not using a spawnpoint
  */
 /datum/ghostrole/proc/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
-	Greet(C, params, created)
+	Greet(created, spawnpoint)
 	spawns++
 	spawnpoint?.OnSpawn(created, src)
 

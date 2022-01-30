@@ -16,6 +16,8 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 	var/list/params
 	/// callback or proc type
 	var/datum/callback/proc_to_call_or_callback
+	/// custom HTML spawntext to show, if any
+	var/spawntext
 
 /datum/component/ghostrole_spawnpoint/Initialize(role_type, allowed_spawns = INFINITY, list/params, datum/callback/proc_to_call_or_callback, notify_ghosts = TRUE)
 	if((. = ..()) & COMPONENT_INCOMPATIBLE)
@@ -76,7 +78,7 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 	if(ispath(proc_to_call_or_callback))
 		if(!hascall(parent, proc_to_call_or_callback))
 			CRASH("Invalid proc [proc_to_call_or_callback] on [parent]")
-		call(parent, proc_to_call_or_callback)(created, role, parasms)
+		call(parent, proc_to_call_or_callback)(created, role, params)
 
 /datum/component/ghostrole_spawnpoint/vv_edit_var(var_name, var_value, massedit)
 	if(var_name == NAMEOF(src, proc_to_call_or_callback))
@@ -93,3 +95,12 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 
 /datum/component/ghostrole_spawnpoint/proc/GhostInteract(datum/source)
 	#warn spawner specific spawn
+
+/datum/component/ghostrole_spawnpoint/vv_edit_var(var_name, var_value, massedit)
+	. = ..()
+	if(var_name == NAMEOF(src, proc_to_call_or_callback))
+		if(!istype(proc_to_call_or_callback, /datum/callback))
+			if(hascall(parent, proc_to_call_or_callback))
+				proc_to_call_or_callback = new CALLBACK(parent, proc_to_call_or_callback)
+			else
+				proc_to_call_or_callback = null

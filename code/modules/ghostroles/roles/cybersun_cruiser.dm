@@ -20,6 +20,8 @@
 	spawntext = "Your job is to oversee your crew, defend the ship, and destroy Space Station 13. The ship has an armory, multiple ships, beam cannons, and multiple crewmembers to accomplish this goal. \
 		<br>As the captain, this whole operation falls on your shoulders. You do not need to nuke the station, causing sufficient damage and preventing your ship from being destroyed will be enough."
 
+#warn convert
+
 /obj/effect/mob_spawn/human/syndicate
 	name = "Syndicate Operative"
 	roundstart = FALSE

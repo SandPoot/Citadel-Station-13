@@ -671,8 +671,6 @@
 			dat += "</tr></table?"
 #undef JOBS_PER_ROW
 
-	#warn why don't we see if it's feasible to ghostrole for loop too huh
-
 		//Ghost Roles (light light gray)
 		dat += "<table cellpadding='1' cellspacing='0' width='100%'>"
 		dat += "<tr bgcolor='eeeeee'><th colspan='5'><a href='?src=[REF(src)];[HrefToken()];jobban3=ghostroles;jobban4=[REF(M)]'>Ghost Roles</a></th></tr><tr align='center'>"
@@ -714,11 +712,12 @@
 			dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[ROLE_LAVALAND];jobban4=[REF(M)]'><font color=red>Lavaland</font></a></td>"
 		else
 			dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[ROLE_LAVALAND];jobban4=[REF(M)]'>Lavaland</a></td>"
+
 		// Ghost cafe
 		if(jobban_isbanned(M,ROLE_GHOSTCAFE))
-			dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[ROLE_GHOSTCAFE];jobban4=[REF(M)]'><font color=red>Lavaland</font></a></td>"
+			dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[ROLE_GHOSTCAFE];jobban4=[REF(M)]'><font color=red>Ghost Cafe</font></a></td>"
 		else
-			dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[ROLE_GHOSTCAFE];jobban4=[REF(M)]'>Lavaland</a></td>"
+			dat += "<td width='20%'><a href='?src=[REF(src)];[HrefToken()];jobban3=[ROLE_GHOSTCAFE];jobban4=[REF(M)]'>Ghost Cafe</a></td>"
 		dat += "</tr></table>"
 
 	//Antagonist (Orange)

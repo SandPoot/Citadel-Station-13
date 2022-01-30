@@ -8,63 +8,45 @@ GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 /datum/ghostrole_menu/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
-		ui = new(user, src, "SpawnersMenu")
+		ui = new(user, src, "GhostRoleMenu")
 		ui.open()
 
 /datum/ghostrole_menu/ui_static_data(mob/user)
 	. = ..()
 
-
-/datum/ghostrole_menu/ui_data(mob/user)
-	var/list/data = list()
-	data["spawners"] = list()
-	for(var/spawner in GLOB.mob_spawners)
-		var/list/this = list()
-		this["name"] = spawner
-		this["short_desc"] = ""
-		this["flavor_text"] = ""
-		this["important_warning"] = ""
-		this["refs"] = list()
-		for(var/spawner_obj in GLOB.mob_spawners[spawner])
-			this["refs"] += "[REF(spawner_obj)]"
-			if(!this["desc"])
-				if(istype(spawner_obj, /obj/effect/mob_spawn))
-					var/obj/effect/mob_spawn/MS = spawner_obj
-					this["short_desc"] = MS.short_desc
-					this["flavor_text"] = MS.flavour_text
-					this["important_info"] = MS.important_info
-				else
-					var/obj/O = spawner_obj
-					this["desc"] = O.desc
-		this["amount_left"] = LAZYLEN(GLOB.mob_spawners[spawner])
-		data["spawners"] += list(this)
-
-	return data
+	var/list/spawners = list()
+	for(var/datum/ghostrole/role in GLOB.ghostroles)
+		var/list/data = list()
+		data["id"] = role.id || role.type
+		data["name"] = role.name
+		data["short_desc"] = role.desc
+		data["flavor_text"] = role.spawntext
+		data["amount_left"] = role.SpawnsLeft(user)
 
 /datum/ghostrole_menu/ui_act(action, params)
 	if(..())
 		return
 	if(!isobserver(usr))
 		return
-
-	var/group_name = params["name"]
-	if(!group_name || !(group_name in GLOB.mob_spawners))
-		return
-	var/list/spawnerlist = GLOB.mob_spawners[group_name]
-	if(!spawnerlist.len)
-		return
-	var/obj/effect/mob_spawn/MS = pick(spawnerlist)
-	if(!istype(MS) || !(MS in GLOB.poi_list))
+	var/id = params["id"]
+	var/datum/ghostrole/role = get_ghostrole_datum(id)
+	if(!role)
 		return
 	switch(action)
 		if("jump")
-			if(MS)
-				usr.forceMove(get_turf(MS))
-				. = TRUE
+			if(role.spawnerless)
+				to_chat(usr, "<span class='warning'>[role] is spawnerless!</span>")
+				return
+			var/atom/A = role.GetSpawnLoc(usr.client, role.GetSpawnpoint(usr.client))
+			if(!A)
+				to_chat(usr, "<span class='warning'>Could not find a spawnpoint for [role]. This sometimes mean it isn't loaded in until someone attempts to spawn.</span>")
+				return
+			if(!A.loc)
+				to_chat(usr, "<span class='danger'>BUG: Spawnpoint was nullspace.</span>")
+				return
+			usr.forceMove(get_turf(A))
 		if("spawn")
-			if(MS)
-				MS.attack_ghost(usr)
-				. = TRUE
+			role.AttemptSpawn(usr.client)
 
 /**
  * Call this whenever ghostrole data changes, we don't keep resending to save performance.

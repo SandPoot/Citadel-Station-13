@@ -1,3 +1,4 @@
+#warn convert
 
 //Ancient cryogenic sleepers. Players become NT crewmen from a hundred year old space station, now on the verge of collapse.
 /obj/effect/mob_spawn/human/oldsec

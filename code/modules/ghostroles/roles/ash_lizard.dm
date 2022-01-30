@@ -20,7 +20,7 @@
 	possible_species = list(
 		/datum/species/lizard/ashwalker
 	)
-	outfit = /datum/outfit/ashwalker
+	equip_outfit = /datum/outfit/ashwalker
 
 /datum/ghostrole_instantiator/human/random/species/ashwalker/Randomize(mob/living/carbon/human/H)
 	. = ..()

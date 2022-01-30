@@ -15,3 +15,5 @@
 	var/obj/structure/fluff/empty_sleeper/S = new(drop_location())
 	S.setDir(dir)
 	return ..()
+
+#warn convert

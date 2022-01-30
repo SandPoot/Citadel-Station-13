@@ -124,7 +124,24 @@
 	.[GetName()] = GetDesc()
 	for(var/path in alt_titles)
 		var/datum/alt_title/T = path
-		.[initial(T.name)] = initial(T.desc) || GetDesc()
+		if(ispath(T))
+			if(.[initial(T.name)])
+				continue
+			.[initial(T.name)] = initial(T.desc) || GetDesc()
+		if(istype(T))
+			if(.[T.name])
+				continue
+			.[T.name] = T.desc || GetDesc()
+
+/**
+ * Get "Help" blurb" used in prefs
+ */
+/datum/job/proc/GetHelpText()
+	. = list()
+	var/list/info = GetTitles()
+	for(var/title in info)
+		. += "<b>[title]</b>: [desc]<br>"
+	. = jointext(., "")
 
 /**
  * Get deparments supervised

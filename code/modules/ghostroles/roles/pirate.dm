@@ -19,6 +19,8 @@
 	assignedrole = "Space Pirate"
 	var/rank = "Mate"
 
+#warn convert
+
 /obj/effect/mob_spawn/human/pirate/on_attack_hand(mob/living/user, act_intent = user.a_intent, unarmed_attack_flags)
 	. = ..()
 	if(.)

@@ -61,7 +61,7 @@ GLOBAL_PROTECT(exp_to_update)
 	var/return_text = list()
 	return_text += "<UL>"
 	var/list/exp_data = list()
-	for(var/category in SSjob.name_occupations)
+	for(var/category in SSjob.GetAllJobNames())
 		if(play_records[category])
 			exp_data[category] = text2num(play_records[category])
 		else
@@ -159,7 +159,7 @@ GLOBAL_PROTECT(exp_to_update)
 		play_records[exp_read.item[1]] = text2num(exp_read.item[2])
 	qdel(exp_read)
 
-	for(var/rtype in SSjob.name_occupations)
+	for(var/rtype in SSjob.GetAllJobNames())
 		if(!play_records[rtype])
 			play_records[rtype] = 0
 	for(var/rtype in GLOB.exp_specialmap)

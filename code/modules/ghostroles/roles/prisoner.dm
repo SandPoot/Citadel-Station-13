@@ -36,3 +36,5 @@
 /obj/effect/mob_spawn/human/prisoner_transport/Destroy()
 	new/obj/structure/fluff/empty_sleeper/syndicate(get_turf(src))
 	return ..()
+
+#warn convert

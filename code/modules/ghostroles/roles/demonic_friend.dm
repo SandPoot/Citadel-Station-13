@@ -1,3 +1,5 @@
+#warn convert
+
 
 /obj/effect/mob_spawn/human/demonic_friend
 	name = "Essence of friendship"

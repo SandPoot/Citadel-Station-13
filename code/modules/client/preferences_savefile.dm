@@ -708,6 +708,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 
 	//Load prefs
 	S["job_preferences"]	>> job_preferences
+	S["alt_titles"]			>> alt_titles
 
 	//Quirks
 	S["all_quirks"]			>> all_quirks
@@ -1104,6 +1105,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["joblessrole"]		, joblessrole)
 	//Write prefs
 	WRITE_FILE(S["job_preferences"] , job_preferences)
+	WRITE_FILE(S["alt_titles"]		, alt_titles)
+
 	WRITE_FILE(S["hide_ckey"]		, hide_ckey)
 
 	//Quirks

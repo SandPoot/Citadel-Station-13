@@ -1,3 +1,4 @@
+#warn convert
 
 //Space Hotel Staff
 /obj/effect/mob_spawn/human/hotel_staff //not free antag u little shits

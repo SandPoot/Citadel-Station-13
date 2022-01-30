@@ -1,3 +1,5 @@
+#warn convert
+
 
 //Golem shells: Spawns in Free Golem ships in lavaland. Ghosts become mineral golems and are advised to spread personal freedom.
 /obj/effect/mob_spawn/human/golem

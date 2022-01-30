@@ -1,4 +1,5 @@
 //Objects that spawn ghosts in as a certain role when they click on it, i.e. away mission bartenders.
+#warn convert
 
 //Preserved terrarium/seed vault: Spawns in seed vault structures in lavaland. Ghosts become plantpeople and are advised to begin growing plants in the room near them.
 /obj/effect/mob_spawn/human/seed_vault
