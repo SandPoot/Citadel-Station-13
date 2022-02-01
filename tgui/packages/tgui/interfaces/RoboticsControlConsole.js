@@ -1,4 +1,3 @@
-import { Fragment } from 'inferno';
 import { useBackend, useSharedState } from '../backend';
 import { Box, Button, LabeledList, NoticeBox, Section, Tabs } from '../components';
 import { Window } from '../layouts';
@@ -8,15 +7,13 @@ export const RoboticsControlConsole = (props, context) => {
   const [tab, setTab] = useSharedState(context, 'tab', 1);
   const {
     can_hack,
-    can_convert,
     cyborgs = [],
     drones = [],
   } = data;
   return (
     <Window
       width={500}
-      height={460}
-      resizable>
+      height={460}>
       <Window.Content scrollable>
         <Tabs>
           <Tabs.Tab
@@ -48,7 +45,7 @@ export const RoboticsControlConsole = (props, context) => {
 };
 
 const Cyborgs = (props, context) => {
-  const { cyborgs, can_hack, can_convert } = props;
+  const { cyborgs, can_hack } = props;
   const { act, data } = useBackend(context);
   if (!cyborgs.length) {
     return (
@@ -63,22 +60,13 @@ const Cyborgs = (props, context) => {
         key={cyborg.ref}
         title={cyborg.name}
         buttons={(
-          <Fragment>
+          <>
             {!!can_hack && !cyborg.emagged && (
               <Button
                 icon="terminal"
                 content="Hack"
                 color="bad"
                 onClick={() => act('magbot', {
-                  ref: cyborg.ref,
-                })} />
-            )}
-            {!!can_convert && !cyborg.servant && (
-              <Button
-                icon="terminal"
-                content="Convert"
-                color="bad"
-                onClick={() => act('convert', {
                   ref: cyborg.ref,
                 })} />
             )}
@@ -96,7 +84,7 @@ const Cyborgs = (props, context) => {
               onClick={() => act('killbot', {
                 ref: cyborg.ref,
               })} />
-          </Fragment>
+          </>
         )}>
         <LabeledList>
           <LabeledList.Item label="Status">
@@ -123,7 +111,7 @@ const Cyborgs = (props, context) => {
                 : "Not Found"}
             </Box>
           </LabeledList.Item>
-          <LabeledList.Item label="Module">
+          <LabeledList.Item label="Model">
             {cyborg.module}
           </LabeledList.Item>
           <LabeledList.Item label="Master AI">
