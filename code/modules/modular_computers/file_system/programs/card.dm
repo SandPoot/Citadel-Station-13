@@ -79,12 +79,9 @@
 			head_types += info["head"]
 
 	head_subordinates = list()
-	if(length(head_types))
-		for(var/j in SSjob.occupations)
-			var/datum/job/job = j
-			for(var/head in head_types)//god why
-				if(head in job.department_head)
-					head_subordinates += job.title
+	for(var/head in head_types)
+		var/datum/job/J = SSjob.GetJobName(head)
+		head_subordinates += J.GetSubordinateNames()
 
 	if(length(region_access))
 		minor = TRUE
@@ -272,7 +269,7 @@
 		departments = list("CentCom" = get_all_centcom_jobs())
 	else if(isnull(departments))
 		departments = list(
-			CARDCON_DEPARTMENT_COMMAND = SSjob.GetJobType(/datum/job/captain).GetName(),//lol
+			CARDCON_DEPARTMENT_COMMAND = SSjob.GetDepartmentType(/datum/department/command).GetJobNames(),//lol
 			CARDCON_DEPARTMENT_ENGINEERING = SSjob.GetDepartmentType(/datum/department/engineering).GetJobNames(),
 			CARDCON_DEPARTMENT_MEDICAL = SSjob.GetDepartmentType(/datum/department/medical).GetJobNames(),
 			CARDCON_DEPARTMENT_SCIENCE = SSjob.GetDepartmentType(/datum/department/science).GetJobNames(),
@@ -347,8 +344,6 @@
 		data["access_on_card"] = id_card.access
 
 	return data
-
-
 
 #undef CARDCON_DEPARTMENT_SERVICE
 #undef CARDCON_DEPARTMENT_SECURITY

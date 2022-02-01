@@ -175,6 +175,33 @@
 	return LAZYLEN(departments) && SSjob.GetDepartmentType(departments[1])
 
 /**
+ * Get subordinate datums
+ */
+/datum/job/proc/GetSubordinates()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments_supervised)
+		. |= SSjob.GetDepartmentJobDatums(id)
+
+/**
+ * Get subordinate names
+ */
+/datum/job/proc/GetSubordinateNames()	// seriously screw byond, where's my .filter((dep) => dep.name)
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments_supervised)
+		. |= SSjob.GetDepartmentJobNames(id)
+
+/**
+ * Get subordinate IDs
+ */
+/datum/job/proc/GetSubordinateIDs()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments_supervised)
+		. |= SSjob.GetDepartmentJobIDs(id)
+
+/**
  * Get minds
  */
 /datum/job/proc/GetMinds()
