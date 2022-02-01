@@ -1361,7 +1361,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	return TRUE
 
 /datum/preferences/proc/UpdateJobPreference(mob/user, role, desiredLvl)
-	if(!SSjob || SSjob.occupations.len <= 0)
+	if(!SSjob.initialized)
 		return
 	var/datum/job/job = SSjob.GetJobName(role)
 

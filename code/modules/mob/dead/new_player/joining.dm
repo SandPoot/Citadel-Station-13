@@ -38,14 +38,14 @@
 		return JOB_UNAVAILABLE_PLAYTIME
 	if(latejoin && !job.special_check_latejoin(client))
 		return JOB_UNAVAILABLE_GENERIC
-	if(!client.prefs.pref_species.qualifies_for_rank(rank, client.prefs.features))
+	if(!client.prefs.pref_species.qualifies_for_rank(job.title, client.prefs.features))
 		return JOB_UNAVAILABLE_SPECIESLOCK
 	return JOB_AVAILABLE
 
 /mob/dead/new_player/proc/AttemptLateSpawn(datum/job/job)
-	var/error = IsJobUnavailable(rank)
+	var/error = IsJobUnavailable(job)
 	if(error != JOB_AVAILABLE)
-		alert(src, get_job_unavailable_error_message(error, rank))
+		alert(src, get_job_unavailable_error_message(error, job.title))
 		return FALSE
 
 	if(SSticker.late_join_disabled)

@@ -162,7 +162,7 @@
  * Get departments
  */
 /datum/job/proc/GetDepartments()
-	RETURN_TYPE(/datum/department)
+	RETURN_TYPE(/list)
 	. = list()
 	for(var/id in departments)
 		return SSjob.GetDepartmentType(id)

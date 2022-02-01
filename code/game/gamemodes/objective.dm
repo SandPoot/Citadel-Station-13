@@ -986,22 +986,21 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	department_minds = list()
 	department_real_names = list()
 
-	var/list/departments = list("Head of Security","Research Director","Chief Engineer","Chief Medical Officer")
-	var/department_head = pick(departments)
-	switch(department_head)
-		if("Head of Security")
-			department_string = "security"
-		if("Research Director")
-			department_string = "science"
-		if("Chief Engineer")
-			department_string = "engineering"
-		if("Chief Medical Officer")
-			department_string = "medical"
+	var/list/departments = list(
+		/datum/department/security,
+		/datum/department/engineering,
+		/datum/department/medical,
+		/datum/department/cargo,
+		/datum/department/science,
+		/datum/department/civ
+	)
+	var/datum/department/D = SSjob.GetDepartmentType(pick(departments))
+	department_string = D.name
 
-	var/list/lings = get_antag_minds(/datum/antagonist/changeling,TRUE)
+	var/list/lings = get_antag_minds(/datum/antagonist/changeling, TRUE)
 	var/ling_count = lings.len
 
-	for(var/datum/mind/M in SSticker.minds)
+	for(var/datum/mind/M in shuffle(SSjob.GetDepartmentMinds(D)))
 		if(M in lings)
 			continue
 		if(department_head in get_department_heads(M.assigned_role))
@@ -1025,9 +1024,9 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	//Needed heads is between min_lings and the maximum possible amount of command roles
 	//So at the time of writing, rand(3,6), it's also capped by the amount of lings there are
 	//Because you can't fill 6 head roles with 3 lings
-	var/list/lings = get_antag_minds(/datum/antagonist/changeling,TRUE)
-	var/needed_heads = rand(min_lings,GLOB.command_positions.len)
-	needed_heads = min(lings.len,needed_heads)
+	var/list/lings = get_antag_minds(/datum/antagonist/changeling, TRUE)
+	var/needed_heads = rand(min_lings, length(SSjob.GetDepartmentJobDatums(/datum/department/command)))
+	needed_heads = min(lings.len, needed_heads)
 
 	var/list/heads = SSjob.get_living_heads()
 	for(var/datum/mind/head in heads)

@@ -15,7 +15,7 @@
 
 /datum/round_event/ghost_role/devil/spawn_role()
 	//selecting a spawn_loc
-	if(!SSjob.latejoin_trackers.len)
+	if(!SSjob.GetLatejoinSpawnpoint(null, /datum/job/assistant, JOB_FACTION_STATION, null, TRUE))
 		return MAP_ERROR
 
 	//selecting a candidate player
