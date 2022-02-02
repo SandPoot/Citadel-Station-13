@@ -67,6 +67,8 @@
 		department_name_lookup[D.name] = D
 	// assign departments to jobs and vice versa
 	sortTim(departments_temporary, /proc/cmp_department_priority_dsc, FALSE)
+	// why don't we sort the real departments list while we're at it
+	sortTim(departments, /proc/cmp_department_priority_dsc, FALSE)
 	for(var/datum/department/D as anything in departments_temporary)
 		for(var/path in D.jobs)
 			if(!ispath(path))

@@ -114,8 +114,7 @@
 	data["authed"] = authed
 
 	var/list/pos = list()
-	for(var/j in SSjob.occupations)
-		var/datum/job/job = j
+	for(var/datum/job/job as anything in SSjob.GetAllJobs())
 		if(job.title in blacklisted)
 			continue
 

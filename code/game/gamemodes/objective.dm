@@ -968,7 +968,6 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	var/list/department_real_names = list()
 	var/department_string = ""
 
-
 /datum/objective/changeling_team_objective/impersonate_department/prepare()
 	var/result = FALSE
 	if(command_staff_only)
@@ -1003,7 +1002,7 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	for(var/datum/mind/M in shuffle(SSjob.GetDepartmentMinds(D)))
 		if(M in lings)
 			continue
-		if(department_head in get_department_heads(M.assigned_role))
+		if(M.assigned_role in D.GetJobNames())
 			if(ling_count)
 				ling_count--
 				department_minds += M
@@ -1028,7 +1027,7 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	var/needed_heads = rand(min_lings, length(SSjob.GetDepartmentJobDatums(/datum/department/command)))
 	needed_heads = min(lings.len, needed_heads)
 
-	var/list/heads = SSjob.get_living_heads()
+	var/list/heads = SSjob.GetLivingDepartmentMinds(/datum/department/command)
 	for(var/datum/mind/head in heads)
 		if(head in lings) //Looking at you HoP.
 			continue

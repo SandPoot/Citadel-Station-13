@@ -117,6 +117,12 @@
 	return desc
 
 /**
+ * Get the unique ID/type of the job
+ */
+/datum/job/proc/GetID()
+	return type
+
+/**
  * Get possible alt titles names, associated to their descriptions
  */
 /datum/job/proc/GetTitles()
@@ -200,6 +206,33 @@
 	. = list()
 	for(var/id in departments_supervised)
 		. |= SSjob.GetDepartmentJobIDs(id)
+
+/**
+ * Get head datums
+ */
+/datum/job/proc/GetHeads()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments)
+		. |= SSjob.GetJobType(SSjob.GetDepartmentType(id).supervisor)
+
+/**
+ * Get head names
+ */
+/datum/job/proc/GetHeadNames()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments)
+		. |= SSjob.GetJobType(SSjob.GetDepartmentType(id).supervisor).GetName()
+
+/**
+ * Get head IDs
+ */
+/datum/job/proc/GetHeadIDs()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments)
+		. |= SSjob.GetDepartmentType(id).supervisor
 
 /**
  * Get minds

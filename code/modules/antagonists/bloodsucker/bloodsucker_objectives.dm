@@ -133,7 +133,7 @@
 			if (!istype(J))
 				continue
 			// Found a job whose Dept Head matches either list of heads, or this job IS the head
-			if (length(J.GetDepartments() & target_job.GetDepartmentsSupervised()) || target_role == J.title)
+			if((J.GetName() in target_job.GetSubordinateNames()) || target_role == J.title)
 				valid_jobs += J.title
 
 	// Check Vassals, and see if they match

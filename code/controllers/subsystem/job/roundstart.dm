@@ -165,7 +165,7 @@
 
 	//Holder for Triumvirate is stored in the SSticker, this just processes it
 	if(SSticker.triai)
-		for(var/datum/job/ai/A in GetAllJob())
+		for(var/datum/job/ai/A in GetAllJobs())
 			A.roundstart_positions = 3
 		var/left = 2
 		for(var/atom/movable/landmark/spawnpoint/job/ai/secondary/S in GetAllSpawnpoints())
@@ -370,4 +370,4 @@
 	JobDebug("Player rejected :[player]")
 	to_chat(player, "<b>You have failed to qualify for any job you desired.</b>")
 	unassigned -= player
-	player.ready = PLAYER_ NOT_READY
+	player.ready = PLAYER_NOT_READY

@@ -274,7 +274,7 @@
 			CARDCON_DEPARTMENT_MEDICAL = SSjob.GetDepartmentType(/datum/department/medical).GetJobNames(),
 			CARDCON_DEPARTMENT_SCIENCE = SSjob.GetDepartmentType(/datum/department/science).GetJobNames(),
 			CARDCON_DEPARTMENT_SECURITY = SSjob.GetDepartmentType(/datum/department/security).GetJobNames(),
-			CARDCON_DEPARTMENT_SUPPLY = SSjob.GetDepartmentType(/datum/department/supply).GetJobNames(),
+			CARDCON_DEPARTMENT_SUPPLY = SSjob.GetDepartmentType(/datum/department/cargo).GetJobNames(),
 			CARDCON_DEPARTMENT_SERVICE = SSjob.GetDepartmentType(/datum/department/service).GetJobNames()
 		)
 	data["jobs"] = list()
