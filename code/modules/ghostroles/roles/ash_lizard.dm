@@ -18,16 +18,16 @@
 
 /datum/ghostrole/ashwalker/AllowSpawn(client/C, list/params)
 	if(params["team"])
-		var/datum/team/ashwalker/team = params["team"]
-		if(client.ckey in team.players_spawned)
-			to_chat(client, span_warning("<b>You have exhausted your usefulness to the Necropolis</b>."))
+		var/datum/team/ashwalkers/team = params["team"]
+		if(C.ckey in team.players_spawned)
+			to_chat(clientC span_warning("<b>You have exhausted your usefulness to the Necropolis</b>."))
 			return FALSE
 	return ..()
 
 /datum/ghostrole/ashwalker/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
 	. = ..()
 	if(spawnpoint?.params["team"])
-		var/datum/team/ashwalker/team = spawnpoint.params["team"]
+		var/datum/team/ashwalkers/team = spawnpoint.params["team"]
 		team.players_spawned += ckey(created.key)
 		created.mind.add_antag_datum(/datum/antagonist/ashwalker, team)
 
@@ -43,7 +43,7 @@
 	H.undershirt = "Nude"
 	H.socks = "Nude"
 	H.update_body()
-	H.real_name = random_unique_lizard_name(gender)
+	H.real_name = random_unique_lizard_name(H.gender)
 
 /obj/structure/ghost_role_spawner/ash_walker
 	name = "ash walker egg"

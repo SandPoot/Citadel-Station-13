@@ -359,4 +359,4 @@
 	if(!I)
 		return
 	var/jobName = I.assignment
-	return SSjob.GetTitleHUDIcon(jobName)
+	return SSjob.GetJobHUDIcon(jobName)

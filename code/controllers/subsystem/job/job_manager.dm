@@ -78,6 +78,11 @@
 			J.departments += D.type
 			LAZYOR(job_types_in_department[D.type], J.type)
 			LAZYOR(job_names_in_department[D.type], J.title)
+		// force head to first
+		if(D.supervisor && (D.supervisor in D.jobs))
+			D.jobs -= D.supervisor
+			D.jobs.Insert(1, D.supervisor)
+		// end
 		if(D.supervisor)
 			if(!ispath(D.supervisor))
 				stack_trace("[D.supervisor] in [D.type]'s supervisor is not a typepath.")

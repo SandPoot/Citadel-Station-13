@@ -61,7 +61,7 @@
 		if(istype(job, GetJobName(SSjob.overflow_role))) // We don't want to give him assistant, that's boring!
 			continue
 
-		if(job.IsInDepartment(/datum/department/comamnd)) //If you want a command position, select it!
+		if(job.IsInDepartment(/datum/department/command)) //If you want a command position, select it!
 			continue
 
 		if(jobban_isbanned(player, job.title) || QDELETED(player))
