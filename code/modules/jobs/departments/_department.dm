@@ -44,7 +44,7 @@
 	return supervisor && SSjob.GetJobType(supervisor)
 
 /datum/department/proc/GetSupervisorName()
-	return supervisor && SSjob.GetJobType(supervisor)?.name
+	return supervisor && SSjob.GetJobType(supervisor)?.GetName()
 
 /datum/department/proc/GetSupervisorID()
 	return supervisor

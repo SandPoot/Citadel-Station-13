@@ -168,7 +168,7 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 						to_chat(usr, "<span class='warning'>Failed to find ghostrole [R]</span>")
 						return
 					to_chat(usr, "<span class='warning'>Attempting to ghostrole as [id] ([R.name]).</span>")
-					R.AttemptSpawn(client)
+					R.AttemptSpawn(N.client)
 		if("queue")
 			AttemptQueue(usr)
 

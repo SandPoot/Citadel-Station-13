@@ -241,3 +241,17 @@
 	if(!D)
 		CRASH("Failed to look up [department_id]")
 	return D.GetJobs()
+
+/**
+ * gets the effective hud icon of a job
+ */
+/datum/controller/subsystem/job/proc/GetJobHUDIcon(title)
+	if(alt_title_lookup[title])
+		title = alt_title_lookup[title]
+	if(job_name_lookup[title])
+		var/datum/job/J = job_name_lookup[title]
+		if(J.hud_icon_state)
+			return J.hud_icon_state
+	if(title in get_all_centcom_jobs())
+		return "CentCom"
+	return "Unknown"

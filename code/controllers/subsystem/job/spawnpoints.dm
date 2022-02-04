@@ -141,7 +141,7 @@
 				continue
 			. |= J.method
 	// Get all standard latejoin methods
-	if(!roundstart && length(latejoin_spawnpoints[faction]))
+	if(length(latejoin_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/latejoin/S as anything in latejoin_spawnpoints[faction])
 			if(!S.Available(null, C, TRUE))
 				continue

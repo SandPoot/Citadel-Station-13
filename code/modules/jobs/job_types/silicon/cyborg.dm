@@ -5,7 +5,7 @@
 	faction = JOB_FACTION_STATION
 	total_positions = 0
 	roundstart_positions = 3
-	supervisors = "your laws and the AI"	//Nodrak
+	supervisor_text_override = "your laws and the AI"
 	selection_color = "#ddffdd"
 	minimal_player_age = 21
 	exp_requirements = 120

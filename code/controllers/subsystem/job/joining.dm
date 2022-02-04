@@ -91,62 +91,28 @@
 
 	return H
 
-/datum/controller/subsystem/job/proc/SendToLateJoin(mob/M, buckle = TRUE)
-	var/atom/destination
-	if(M.mind && M.mind.assigned_role && length(GLOB.jobspawn_overrides[M.mind.assigned_role])) //We're doing something special today.
-		destination = pick(GLOB.jobspawn_overrides[M.mind.assigned_role])
-		destination.JoinPlayerHere(M, FALSE)
-		return
+/**
+ * Sends a mob to a spawnpoint. Set override = TRUE to disable auto-detect of job.
+ */
+/datum/controller/subsystem/job/proc/SendToLateJoin(mob/M, client/C = M.client, faction, job, method, override)
+	if(!override && M.mind?.assigned_role)
+		var/datum/job/J = SSjob.GetJobName(M.mind.assigned_role)
+		if(J)
+			faction = J.faction
+			job = J.GetID()
 
-	if(latejoin_trackers.len)
-		destination = pick(latejoin_trackers)
-		destination.JoinPlayerHere(M, buckle)
-		return
+	var/atom/movable/landmark/spawnpoint/S
 
-	//bad mojo
-	var/area/shuttle/arrival/A = GLOB.areas_by_type[/area/shuttle/arrival]
-	if(A)
-		//first check if we can find a chair
-		var/obj/structure/chair/C = locate() in A
-		if(C)
-			C.JoinPlayerHere(M, buckle)
-			return
+	S = SSjob.GetLatejoinSpawnpoint(C, job, faction, method)
 
-		//last hurrah
-		var/list/avail = list()
-		for(var/turf/T in A)
-			if(!is_blocked_turf(T, TRUE))
-				avail += T
-		if(avail.len)
-			destination = pick(avail)
-			destination.JoinPlayerHere(M, FALSE)
-			return
+	if(S)
+		M.forceMove(S.GetSpawnLoc())
+		S.OnSpawn(M, C)
 
-	//pick an open spot on arrivals and dump em
-	var/list/arrivals_turfs = shuffle(get_area_turfs(/area/shuttle/arrival))
-	if(arrivals_turfs.len)
-		for(var/turf/T in arrivals_turfs)
-			if(!is_blocked_turf(T, TRUE))
-				T.JoinPlayerHere(M, FALSE)
-				return
-		//last chance, pick ANY spot on arrivals and dump em
-		destination = arrivals_turfs[1]
-		destination.JoinPlayerHere(M, FALSE)
-	else
-		var/msg = "Unable to send mob [M] to late join!"
-		message_admins(msg)
-		CRASH(msg)
-
-
-/atom/proc/JoinPlayerHere(mob/M, buckle)
-	// By default, just place the mob on the same turf as the marker or whatever.
-	M.forceMove(get_turf(src))
-
-/obj/structure/chair/JoinPlayerHere(mob/M, buckle)
-	// Placing a mob in a chair will attempt to buckle it, or else fall back to default.
-	if (buckle && isliving(M) && buckle_mob(M, FALSE, FALSE))
-		return
-	..()
+	var/error_message = "Unable to send [key_name(M)] to latejoin."
+	message_admins(error_message)
+	subsystem_log(error_message)
+	CRASH(error_message)		// this is serious.
 
 /datum/controller/subsystem/job/proc/PopcapReached()
 	var/hpc = CONFIG_GET(number/hard_popcap)
@@ -156,7 +122,6 @@
 		if((initial_players_to_assign - unassigned.len) >= relevent_cap)
 			return 1
 	return 0
-
 
 /*
 /datum/controller/subsystem/job/proc/handle_auto_deadmin_roles(client/C, rank)

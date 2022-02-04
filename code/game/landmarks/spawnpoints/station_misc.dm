@@ -8,7 +8,7 @@
 	. = ..()
 	var/obj/structure/chair/C = locate() in GetSpawnLoc()
 	if(C && !length(C.buckled_mobs))
-		C.buckle_mob(M, TRUE, FALSE)
+		C.buckle_mob(M, FALSE, FALSE)
 
 /atom/movable/landmark/spawnpoint/overflow/station
 	faction = JOB_FACTION_STATION
