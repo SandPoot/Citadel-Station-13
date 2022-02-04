@@ -13,10 +13,14 @@
 	/// automatic handling - params. If this is a string at Init, it'll be json_decoded.
 	var/list/role_params
 
-/obj/structure/ghost_role_spawner/Initialize()
+/obj/structure/ghost_role_spawner/Initialize(mapload, params, spawns)
 	. = ..()
-	if(istext(role_params))
+	if(params)
+		role_params = params
+	else if(istext(role_params))
 		role_params = json_decode(role_params)
+	if(spawns)
+		role_spawns = spawns
 	AddComponent(/datum/component/ghostrole_spawnpoint, role_type, role_spawns, role_params, /obj/structure/ghost_role_spawner/proc/on_spawn)
 
 /obj/structure/ghost_role_spawner/proc/on_spawn(mob/created, datum/ghostrole/role, list/params)
