@@ -97,7 +97,7 @@
 				continue
 			return J
 	// Priority 2: Latejoin spawnpoints, if latejoin
-	if(!roundstart && length(latejoin_spawnpoints[faction]))
+	if(length(latejoin_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/latejoin/S as anything in latejoin_spawnpoints[faction])
 			if(!S.Available(null, C, harder))
 				continue

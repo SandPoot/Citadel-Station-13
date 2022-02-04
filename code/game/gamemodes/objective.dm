@@ -998,7 +998,6 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 	else
 		return FALSE
 
-
 /datum/objective/changeling_team_objective/impersonate_department/proc/get_department_staff()
 	department_minds = list()
 	department_real_names = list()
@@ -1009,7 +1008,7 @@ GLOBAL_LIST_EMPTY(possible_items_special)
 		/datum/department/medical,
 		/datum/department/cargo,
 		/datum/department/science,
-		/datum/department/civ
+		/datum/department/civillian
 	)
 	var/datum/department/D = SSjob.GetDepartmentType(pick(departments))
 	department_string = D.name

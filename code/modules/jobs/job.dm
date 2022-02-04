@@ -13,6 +13,8 @@
 	var/list/departments_supervised
 	/// Determines if this job can be spawned into by players
 	var/join_types = JOB_ROUNDSTART | JOB_LATEJOIN
+	/// HUD icon state
+	var/hud_icon_state = "DEFAULT_TO_TITLE"
 
 	// !!Stateful variables!! - If Recover() is ever implemented, these need to be carried over.
 	/// How many players have this job

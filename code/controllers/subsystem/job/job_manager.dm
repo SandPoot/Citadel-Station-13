@@ -251,7 +251,8 @@
 	if(job_name_lookup[title])
 		var/datum/job/J = job_name_lookup[title]
 		if(J.hud_icon_state)
-			return J.hud_icon_state
+			var/state = J.hud_icon_state
+			return state == "DEFAFULT_TO_TITLE"? ckey(J.GetName()) : J.hud_icon_state
 	if(title in get_all_centcom_jobs())
 		return "CentCom"
 	return "Unknown"
