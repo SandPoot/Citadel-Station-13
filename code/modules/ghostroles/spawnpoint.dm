@@ -73,12 +73,12 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 
 /datum/component/ghostrole_spawnpoint/proc/OnSpawn(mob/created, datum/ghostrole/role)
 	if(istype(proc_to_call_or_callback))
-		proc_to_call_or_callback.Invoke(created, role)
+		proc_to_call_or_callback.Invoke(created, roles, params, src)
 	spawns++
 	if(ispath(proc_to_call_or_callback))
 		if(!hascall(parent, proc_to_call_or_callback))
 			CRASH("Invalid proc [proc_to_call_or_callback] on [parent]")
-		call(parent, proc_to_call_or_callback)(created, role, params)
+		call(parent, proc_to_call_or_callback)(created, role, params, src)
 
 /datum/component/ghostrole_spawnpoint/vv_edit_var(var_name, var_value, massedit)
 	if(var_name == NAMEOF(src, proc_to_call_or_callback))

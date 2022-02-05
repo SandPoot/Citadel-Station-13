@@ -12,6 +12,8 @@
 	var/role_spawns = 1
 	/// automatic handling - params. If this is a string at Init, it'll be json_decoded.
 	var/list/role_params
+	/// automatic handling - qdel on running out
+	var/qdel_on_deplete = FALSE
 
 /obj/structure/ghost_role_spawner/Initialize(mapload, params, spawns)
 	. = ..()
@@ -23,5 +25,6 @@
 		role_spawns = spawns
 	AddComponent(/datum/component/ghostrole_spawnpoint, role_type, role_spawns, role_params, /obj/structure/ghost_role_spawner/proc/on_spawn)
 
-/obj/structure/ghost_role_spawner/proc/on_spawn(mob/created, datum/ghostrole/role, list/params)
-	return
+/obj/structure/ghost_role_spawner/proc/on_spawn(mob/created, datum/ghostrole/role, list/params, datum/component/ghostrole_spawnpoint/spawnpoint)
+	if(qdel_on_deplete && !spawnpoint.SpawnsLeft())
+		qdel(src)

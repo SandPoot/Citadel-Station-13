@@ -20,7 +20,7 @@
 	if(params["team"])
 		var/datum/team/ashwalkers/team = params["team"]
 		if(C.ckey in team.players_spawned)
-			to_chat(clientC span_warning("<b>You have exhausted your usefulness to the Necropolis</b>."))
+			to_chat(C, span_warning("<b>You have exhausted your usefulness to the Necropolis</b>."))
 			return FALSE
 	return ..()
 

@@ -110,6 +110,11 @@
 	/// Any undershirt. While on humans it is a string, here we use paths to stay consistent with the rest of the equips.
 	var/datum/sprite_accessory/undershirt = null
 
+	/// Access override for ID
+	var/list/access_override
+	/// Access added to ID
+	var/list/access_add
+
 /**
  * Called at the start of the equip proc
  *
@@ -175,7 +180,13 @@
 	if(glasses)
 		H.equip_to_slot_or_del(new glasses(H), SLOT_GLASSES, TRUE)
 	if(id)
-		H.equip_to_slot_or_del(new id(H), SLOT_WEAR_ID, TRUE)
+		var/obj/item/card/id/ID = new id(H)
+		if(H.equip_to_slot_or_del(ID, SLOT_WEAR_ID, TRUE) && istype(ID))
+			if(islist(access_override))
+				ID.access = access_override.Copy()
+			else if(islist(access_add))
+				ID.access |= access_add
+
 	if(suit_store)
 		H.equip_to_slot_or_del(new suit_store(H), SLOT_S_STORE, TRUE)
 	if(undershirt)
