@@ -190,7 +190,7 @@
 /turf/open/floor/mineral/plastitanium/red,
 /area/awaymission/research/interior/engineering)
 "aK" = (
-/obj/structure/ghost_role_spawner/syndicatesoldier{
+/obj/effect/mob_spawn/human/syndicate{
 	brute_damage = 200
 	},
 /turf/open/floor/mineral/plastitanium/red,
@@ -654,7 +654,7 @@
 /turf/open/floor/plasteel/white,
 /area/awaymission/research/interior/engineering)
 "bI" = (
-/obj/structure/ghost_role_spawner/syndicatesoldier{
+/obj/effect/mob_spawn/human/syndicate{
 	brute_damage = 200
 	},
 /obj/item/ammo_casing/c45,
@@ -867,7 +867,7 @@
 /turf/open/floor/plasteel/white,
 /area/awaymission/research/interior/engineering)
 "cg" = (
-/obj/structure/ghost_role_spawner/syndicatesoldier{
+/obj/effect/mob_spawn/human/syndicate{
 	brute_damage = 200
 	},
 /turf/open/floor/plasteel{
@@ -2681,7 +2681,7 @@
 /turf/open/floor/plasteel/white,
 /area/awaymission/research/interior/cryo)
 "fH" = (
-/obj/structure/ghost_role_spawner/syndicatesoldier{
+/obj/effect/mob_spawn/human/syndicate{
 	brute_damage = 200
 	},
 /obj/effect/decal/cleanable/blood,

@@ -551,7 +551,7 @@
 	desc = "This wand uses healing magics to heal and revive. The years of the cold have weakened the magic inside the wand."
 	max_charges = 5
 
-/obj/structure/ghost_role_spawner/syndicatesoldier/coldres
+/obj/effect/mob_spawn/human/syndicate/coldres
 	name = "Syndicate Snow Operative"
 	outfit = /datum/outfit/snowsyndie/corpse
 
@@ -559,7 +559,7 @@
 	name = "Syndicate Snow Operative Corpse"
 	implants = null
 
-/obj/structure/ghost_role_spawner/syndicatesoldier/coldres/alive
+/obj/effect/mob_spawn/human/syndicate/coldres/alive
 	name = "sleeper"
 	mob_name = "Syndicate Snow Operative"
 	icon = 'icons/obj/machines/sleeper.dmi'
