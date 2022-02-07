@@ -1290,6 +1290,16 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		// track last job rendered
 		var/datum/job/last
 
+		// iterate departments
+		var/list/datum/department/departments = horrifying_nested_list[faction]
+		for(var/datum/department/D as anything in departments)
+
+			var/list/data = departments[D]
+			// put all jobs in
+			for(var/title in data)
+				var/datum/job/J = data[title]
+
+
 		// start first table
 		HTML += "<td width='20%'><table width='100%' cellpadding='1' cellspacing='0'>"
 
@@ -1304,13 +1314,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	// close final
 	HTML += "</center>"
-
-	var/index = -1
-
-	//The job before the current job. I only use this to get the previous jobs color when I'm filling in blank rows.
-	var/datum/job/lastJob
-
-
 
 	HTML += "<table width='100%' cellpadding='1' cellspacing='0'><tr><td width='20%'>" // Table within a table for alignment, also allows you to easily add more colomns.
 	HTML += "<table width='100%' cellpadding='1' cellspacing='0'>"

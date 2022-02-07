@@ -3,7 +3,7 @@
 	desc = "Independent bounty hunters sent after fugitives"
 	instantiator = /datum/ghostrole_instantiator/human/random/fugitive_hunter
 
-/datum/ghostrole/fugitive_hunter/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
+/datum/ghostrole/fugitive_hunter/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
 	. = ..()
 	var/datum/antagonist/fugitive_hunter/fughunter = new
 	fughunter.backstory = params["bcakstory"]

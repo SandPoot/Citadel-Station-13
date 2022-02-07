@@ -31,7 +31,7 @@
 	if(J.req_admin_notify)
 		to_chat(output, "<b>You are playing a job that is important for Game Progression. If you have to disconnect immediately, please notify the admins via adminhelp. Otherwise put your locker gear back into the locker and cryo out.</b>")
 	if(J.custom_spawn_text)
-		to_chat(output, "<b>[job.custom_spawn_text]</b>")
+		to_chat(output, "<b>[J.custom_spawn_text]</b>")
 	if(CONFIG_GET(number/minimal_access_threshold))
 		to_chat(output, "<span class='notice'><B>As this station was initially staffed with a [CONFIG_GET(flag/jobs_have_minimal_access) ? "full crew, only your job's necessities" : "skeleton crew, additional access may"] have been added to your ID card.</B></span>")
 	if(ishuman(M))
@@ -74,7 +74,7 @@
 
 
 	// tcg card handling
-	var/list/tcg_cards = C.prefs.tcg_cargs
+	var/list/tcg_cards = C.prefs.tcg_cards
 	var/list/tcg_decks = C.prefs.tcg_decks
 	if(tcg_cards && ishuman(M))
 		var/mob/living/carbon/human/H = M

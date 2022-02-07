@@ -23,7 +23,7 @@
 		if(job.title == "Assistant")
 			if(isnum(client.player_age) && client.player_age <= 14) //Newbies can always be assistants
 				return JOB_AVAILABLE
-			for(var/datum/job/J in SSjob.occupations)
+			for(var/datum/job/J in SSjob.GetAllJobs(job.faction))
 				if(J && J.current_positions < J.total_positions && J.title != job.title)
 					return JOB_UNAVAILABLE_SLOTFULL
 		else
@@ -70,13 +70,14 @@
 	SSticker.queued_players -= src
 	SSticker.queue_delay = 4
 
-	SSjob.AssignRole(src, rank, 1)
+	SSjob.Assign(mind, job, TRUE, TRUE)
 
 	var/mob/living/character = create_character(TRUE)	//creates the human and transfers vars and mind
 	var/equip = SSjob.EquipRank(character, rank, TRUE)
 	if(isliving(equip))	//Borgs get borged in the equip, so we need to make sure we handle the new mob.
 		character = equip
 
+	#warn groan
 	if(job && !job.override_latejoin_spawn(character))
 		SSjob.SendToLatejoin(character)
 		if(!arrivals_docked)

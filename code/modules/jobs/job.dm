@@ -270,6 +270,12 @@
 /datum/job/proc/SlotsRemaining()
 	return max(0, total_positions - current_positions)
 
+/**
+ * Get spawntext for supervisors
+ */
+/datum/job/proc/GetSupervisorText()
+	return supervisor_text_override || english_list(GetHeadNames())
+
 //Only override this proc
 //H is usually a human unless an /equip override transformed it
 /datum/job/proc/after_spawn(mob/M, latejoin, client/C)

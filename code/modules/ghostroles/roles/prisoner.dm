@@ -16,8 +16,8 @@
 
 /datum/ghostrole_instantiator/human/random/lavaland_prisoner/Randomize(mob/living/carbon/human/H, list/params)
 	. = ..()
-	L.real_name = "NTP #LL-0[rand(111,999)]" //Nanotrasen Prisoner #Lavaland-(numbers)
-	L.name = L.real_name
+	H.real_name = "NTP #LL-0[rand(111,999)]" //Nanotrasen Prisoner #Lavaland-(numbers)
+	H.name = H.real_name
 
 //Prisoner containment sleeper: Spawns in crashed prison ships in lavaland. Ghosts become escaped prisoners and are advised to find a way out of the mess they've gotten themselves into.
 /obj/structure/ghost_role_spawner/prisoner_transport

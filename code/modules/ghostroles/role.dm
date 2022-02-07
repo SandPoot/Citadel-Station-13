@@ -59,7 +59,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 		instantiator = new instantiator
 	id = _id || type
 
-/datum/ghostrole/proc/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
+/datum/ghostrole/proc/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
 	if(show_standard_greeting)
 		to_chat(created, {"<center><b><font size='16px'>You have spawned as a ghostrole.</font></b></center>
 		These roles are usually more roleplay oriented than standard hard-defined antagonist roles - besure to follow spawntext (if any), as well as server rules.
@@ -165,8 +165,8 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /**
  * Spawnpoint can be null here, if we're not using a spawnpoint
  */
-/datum/ghostrole/proc/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
-	Greet(created, spawnpoint)
+/datum/ghostrole/proc/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
+	Greet(created, spawnpoint, params)
 	spawns++
 	spawnpoint?.OnSpawn(created, src)
 
