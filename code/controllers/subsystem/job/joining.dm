@@ -12,7 +12,7 @@
 	J.after_spawn(M, FALSE, C)
 	GreetPlayer(M, J, TRUE, C)
 	if(!J?.override_latejoin_spawn(M))
-		SendToRoundstart(M, C, job = J)
+		SendToRoundstart(M, C, J)
 	PostJoin(M, J, C, FALSE)
 
 /datum/controller/subsystem/job/proc/ProcessLatejoinPlayer(mob/M, datum/job/J, loadout = TRUE, client/C)

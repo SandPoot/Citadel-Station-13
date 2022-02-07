@@ -17649,7 +17649,7 @@
 /turf/open/indestructible/hotelwood,
 /area/centcom/holding)
 "QM" = (
-/obj/effect/mob_spawn/human/ghostcafe{
+/obj/structure/ghost_role_spawner/ghost_cafe{
 	dir = 8
 	},
 /turf/open/indestructible/hotelwood,

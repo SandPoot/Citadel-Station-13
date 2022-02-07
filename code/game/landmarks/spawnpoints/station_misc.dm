@@ -10,9 +10,9 @@
 	if(C && !length(C.buckled_mobs))
 		C.buckle_mob(M, FALSE, FALSE)
 	if(SSshuttle.arrivals.mode == SHUTTLE_CALL)
-		var/atom/movable/screen/splash/Spl = new(character.client, TRUE)
+		var/atom/movable/screen/splash/Spl = new(C, TRUE)
 		Spl.Fade(TRUE)
-		character.playsound_local(get_turf(character), 'sound/voice/ApproachingTG.ogg', 25)
+		M.playsound_local(get_turf(character), 'sound/voice/ApproachingTG.ogg', 25)
 
 /atom/movable/landmark/spawnpoint/overflow/station
 	faction = JOB_FACTION_STATION

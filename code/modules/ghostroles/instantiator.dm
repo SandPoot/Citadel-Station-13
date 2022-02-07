@@ -2,6 +2,8 @@
  * Handles mob creation, equip, and ckey transfer.
  */
 /datum/ghostrole_instantiator
+	/// traits to add to mob : will be made with GHOSTROLE_TRAIT source
+	var/list/mob_traits
 
 /datum/ghostrole_instantiator/proc/Run(client/C, atom/location, list/params)
 	RETURN_TYPE(/mob)
@@ -34,6 +36,8 @@
 	var/mob/living/carbon/human/H = new(location)
 	if(exempt_health_events)
 		ADD_TRAIT(H, TRAIT_EXEMPT_HEALTH_EVENTS, GHOSTROLE_TRAIT)
+	for(var/trait in mob_traits)
+		ADD_TRAIT(H, trait, GHOSTROLE_TRAIT)
 	return H
 
 /datum/ghostrole_instantiator/human/Equip(client/C, mob/M, list/params)
@@ -84,3 +88,9 @@
 	var/mob/living/carbon/human/H = ..()
 	LoadSavefile(C, H)
 	return H
+
+/datum/ghostrole_instantiator/human/player_static/proc/LoadSavefile(client/C, mob/living/carbon/human/H)
+	C.prefs.copy_to(H)
+	SSjob.EquipLoadout(H, FALSE, null, C.prefs, C.ckey)
+	if(CONFIG_GET(flag/roundstart_traits))
+		SSquirks.AssignQuirks(H, C, TRUE, FALSE, null, FALSE, C)

@@ -1,22 +1,16 @@
 
-#warn convert
+/datum/ghostrole/ghost_cafe
+	name = "Ghost Cafe Visitor"
+	assigned_role = "Ghost Cafe Visitor"
+	desc = "You know one thing for sure. You aren't actually alive! Are you in a simulation?"
+	jobban_role = ROLE_GHOSTCAFE
 
-
-/obj/effect/mob_spawn/human/ghostcafe
+/obj/structure/ghost_role_spawner/ghost_cafe
 	name = "Ghost Cafe Sleeper"
-	uses = -1
 	icon = 'icons/obj/machines/sleeper.dmi'
 	icon_state = "sleeper"
-	mob_name = "a ghost cafe visitor"
-	roundstart = FALSE
-	anchored = TRUE
-	density = FALSE
-	death = FALSE
-	assignedrole = "Ghost Cafe Visitor"
-	short_desc = "You are a Ghost Cafe Visitor!"
-	flavour_text = "You know one thing for sure. You arent actually alive. Are you in a simulation?"
-	skip_reentry_check = TRUE
-	banType = ROLE_GHOSTCAFE
+	role_type = /datum/ghostrole/ghost_cafe
+	role_spawns = INFINITY
 
 /datum/action/toggle_dead_chat_mob
 	icon_icon = 'icons/mob/mob.dmi'
@@ -34,7 +28,6 @@
 	else
 		ADD_TRAIT(M,TRAIT_SIXTHSENSE,GHOSTROLE_TRAIT)
 		to_chat(M,"<span class='notice'>You're once again longer hearing deadchat.</span>")
-
 
 /datum/action/disguise
 	name = "Disguise"
@@ -102,25 +95,28 @@
 		H.remove_alt_appearance("ghost_cafe_disguise")
 		currently_disguised = FALSE
 
-/obj/effect/mob_spawn/human/ghostcafe/special(mob/living/carbon/human/new_spawn)
-	if(new_spawn.client)
-		new_spawn.client.prefs.copy_to(new_spawn)
-		var/area/A = get_area(src)
-		var/datum/outfit/O = new /datum/outfit/ghostcafe()
-		O.equip(new_spawn, FALSE, new_spawn.client.prefs)
-		SSjob.equip_loadout(null, new_spawn, FALSE)
-		SSquirks.AssignQuirks(new_spawn, new_spawn.client, TRUE, TRUE, null, FALSE, new_spawn)
-		new_spawn.AddElement(/datum/element/ghost_role_eligibility, free_ghosting = TRUE)
-		new_spawn.AddElement(/datum/element/dusts_on_catatonia)
-		new_spawn.AddElement(/datum/element/dusts_on_leaving_area,list(A.type,/area/hilbertshotel))
-		ADD_TRAIT(new_spawn, TRAIT_SIXTHSENSE, GHOSTROLE_TRAIT)
-		ADD_TRAIT(new_spawn, TRAIT_EXEMPT_HEALTH_EVENTS, GHOSTROLE_TRAIT)
-		ADD_TRAIT(new_spawn, TRAIT_NO_MIDROUND_ANTAG, GHOSTROLE_TRAIT) //The mob can't be made into a random antag, they are still eligible for ghost roles popups.
-		to_chat(new_spawn,"<span class='boldwarning'>Ghosting is free!</span>")
-		var/datum/action/toggle_dead_chat_mob/D = new(new_spawn)
-		D.Grant(new_spawn)
-		var/datum/action/disguise/disguise_action = new(new_spawn)
-		disguise_action.Grant(new_spawn)
+/datum/ghostrole/ghost_cafe/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
+	. = ..()
+	to_chat(created,"<span class='boldwarning'>Ghosting is free!</span>")
+
+/datum/ghostrole_instantiator/human/player_static/ghost_cafe
+	equip_outfit = /datum/outfit/ghostcafe
+	mob_traits = list(
+		TRAIT_SIXTHSENSE,
+		TRAIT_EXEMPT_HEALTH_EVENTS,
+		TRAIT_NO_MIDROUND_ANTAG
+	)
+
+/datum/ghostrole_instantiator/human/player_static/ghost_cafe/Create(client/C, atom/location, list/params)
+	. = ..()
+	var/mob/living/carbon/human/H = .
+	H.AddElement(/datum/element/ghost_role_eligibility, free_ghosting = TRUE)
+	H.AddElement(/datum/element/dusts_on_catatonia)
+	H.AddElement(/datum/element/dusts_on_leaving_area,list(A.type,/area/hilbertshotel))
+	var/datum/action/toggle_dead_chat_mob/D = new(H)
+	D.Grant(H)
+	var/datum/action/disguise/disguise_action = new(H)
+	disguise_action.Grant(H)
 
 /datum/outfit/ghostcafe
 	name = "ID, jumpsuit and shoes"
