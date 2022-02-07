@@ -86,6 +86,7 @@
 
 	if(humanc)	//These procs all expect humans
 		GLOB.data_core.manifest_inject(humanc, humanc.client, humanc.client.prefs)
+		#warn AAAAAAAAAA
 		if(SSshuttle.arrivals)
 			SSshuttle.arrivals.QueueAnnounce(humanc, rank)
 		else
