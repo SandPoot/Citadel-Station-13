@@ -68,6 +68,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 		to_chat(created, spawntext)
 	if(spawnpoint.spawntext)
 		to_chat(created, spawntext)
+	// todo: policyconfig
 
 /**
  * Master proc for spawning someone as this role.

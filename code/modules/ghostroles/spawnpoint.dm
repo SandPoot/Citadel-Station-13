@@ -19,7 +19,7 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 	/// custom HTML spawntext to show, if any
 	var/spawntext
 
-/datum/component/ghostrole_spawnpoint/Initialize(role_type, allowed_spawns = INFINITY, list/params, datum/callback/proc_to_call_or_callback, notify_ghosts = TRUE)
+/datum/component/ghostrole_spawnpoint/Initialize(role_type, allowed_spawns = INFINITY, list/params, datum/callback/proc_to_call_or_callback, notify_ghosts = TRUE, spawntext)
 	if((. = ..()) & COMPONENT_INCOMPATIBLE)
 		return
 	if(!isatom(parent))
@@ -27,6 +27,7 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 	max_spawns = allowed_spawns
 	src.role_type = role_type
 	src.params = params
+	src.spawntext = spawntext
 	src.proc_to_call_or_callback = proc_to_call_or_callback
 	if(notify_ghosts)
 		var/datum/ghostrole/role = get_ghostrole_datum(role_type)

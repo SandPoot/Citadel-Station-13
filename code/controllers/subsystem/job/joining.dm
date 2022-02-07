@@ -40,6 +40,12 @@
 		M.add_memory("Your account ID is [wageslave.account_id].")
 
 /datum/controller/subsystem/job/proc/EquipPlayer(mob/M, datum/job/J, loadout = TRUE, datum/preferences/prefs, announce, latejoin)
+	if(!istype(J))
+		J = GetJobAuto(J)
+	ASSERT(istype(J))
+	// attempt autodetect prefs
+	if(!prefs)
+		prefs = M.client?.prefs
 	// if dress code compliant or no job, do loadout only. otherwise, do loadout first or job first based on dress code compliance
 	var/list/obj/item/leftovers
 	if(!J || !J.dresscodecompliant)

@@ -1,3 +1,8 @@
+/datum/ghostrole/old_research
+	abstract_type = /datum/ghostrole/old_research
+
+
+
 #warn convert
 
 //Ancient cryogenic sleepers. Players become NT crewmen from a hundred year old space station, now on the verge of collapse.

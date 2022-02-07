@@ -5,6 +5,8 @@
 	name = "Ghost Role Spawner"
 	desc = "if you're seeing this a coder fucked up"
 	resistance_flags = INDESTRUCTIBLE
+	icon = 'icons/obj/machines/sleeper.dmi'
+	icon_state = "sleeper"
 
 	/// automatic handling - role type
 	var/role_type
@@ -14,8 +16,10 @@
 	var/list/role_params
 	/// automatic handling - qdel on running out
 	var/qdel_on_deplete = FALSE
+	/// automatic handling - special spawntext
+	var/special_spawntext
 
-/obj/structure/ghost_role_spawner/Initialize(mapload, params, spawns)
+/obj/structure/ghost_role_spawner/Initialize(mapload, params, spawns, spawntext)
 	. = ..()
 	if(params)
 		role_params = params
@@ -23,7 +27,9 @@
 		role_params = json_decode(role_params)
 	if(spawns)
 		role_spawns = spawns
-	AddComponent(/datum/component/ghostrole_spawnpoint, role_type, role_spawns, role_params, /obj/structure/ghost_role_spawner/proc/on_spawn)
+	if(spawntext)
+		special_spawntext = spawntext
+	AddComponent(/datum/component/ghostrole_spawnpoint, role_type, role_spawns, role_params, /obj/structure/ghost_role_spawner/proc/on_spawn, null, special_spawntext)
 
 /obj/structure/ghost_role_spawner/proc/on_spawn(mob/created, datum/ghostrole/role, list/params, datum/component/ghostrole_spawnpoint/spawnpoint)
 	if(qdel_on_deplete && !spawnpoint.SpawnsLeft())

@@ -37,10 +37,18 @@
 	return H
 
 /datum/ghostrole_instantiator/human/Equip(client/C, mob/M, list/params)
-	if(ispath(equip_outfit, /datum/outfit))
-		var/datum/outfit/O = new equip_outfit
+	var/datum/outfit/O = GetOutfit(C, M, params)
+	if(O)
 		O.equip(M)
+	var/mob/living/carbon/human/H = M
+
 	#warn survival gear
+
+/datum/ghostrole_instantiator/human/proc/GetOutfit(client/C, mob/M, list/params)
+	if(ispath(equip_outfit, /datum/outfit))
+		return new equip_outfit
+	if(istype(equip_outfit, /datum/outfit))
+		return equip_outfit
 
 /datum/ghostrole_instantiator/human/random
 
