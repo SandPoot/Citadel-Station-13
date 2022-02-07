@@ -270,18 +270,18 @@
 /datum/job/proc/SlotsRemaining()
 	return max(0, total_positions - current_positions)
 
-
-
 //Only override this proc
 //H is usually a human unless an /equip override transformed it
-/datum/job/proc/after_spawn(mob/living/H, mob/M, latejoin = FALSE)
+/datum/job/proc/after_spawn(mob/M, latejoin, client/C)
 	//do actions on H but send messages to M as the key may not have been transferred_yet
 	if(mind_traits)
 		for(var/t in mind_traits)
-			ADD_TRAIT(H.mind, t, JOB_TRAIT)
-	if(/datum/quirk/paraplegic in blacklisted_quirks)
-		H.regenerate_limbs() //if you can't be a paraplegic, attempt to regenerate limbs to stop amputated limb selection
-		H.set_resting(FALSE, TRUE) //they probably shouldn't be on the floor because they had no legs then suddenly had legs
+			ADD_TRAIT(M.mind, t, JOB_TRAIT)
+	if(ishuman(M))
+		var/mob/living/carbon/human/H = M
+		if(/datum/quirk/paraplegic in blacklisted_quirks)
+			H.regenerate_limbs() //if you can't be a paraplegic, attempt to regenerate limbs to stop amputated limb selection
+			H.set_resting(FALSE, TRUE) //they probably shouldn't be on the floor because they had no legs then suddenly had legs
 
 /datum/job/proc/announce(mob/living/carbon/human/H)
 	if(head_announce)
@@ -312,9 +312,10 @@
 		return threat
 
 //Don't override this unless the job transforms into a non-human (Silicons do this for example)
-/datum/job/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, client/preference_source)
+/datum/job/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, datum/preferences/prefs)
 	if(!H)
 		return FALSE
+
 	if(!visualsOnly)
 		var/datum/bank_account/bank_account = new(H.real_name, src)
 		bank_account.account_holder = H.real_name
@@ -322,18 +323,18 @@
 		bank_account.account_id = rand(111111,999999)
 		bank_account.payday(STARTING_PAYCHECKS, TRUE)
 		H.account_id = bank_account.account_id
-	if(CONFIG_GET(flag/enforce_human_authority) && (title in SSjob.GetDepartmentType(/datum/department/command).GetJobNames()))
 
+	if(CONFIG_GET(flag/enforce_human_authority) && (title in SSjob.GetDepartmentType(/datum/department/command).GetJobNames()))
 		if(H.dna.species.id != "human")
 			H.set_species(/datum/species/human)
-			H.apply_pref_name("human", preference_source)
+			H.apply_pref_name("human", prefs)
 
 	//Equip the rest of the gear
 	H.dna.species.before_equip_job(src, H, visualsOnly)
 
 	var/datum/outfit/job/O = outfit_override || outfit
 	if(O)
-		H.equipOutfit(O, visualsOnly, preference_source) //mob doesn't have a client yet.
+		H.equipOutfit(O, visualsOnly, prefs) //mob doesn't have a client yet.
 
 	H.dna.species.after_equip_job(src, H, visualsOnly)
 

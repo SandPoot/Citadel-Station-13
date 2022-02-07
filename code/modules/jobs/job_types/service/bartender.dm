@@ -28,7 +28,7 @@
 	backpack_contents = list(/obj/item/storage/box/beanbag=1,/obj/item/book/granter/action/drink_fling=1)
 	shoes = /obj/item/clothing/shoes/laceup
 
-/datum/job/bartender/after_spawn(mob/living/H, mob/M, latejoin = FALSE)
+/datum/job/bartender/after_spawn(mob/M, latejoin, client/C)
 	. = ..()
 	var/datum/action/innate/drink_fling/D = new
-	D.Grant(H)
+	D.Grant(M)

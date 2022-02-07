@@ -6,7 +6,7 @@
 	ASSERT(M)
 	// allow autodetection of ckey, prefs
 	if(!ckey)
-		ckey = M.ckey
+		ckey = M.ckey || P?.parent?.ckey
 	if(!P)
 		P = GLOB.preferences_datums[ckey]
 	ASSERT(P)
@@ -85,23 +85,11 @@
 		return
 	return TRUE
 
-/datum/controller/subsystem/job/proc/HandleLoadoutLeftovers(mob/living/M, list/obj/item/items)
-
-
-#warn this is dumb and needs redone
-/datum/controller/subsystem/job/proc/equip_loadout(mob/dead/new_player/N, mob/living/M, equipbackpackstuff, bypass_prereqs = FALSE, can_drop = TRUE)
-
-			if(!M.equip_to_slot_if_possible(I, G.slot, disable_warning = TRUE, bypass_equip_delay_self = TRUE)) // If the job's dresscode compliant, try to put it in its slot, first
-				if(iscarbon(M))
-					var/mob/living/carbon/C = M
-					var/obj/item/storage/backpack/B = C.back
-					if(!B || !SEND_SIGNAL(B, COMSIG_TRY_STORAGE_INSERT, I, null, TRUE, TRUE)) // Otherwise, try to put it in the backpack, for carbons.
-						if(can_drop)
-							I.forceMove(get_turf(C))
-						else
-							qdel(I)
-				else if(!M.equip_to_slot_if_possible(I, SLOT_IN_BACKPACK, disable_warning = TRUE, bypass_equip_delay_self = TRUE)) // Otherwise, try to put it in the backpack
-					if(can_drop)
-						I.forceMove(get_turf(M)) // If everything fails, just put it on the floor under the mob.
-					else
-						qdel(I)
+/datum/controller/subsystem/job/proc/HandleLoadoutLeftovers(mob/living/M, list/obj/item/items, can_drop = TRUE)
+	for(var/obj/item/I in items)		// don't risk runtime
+		if(M.back && SEND_SIGNAL(M.back, COMSIG_TRY_STORAGE_INSERT, I, null, TRUE, TRUE))
+			continue
+		if(!can_drop)
+			qdel(I)
+			continue
+		I.forceMove(M.drop_location())

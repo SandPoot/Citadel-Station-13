@@ -63,7 +63,7 @@
 
 		if((job.current_positions < job.roundstart_positions) || job.roundstart_positions == -1)
 			JobDebug("GRJ Random job given, Player: [player], Job: [job]")
-			if(AssignRole(player, job.title))
+			if(Assign(player, job.title))
 				return TRUE
 
 /datum/controller/subsystem/job/proc/ResetOccupations()
@@ -90,7 +90,7 @@
 			if(!candidates?.len)
 				continue
 			var/mob/dead/new_player/candidate = pick(candidates)
-			if(AssignRole(candidate, job))
+			if(Assign(candidate, job))
 				return 1
 	return 0
 
@@ -106,7 +106,7 @@
 		if(!candidates?.len)
 			continue
 		var/mob/dead/new_player/candidate = pick(candidates)
-		AssignRole(candidate, job)
+		Assign(candidate, job)
 
 /datum/controller/subsystem/job/proc/FillAIPosition()
 	var/ai_selected = 0
@@ -119,13 +119,12 @@
 			candidates = FindOccupationCandidates(job, level)
 			if(candidates.len)
 				var/mob/dead/new_player/candidate = pick(candidates)
-				if(AssignRole(candidate, "AI"))
+				if(Assign(candidate, "AI"))
 					ai_selected++
 					break
 	if(ai_selected)
 		return 1
 	return 0
-
 
 /** Proc DivideOccupations
  *  fills var "assigned_role" for all ready players.
@@ -180,7 +179,7 @@
 	JobDebug("AC1, Candidates: [overflow_candidates?.len]")
 	for(var/mob/dead/new_player/player in overflow_candidates)
 		JobDebug("AC1 pass, Player: [player]")
-		AssignRole(player, SSjob.overflow_role)
+		Assign(player, SSjob.overflow_role)
 		overflow_candidates -= player
 	JobDebug("DO, AC1 end")
 
@@ -247,7 +246,7 @@
 					// If the job isn't filled
 					if((job.current_positions < job.roundstart_positions) || job.roundstart_positions == -1)
 						JobDebug("DO pass, Player: [player], Level:[level], Job:[job.title]")
-						AssignRole(player, job.title)
+						Assign(player, job.title)
 						unassigned -= player
 						break
 
@@ -262,7 +261,7 @@
 	//Mop up people who can't leave.
 	for(var/mob/dead/new_player/player in unassigned) //Players that wanted to back out but couldn't because they're antags (can you feel the edge case?)
 		if(!GiveRandomJob(player))
-			if(!AssignRole(player, SSjob.overflow_role)) //If everything is already filled, make them an assistant
+			if(!Assign(player, SSjob.overflow_role)) //If everything is already filled, make them an assistant
 				return FALSE //Living on the edge, the forced antagonist couldn't be assigned to overflow role (bans, client age) - just reroll
 
 	return validate_required_jobs(required_jobs)
@@ -294,7 +293,7 @@
 		if(QDELETED(player) || !allowed_to_be_a_loser)
 			RejectPlayer(player)
 		else
-			if(!AssignRole(player, SSjob.overflow_role))
+			if(!Assign(player, SSjob.overflow_role))
 				RejectPlayer(player)
 	else if(player.client.prefs.joblessrole == BERANDOMJOB)
 		if(!GiveRandomJob(player))

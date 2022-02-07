@@ -107,7 +107,7 @@
 		new_spawn.client.prefs.copy_to(new_spawn)
 		var/area/A = get_area(src)
 		var/datum/outfit/O = new /datum/outfit/ghostcafe()
-		O.equip(new_spawn, FALSE, new_spawn.client)
+		O.equip(new_spawn, FALSE, new_spawn.client.prefs)
 		SSjob.equip_loadout(null, new_spawn, FALSE)
 		SSquirks.AssignQuirks(new_spawn, new_spawn.client, TRUE, TRUE, null, FALSE, new_spawn)
 		new_spawn.AddElement(/datum/element/ghost_role_eligibility, free_ghosting = TRUE)

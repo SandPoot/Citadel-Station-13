@@ -1558,9 +1558,18 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	return 1
 
-
 /datum/preferences/proc/ResetJobs()
 	job_preferences = list()
+
+/datum/preferences/proc/GetPreferredAltTitle(title)
+	if(!LAZYLEN(alt_titles))
+		return title
+	var/alt_title = alt_titles[title]
+	if(!alt_title)
+		return title
+	if(!SSjob.alt_title_lookup[alt_title])
+		return title
+	return alt_title
 
 /datum/preferences/proc/SetQuirks(mob/user)
 	if(!SSquirks)

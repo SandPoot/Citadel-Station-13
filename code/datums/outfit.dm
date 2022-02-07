@@ -134,7 +134,7 @@
  *
  * If visualsOnly is true, you can omit any work that doesn't visually appear on the character sprite
  */
-/datum/outfit/proc/pre_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
+/datum/outfit/proc/pre_equip(mob/living/carbon/human/H, visualsOnly = FALSE, datum/preferences/prefs)
 	//to be overridden for customization depending on client prefs,species etc
 	return
 
@@ -149,7 +149,7 @@
  *
  * If visualsOnly is true, you can omit any work that doesn't visually appear on the character sprite
  */
-/datum/outfit/proc/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
+/datum/outfit/proc/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, datum/preferences/prefs)
 	//to be overridden for toggling internals, id binding, access etc
 	return
 
@@ -161,8 +161,8 @@
  *
  * If visualsOnly is true, you can omit any work that doesn't visually appear on the character sprite
  */
-/datum/outfit/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
-	pre_equip(H, visualsOnly, preference_source)
+/datum/outfit/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, datum/preferences/prefs)
+	pre_equip(H, visualsOnly, prefs)
 
 	//Start with uniform,suit,backpack for additional slots
 	if(uniform)
@@ -247,7 +247,7 @@
 		var/obj/item/clothing/suit/space/hardsuit/HS = H.wear_suit
 		HS.ToggleHelmet()
 
-	post_equip(H, visualsOnly, preference_source)
+	post_equip(H, visualsOnly, prefs)
 
 	if(!visualsOnly)
 		apply_fingerprints(H)

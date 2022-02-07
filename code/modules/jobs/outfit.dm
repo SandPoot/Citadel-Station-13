@@ -47,7 +47,7 @@
 		holder = "[uniform]"
 	uniform = text2path(holder)
 
-/datum/outfit/job/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
+/datum/outfit/job/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, datum/preferences/prefs)
 	if(visualsOnly)
 		return
 
@@ -66,7 +66,7 @@
 		C.access = J.get_access()
 		shuffle_inplace(C.access) // Shuffle access list to make NTNet passkeys less predictable
 		C.registered_name = H.real_name
-		C.assignment = J.title
+		C.assignment = prefs?.GetPreferredAltTitle(J.title) || J.title
 		C.update_label()
 		for(var/A in SSeconomy.bank_accounts)
 			var/datum/bank_account/B = A
@@ -81,8 +81,8 @@
 		PDA.owner = H.real_name
 		PDA.ownjob = J.title
 		PDA.update_label()
-		if(preference_source && !PDA.equipped) //PDA's screen color, font style and look depend on client preferences.
-			PDA.update_style(preference_source)
+		if(prefs && !PDA.equipped) //PDA's screen color, font style and look depend on client preferences.
+			PDA.update_style(prefs)
 
 /datum/outfit/job/get_chameleon_disguise_info()
 	var/list/types = ..()
