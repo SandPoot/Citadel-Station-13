@@ -94,11 +94,6 @@
 				return 1
 	return 0
 
-/datum/controller/subsystem/job/proc/FillJobPositions(list/job_ids, list/levels, amount)
-	sortTim(levels, /proc/cmp_numeric_dsc)
-	for(var/level in levels)
-
-
 //This proc is called at the start of the level loop of DivideOccupations() and will cause head jobs to be checked before any other jobs of the same level
 //This is also to ensure we get as many heads as possible
 /datum/controller/subsystem/job/proc/CheckHeadPositions(level)
