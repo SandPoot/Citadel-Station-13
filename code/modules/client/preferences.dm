@@ -1218,29 +1218,21 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	popup.open(FALSE)
 	onclose(user, "capturekeypress", src)
 
-/datum/preferences/proc/SetChoices(mob/user, limit = 17, list/splitJobs = list("Chief Engineer"), widthPerColumn = 295, height = 620)
+/datum/preferences/proc/SetChoices(mob/user, jobs_per_column = 15, widthPerColumn = 295, height = 620)
 	if(!SSjob)
 		return
 
-	//limit - The amount of jobs allowed per column. Defaults to 17 to make it look nice.
-	//splitJobs - Allows you split the table by job. You can make different tables for each department by including their heads. Defaults to CE to make it look nice.
-	//widthPerColumn - Screen's width for every column.
-	//height - Screen's height.
+	// PLEASE IM BEGGING YOU WHEN DO WE REFACTOR PREFERNECES TO BE LESS AWFUL IN RENDERING THIS IS TERRIBLE AAA
 
 	var/width = widthPerColumn
 
-	var/HTML = "<center>"
+	var/HTML = list()
+	HTML += "<center>"
 
 	HTML += "<b>Choose occupation chances</b><br>"
 	HTML += "<div align='center'>Left-click to raise an occupation preference, right-click to lower it.<br></div>"
 	HTML += "<center><a href='?_src_=prefs;preference=job;task=close'>Done</a></center><br>" // Easier to press up here.
 	HTML += "<script type='text/javascript'>function setJobPrefRedirect(level, rank) { window.location.href='?_src_=prefs;preference=job;task=setJobLevel;level=' + level + ';text=' + encodeURIComponent(rank); return false; }</script>"
-	HTML += "<table width='100%' cellpadding='1' cellspacing='0'><tr><td width='20%'>" // Table within a table for alignment, also allows you to easily add more colomns.
-	HTML += "<table width='100%' cellpadding='1' cellspacing='0'>"
-	var/index = -1
-
-	//The job before the current job. I only use this to get the previous jobs color when I'm filling in blank rows.
-	var/datum/job/lastJob
 
 	// inefficient and awful but hey, player UI experience am i right gamers :/
 	// list is horrfiying_nested_list[faction as define text][department instance] = list(title = job instance)
@@ -1274,6 +1266,54 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			sortTim(L2, /proc/cmp_text_asc, associative = FALSE)
 	// finish
 
+	// prevent dupes
+	var/list/shown = list()
+
+	// here begins the monsterous loop.
+
+	// for each faction,
+	for(var/faction in horrifying_nested_list)
+		// title
+		HTML += "<center><b>[faction]</b></center>"
+
+		// container divider
+		HTML += "<div>"
+
+		// we want to group by department
+		// if a department would get cut off, split it into the next column
+
+		// outer table - allows us to easily add more columns
+		HTML += "<table width='100%' cellpadding='1' cellspacing='0'><tr>"
+
+		// track current job index
+		var/current = 0
+		// track last job rendered
+		var/datum/job/last
+
+		// start first table
+		HTML += "<td width='20%'><table width='100%' cellpadding='1' cellspacing='0'>"
+
+		// close current table
+		HTML += "</table></td>"
+
+		// close outer table
+		HTML += "</tr></table>"
+
+		// close container divider
+		HTML += "</div><br>>br>"
+
+	// close final
+	HTML += "</center>"
+
+	var/index = -1
+
+	//The job before the current job. I only use this to get the previous jobs color when I'm filling in blank rows.
+	var/datum/job/lastJob
+
+
+
+	HTML += "<table width='100%' cellpadding='1' cellspacing='0'><tr><td width='20%'>" // Table within a table for alignment, also allows you to easily add more colomns.
+	HTML += "<table width='100%' cellpadding='1' cellspacing='0'>"
 
 #warn oh god oh fuck - redo all this and do alt titles and the help box
 	for(var/datum/job/job in sortList(SSjob.occupations, /proc/cmp_job_display_asc))
@@ -1365,18 +1405,27 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	HTML += "</td'></tr></table>"
 	HTML += "</center></table>"
 
-	var/message = "Be an [SSjob.overflow_role] if preferences unavailable"
-	if(joblessrole == BERANDOMJOB)
-		message = "Get random job if preferences unavailable"
-	else if(joblessrole == RETURNTOLOBBY)
-		message = "Return to lobby if preferences unavailable"
-	HTML += "<center><br><a href='?_src_=prefs;preference=job;task=random'>[message]</a></center>"
+	// generate overflow pref
+	var/overflow_pref_msg = "ERROR"
+	switch(joblessrole)
+		if(BERANDOMJOB)
+			overflow_pref_msg = "Get random job if preferences unavailable"
+		if(RETURNTOLOBBY)
+			overflow_pref_msg = "Return to lobby if preferences unavailable"
+		if(BEOVERFLOW)
+			overflow_pref_msg = "Be \a [SSjob.overflow_role] if preferences unavailable"
+	HTML += "<center><a href='?_src_=prefs;preference=job;task=random'>[overflow_pref_msg]</a></center>"
+
+	// generate reset link
 	HTML += "<center><a href='?_src_=prefs;preference=job;task=reset'>Reset Preferences</a></center>"
 
 	var/datum/browser/popup = new(user, "mob_occupation", "<div align='center'>Occupation Preferences</div>", width, height)
 	popup.set_window_options("can_close=0")
-	popup.set_content(HTML)
+	popup.set_content(HTML.Join(""))
 	popup.open(FALSE)
+
+/datum/preferences/proc/GenerateOccupationEntry(datum/job/J)
+
 
 /datum/preferences/proc/SetJobPreferenceLevel(datum/job/job, level)
 	if (!job)

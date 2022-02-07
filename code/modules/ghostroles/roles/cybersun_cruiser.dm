@@ -24,7 +24,7 @@
 		<br>As the captain, this whole operation falls on your shoulders. You do not need to nuke the station, causing sufficient damage and preventing your ship from being destroyed will be enough."
 	instantiator = /datum/ghostrole_instantiator/cybersun/captain
 
-/datum/ghostrole_instantiator/cybersun
+/datum/ghostrole_instantiator/human/random/cybersun
 
 /datum/ghostrole_instantiator/cybersun/Create(client/C, atom/location)
 	. = ..()
@@ -33,13 +33,13 @@
 	var/mob/M = .
 	M.faction |= ROLE_SYNDICATE
 
-/datum/ghostrole_instantiator/cybersun/ship
+/datum/ghostrole_instantiator/human/random/cybersun/ship
 	equip_outfit = /datum/outfit/syndicate_empty/SBC
 
-/datum/ghostrole_instantiator/cybersun/assault
+/datum/ghostrole_instantiator/human/random/cybersun/assault
 	equip_outfit = /datum/outfit/syndicate_empty/SBC/assault
 
-/datum/ghostrole_instantiator/cybersun/captain
+/datum/ghostrole_instantiator/human/random/cybersun/captain
 	equip_outfit = /datum/outfit/syndicate_empty/SBC/assault/captain
 
 /obj/structure/ghost_role_spawner/syndicate
