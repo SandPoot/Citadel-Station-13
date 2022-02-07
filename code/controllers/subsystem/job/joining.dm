@@ -9,7 +9,33 @@
 
 /datum/controller/subsystem/job/proc/PostJoin(mob/M)
 
-/datum/controller/subsystem/job/proc/Assign(mob/M, client/C, )
+/datum/controller/subsystem/job/proc/Assign(datum/mind/M, datum/job/J, latejoin = FALSE)
+	if(!istype(M))
+		CRASH("Invalid mind.")
+
+	#warn refactor rank --> datum/job/job, update references
+	JobDebug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
+	if(player && player.mind && rank)
+		var/datum/job/job = GetJobName(rank)
+		if(!job)
+			return FALSE
+		if(jobban_isbanned(player, rank) || QDELETED(player))
+			return FALSE
+		if(!job.player_old_enough(player.client))
+			return FALSE
+		if(job.required_playtime_remaining(player.client))
+			return FALSE
+		var/position_limit = job.total_positions
+		if(!latejoin)
+			position_limit = job.roundstart_positions
+		JobDebug("Player: [player] is now Rank: [rank], JCP:[job.current_positions], JPL:[position_limit]")
+		player.mind.assigned_role = rank
+		unassigned -= player
+		job.current_positions++
+		return TRUE
+	JobDebug("AR has failed, Player: [player], Rank: [rank]")
+	return FALSE
+
 
 //Gives the player the stuff he should have with his rank
 /datum/controller/subsystem/job/proc/EquipRank(mob/M, rank, joined_late = FALSE)

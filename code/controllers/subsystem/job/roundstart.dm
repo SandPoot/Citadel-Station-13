@@ -1,29 +1,3 @@
-
-/datum/controller/subsystem/job/proc/AssignRole(mob/dead/new_player/player, rank, latejoin = FALSE)
-	#warn refactor rank --> datum/job/job, update references
-	JobDebug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
-	if(player && player.mind && rank)
-		var/datum/job/job = GetJobName(rank)
-		if(!job)
-			return FALSE
-		if(jobban_isbanned(player, rank) || QDELETED(player))
-			return FALSE
-		if(!job.player_old_enough(player.client))
-			return FALSE
-		if(job.required_playtime_remaining(player.client))
-			return FALSE
-		var/position_limit = job.total_positions
-		if(!latejoin)
-			position_limit = job.roundstart_positions
-		JobDebug("Player: [player] is now Rank: [rank], JCP:[job.current_positions], JPL:[position_limit]")
-		player.mind.assigned_role = rank
-		unassigned -= player
-		job.current_positions++
-		return TRUE
-	JobDebug("AR has failed, Player: [player], Rank: [rank]")
-	return FALSE
-
-
 /datum/controller/subsystem/job/proc/FindOccupationCandidates(datum/job/job, level, flag)
 	JobDebug("Running FOC, Job: [job], Level: [level], Flag: [flag]")
 	var/list/candidates = list()
@@ -101,8 +75,6 @@
 			SSpersistence.antag_rep_change[player.ckey] = 0
 	SetupOccupations()
 	unassigned = list()
-	return
-
 
 //This proc is called before the level loop of DivideOccupations() and will try to select a head, ignoring ALL non-head preferences for every level until
 //it locates a head or runs out of levels to check
@@ -121,6 +93,11 @@
 			if(AssignRole(candidate, job))
 				return 1
 	return 0
+
+/datum/controller/subsystem/job/proc/FillJobPositions(list/job_ids, list/levels, amount)
+	sortTim(levels, /proc/cmp_numeric_dsc)
+	for(var/level in levels)
+
 
 //This proc is called at the start of the level loop of DivideOccupations() and will cause head jobs to be checked before any other jobs of the same level
 //This is also to ensure we get as many heads as possible

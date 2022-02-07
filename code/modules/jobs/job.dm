@@ -270,6 +270,8 @@
 /datum/job/proc/SlotsRemaining()
 	return max(0, total_positions - current_positions)
 
+
+
 //Only override this proc
 //H is usually a human unless an /equip override transformed it
 /datum/job/proc/after_spawn(mob/living/H, mob/M, latejoin = FALSE)

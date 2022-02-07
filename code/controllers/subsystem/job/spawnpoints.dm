@@ -85,7 +85,7 @@
  * - method - (optional) required method for the spawnpoint - this will make the proc return null instead of an overflow, if it can't find something for the method.
  * - harder - used when the first iteration failed, tells spawnpoints to skip certain checks
  */
-/datum/controller/subsystem/job/proc/GetLatejoinSpawnpoint(client/C, job_path, faction, method, harder = FALSE)
+/datum/controller/subsystem/job/proc/GetLatejoinSpawnpoint(client/C, job_path, faction = JOB_FACTION_STATION, method, harder = FALSE)
 	// Priority 1: Job specific spawnpoints
 	if(job_path && length(job_spawnpoints[job_path]))
 		for(var/atom/movable/landmark/spawnpoint/job/J as anything in job_spawnpoints[job_path])
