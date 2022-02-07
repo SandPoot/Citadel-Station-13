@@ -1,3 +1,16 @@
+/datum/controller/subsystem/job/proc/EquipRoundstart(mob/M, datum/job/J, loadout = TRUE, client/C)
+
+/datum/controller/subsystem/job/proc/EquipLatejoin(mob/M, datum/job/J, loadout = TRUE, client/C)
+
+/datum/controller/subsystem/job/proc/EquipPlayer(mob/M, datum/job/J, loadout = TRUE, datum/preferences/prefs)
+
+
+
+
+/datum/controller/subsystem/job/proc/PostJoin(mob/M)
+
+/datum/controller/subsystem/job/proc/Assign(mob/M, client/C, )
+
 //Gives the player the stuff he should have with his rank
 /datum/controller/subsystem/job/proc/EquipRank(mob/M, rank, joined_late = FALSE)
 	var/mob/dead/new_player/N
@@ -113,15 +126,6 @@
 	message_admins(error_message)
 	subsystem_log(error_message)
 	CRASH(error_message)		// this is serious.
-
-/datum/controller/subsystem/job/proc/PopcapReached()
-	var/hpc = CONFIG_GET(number/hard_popcap)
-	var/epc = CONFIG_GET(number/extreme_popcap)
-	if(hpc || epc)
-		var/relevent_cap = max(hpc, epc)
-		if((initial_players_to_assign - unassigned.len) >= relevent_cap)
-			return 1
-	return 0
 
 /*
 /datum/controller/subsystem/job/proc/handle_auto_deadmin_roles(client/C, rank)

@@ -371,3 +371,12 @@
 	to_chat(player, "<b>You have failed to qualify for any job you desired.</b>")
 	unassigned -= player
 	player.ready = PLAYER_NOT_READY
+
+/datum/controller/subsystem/job/proc/PopcapReached()
+	var/hpc = CONFIG_GET(number/hard_popcap)
+	var/epc = CONFIG_GET(number/extreme_popcap)
+	if(hpc || epc)
+		var/relevent_cap = max(hpc, epc)
+		if((initial_players_to_assign - unassigned.len) >= relevent_cap)
+			return TRUE
+	return FALSE

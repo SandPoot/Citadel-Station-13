@@ -1,3 +1,4 @@
+#warn this is dumb and needs redone
 /datum/controller/subsystem/job/proc/equip_loadout(mob/dead/new_player/N, mob/living/M, equipbackpackstuff, bypass_prereqs = FALSE, can_drop = TRUE)
 	var/mob/the_mob = N
 	if(!the_mob)

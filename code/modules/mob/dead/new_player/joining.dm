@@ -140,7 +140,6 @@
 		if(!employmentCabinet.virgin)
 			employmentCabinet.addFile(employee)
 
-
 /mob/dead/new_player/proc/create_character(transfer_after)
 	spawning = 1
 	close_spawn_windows()

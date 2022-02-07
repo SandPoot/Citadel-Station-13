@@ -1426,6 +1426,88 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 /datum/preferences/proc/GenerateOccupationEntry(datum/job/J)
 
+		index += 1
+		if((index >= limit) || (job.title in splitJobs))
+			width += widthPerColumn
+			if((index < limit) && (lastJob != null))
+				//If the cells were broken up by a job in the splitJob list then it will fill in the rest of the cells with
+				//the last job's selection color. Creating a rather nice effect.
+				for(var/i = 0, i < (limit - index), i += 1)
+					HTML += "<tr bgcolor='[lastJob.selection_color]'><td width='60%' align='right'>&nbsp</td><td>&nbsp</td></tr>"
+			HTML += "</table></td><td width='20%'><table width='100%' cellpadding='1' cellspacing='0'>"
+			index = 0
+
+		HTML += "<tr bgcolor='[job.selection_color]'><td width='60%' align='right'>"
+		var/rank = job.title
+		lastJob = job
+		if(jobban_isbanned(user, rank))
+			HTML += "<font color=red>[rank]</font></td><td><a href='?_src_=prefs;bancheck=[rank]'> BANNED</a></td></tr>"
+			continue
+		var/required_playtime_remaining = job.required_playtime_remaining(user.client)
+		if(required_playtime_remaining)
+			HTML += "<font color=red>[rank]</font></td><td><font color=red> \[ [get_exp_format(required_playtime_remaining)] as [job.get_exp_req_type()] \] </font></td></tr>"
+			continue
+		if(!job.player_old_enough(user.client))
+			var/available_in_days = job.available_in_days(user.client)
+			HTML += "<font color=red>[rank]</font></td><td><font color=red> \[IN [(available_in_days)] DAYS\]</font></td></tr>"
+			continue
+		if(!user.client.prefs.pref_species.qualifies_for_rank(rank, user.client.prefs.features))
+			if(user.client.prefs.pref_species.id == "human")
+				HTML += "<font color=red>[rank]</font></td><td><font color=red><b> \[MUTANT\]</b></font></td></tr>"
+			else
+				HTML += "<font color=red>[rank]</font></td><td><font color=red><b> \[NON-HUMAN\]</b></font></td></tr>"
+			continue
+		if((job_preferences["[SSjob.overflow_role]"] == JP_LOW) && (rank != SSjob.overflow_role) && !jobban_isbanned(user, SSjob.overflow_role))
+			HTML += "<font color=orange>[rank]</font></td><td></td></tr>"
+			continue
+		if((rank in GLOB.command_positions) || (rank == "AI"))//Bold head jobs
+			HTML += "<b><span class='dark'>[rank]</span></b>"
+		else
+			HTML += "<span class='dark'>[rank]</span>"
+
+		HTML += "</td><td width='40%'>"
+
+		var/prefLevelLabel = "ERROR"
+		var/prefLevelColor = "pink"
+		var/prefUpperLevel = -1 // level to assign on left click
+		var/prefLowerLevel = -1 // level to assign on right click
+
+		switch(job_preferences["[job.title]"])
+			if(JP_HIGH)
+				prefLevelLabel = "High"
+				prefLevelColor = "slateblue"
+				prefUpperLevel = 4
+				prefLowerLevel = 2
+			if(JP_MEDIUM)
+				prefLevelLabel = "Medium"
+				prefLevelColor = "green"
+				prefUpperLevel = 1
+				prefLowerLevel = 3
+			if(JP_LOW)
+				prefLevelLabel = "Low"
+				prefLevelColor = "orange"
+				prefUpperLevel = 2
+				prefLowerLevel = 4
+			else
+				prefLevelLabel = "NEVER"
+				prefLevelColor = "red"
+				prefUpperLevel = 3
+				prefLowerLevel = 1
+
+		HTML += "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[prefUpperLevel];text=[rank]' oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[rank]\");'>"
+
+		if(rank == SSjob.overflow_role)//Overflow is special
+			if(job_preferences["[SSjob.overflow_role]"] == JP_LOW)
+				HTML += "<font color=green>Yes</font>"
+			else
+				HTML += "<font color=red>No</font>"
+			HTML += "</a></td></tr>"
+			continue
+
+		HTML += "<font color=[prefLevelColor]>[prefLevelLabel]</font>"
+		HTML += "</a></td></tr>"
+
+
 
 /datum/preferences/proc/SetJobPreferenceLevel(datum/job/job, level)
 	if (!job)
