@@ -69,11 +69,12 @@
 
 	// tcg card handling
 	var/list/tcg_cards = C.prefs.tcg_cargs
-	if(tcg_cards && ishuman(H))
+	var/list/tcg_decks = C.prefs.tcg_decks
+	if(tcg_cards && ishuman(M))
 		var/mob/living/carbon/human/H = M
 		var/obj/item/tcgcard_binder/binder = new(get_turf(H))
 		H.equip_to_slot_if_possible(binder, SLOT_IN_BACKPACK, disable_warning = TRUE, bypass_equip_delay_self = TRUE)
-		for(var/card_type in N.client.prefs.tcg_cards)
+		for(var/card_type in tcg_cards)
 			if(card_type)
 				if(islist(tcg_cards[card_type]))
 					for(var/duplicate in tcg_cards[card_type])
@@ -138,8 +139,8 @@
 		return FALSE
 	if(J.required_playtime_remaining(checking.client))
 		return FALSE
-	var/position_limit = latejoin? job.total_positions : job.roundstart_positions
-	if(job.current_positions + 1 > position_limit)
+	var/position_limit = latejoin? J.total_positions : J.roundstart_positions
+	if(J.current_positions + 1 > position_limit)
 		return FALSE
 	return TRUE
 
@@ -167,14 +168,14 @@
 	CRASH(error_message)		// this is serious.
 
 /datum/controller/subsystem/job/proc/SendToRoundstart(mob/M, client/C, datum/job/J)
-	var/atom/movable/landmark/spawnpoint/S = GetRoundstartSpawnpoint(M, C || M.client, J.GetID(), J.faction)
+	var/atom/movable/landmark/spawnpoint/S = GetRoundstartSpawnpoint(M, C, J.GetID(), J.faction)
 	if(!S)
-		stack_trace("Couldn't find a roundstart spawnpoint for [H] ([H.client || N.client]) - [job.type] ([job.faction]).")
-		SendToLatejoin(H)
+		stack_trace("Couldn't find a roundstart spawnpoint for [M] ([C]) - [J.type] ([J.faction]).")
+		SendToLatejoin(M)
 	else
 		var/atom/A = S.GetSpawnLoc()
-		H.forceMove(A)
-		S.OnSpawn(H, H.client || N.client)
+		M.forceMove(A)
+		S.OnSpawn(M, C)
 
 /*
 /datum/controller/subsystem/job/proc/handle_auto_deadmin_roles(client/C, rank)
