@@ -30,13 +30,13 @@
 	/// exempt from midround health events
 	var/exempt_health_events = FALSE
 
-/datum/ghostrole_instantiator/human/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/human/Create(client/C, atom/location, list/params)
 	var/mob/living/carbon/human/H = new(location)
 	if(exempt_health_events)
 		ADD_TRAIT(H, TRAIT_EXEMPT_HEALTH_EVENTS, GHOSTROLE_TRAIT)
 	return H
 
-/datum/ghostrole_instantiator/human/Equip(client/C, mob/M)
+/datum/ghostrole_instantiator/human/Equip(client/C, mob/M, list/params)
 	if(ispath(equip_outfit, /datum/outfit))
 		var/datum/outfit/O = new equip_outfit
 		O.equip(M)
@@ -44,12 +44,12 @@
 
 /datum/ghostrole_instantiator/human/random
 
-/datum/ghostrole_instantiator/human/random/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/human/random/Create(client/C, atom/location, list/params)
 	var/mob/living/carbon/human/H = ..()
-	Randomize(H)
+	Randomize(H, params)
 	return H
 
-/datum/ghostrole_instantiator/human/random/proc/Randomize(mob/living/carbon/human/H)
+/datum/ghostrole_instantiator/human/random/proc/Randomize(mob/living/carbon/human/H, list/params)
 	return			// tgcode does this automatically
 
 /datum/ghostrole_instantiator/human/random/species
@@ -62,7 +62,7 @@
 		/datum/species/ipc,
 	)
 
-/datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H)
+/datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H, list/params)
 	. = ..()
 	#warn impl
 
@@ -72,7 +72,7 @@
 	/// equip traits
 	var/equip_traits = TRUE
 
-/datum/ghostrole_instantiator/human/player_static/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/human/player_static/Create(client/C, atom/location, list/params)
 	var/mob/living/carbon/human/H = ..()
 	LoadSavefile(C, H)
 	return H
