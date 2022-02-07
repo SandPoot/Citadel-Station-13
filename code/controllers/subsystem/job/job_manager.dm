@@ -97,6 +97,11 @@
 		misc_department.jobs += J.type
 	return TRUE
 
+/datum/controller/subsystem/job/proc/GetJobAuto(thing)
+	. = job_type_lookup[thing] || job_name_lookup[thing]
+	if(!.)
+		CRASH("Failed JobAutoLookup: [thing].")
+
 /datum/controller/subsystem/job/proc/GetJobType(path)
 	RETURN_TYPE(/datum/job)
 	if(istext(path))

@@ -9,33 +9,60 @@
 
 /datum/controller/subsystem/job/proc/PostJoin(mob/M)
 
-/datum/controller/subsystem/job/proc/Assign(datum/mind/M, datum/job/J, latejoin = FALSE)
+/**
+ * Assigns a player to a role.
+ * @params
+ * - M - mind or mob
+ * - J - job , job title, or job type
+ * - latejoin - latejoining mob?
+ * - force - bypass checks
+ */
+/datum/controller/subsystem/job/proc/Assign(datum/mind/M, datum/job/J, latejoin = FALSE, force = FALSE)
+	if(ismob(M))
+		var/mob/_M = M
+		M = _M.mind
 	if(!istype(M))
 		CRASH("Invalid mind.")
+	if(!istype(J))
+		J = GetJobAuto(J)
+	if(!istype(J))
+		CRASH("Invalid job.")
+	JobDebug("ASSIGN: [M], [J], latejoin: [latejoin]")
+	if(!force && !CanAssign(M, J, latejoin))
+		JobDebug("ASSIGN: Failed CanAssign")
+		return FALSE
+	JobDebug("ASSIGN: Passed: JCP: [J.current_positions] (incremented)")
+	M.assigned_role = J.title
+	// hook into roundstart system so it doesn't have to call this manually
+	if(unassigned)
+		unassigned -= M.current
+	J.current_positions++
+	return TRUE
 
-	#warn refactor rank --> datum/job/job, update references
-	JobDebug("Running AR, Player: [player], Rank: [rank], LJ: [latejoin]")
-	if(player && player.mind && rank)
-		var/datum/job/job = GetJobName(rank)
-		if(!job)
-			return FALSE
-		if(jobban_isbanned(player, rank) || QDELETED(player))
-			return FALSE
-		if(!job.player_old_enough(player.client))
-			return FALSE
-		if(job.required_playtime_remaining(player.client))
-			return FALSE
-		var/position_limit = job.total_positions
-		if(!latejoin)
-			position_limit = job.roundstart_positions
-		JobDebug("Player: [player] is now Rank: [rank], JCP:[job.current_positions], JPL:[position_limit]")
-		player.mind.assigned_role = rank
-		unassigned -= player
-		job.current_positions++
-		return TRUE
-	JobDebug("AR has failed, Player: [player], Rank: [rank]")
-	return FALSE
-
+/datum/controller/subsystem/job/proc/CanAssign(M, datum/job/J, latejoin)
+	var/mob/checking = ismob(M) && M
+	if(!checking)
+		if(istype(M, /datum/mind))
+			var/datum/mind/_M = M
+			checking = _M.current
+		if(istype(M, /client))
+			var/client/_C = M
+			checking = _C.mob
+	. = FALSE
+	if(!checking)
+		CRASH("No mob")
+	if(!istype(J))
+		CRASH("No job")
+	if(jobban_isbanned(checking, J.title))
+		return FALSE
+	if(!J.player_old_enough(checking.client))
+		return FALSE
+	if(J.required_playtime_remaining(checking.client))
+		return FALSE
+	var/position_limit = latejoin? job.total_positions : job.roundstart_positions
+	if(job.current_positions + 1 > position_limit)
+		return FALSE
+	return TRUE
 
 //Gives the player the stuff he should have with his rank
 /datum/controller/subsystem/job/proc/EquipRank(mob/M, rank, joined_late = FALSE)
