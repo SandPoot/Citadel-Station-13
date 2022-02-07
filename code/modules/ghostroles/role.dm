@@ -90,6 +90,9 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	var/mob/created = Instantiate(C, location, spawnpoint?.params)
 	if(!created)
 		return "Mob instantiation failed."
+	if(!Transfer(C, created))
+		qdel(created)
+		return "Mob transfer failed."
 	PostInstantiate(created, spawnpoint, spawnpoint?.params)
 	GLOB.join_menu.queue_update()
 	GLOB.ghostrole_menu.queue_update()
@@ -100,6 +103,11 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	. = istype(L)
 	if(.)
 		L.mind?.assigned_role = assigned_role || name
+
+/datum/ghostrole/proc/Transfer(client/C, mob/created)
+	if(!isnewplayer(C.mob))
+		C.mob.ghostize(TRUE, TRUE)
+	created.ckey = C.ckey
 
 /**
  * Ran before anything else is at AttemptSpawn()
@@ -180,6 +188,6 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	var/datum/antagonist/custom/A = mind.has_antag_datum(/datum/antagonist/custom) || mind.add_antag_datum(/datum/antagonist/custom)
 	if(!A)
 		CRASH("Failed to locate/make custom antagonist datum.")
-	var/datum/objective/O = new(objetive)
+	var/datum/objective/O = new(objective)
 	O.owner = mind
 	A.objectives += O

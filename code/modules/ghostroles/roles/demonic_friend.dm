@@ -21,7 +21,7 @@
 		if(QDELETED(owner.current) || owner.current.stat == DEAD)
 			addtimer(CALLBACK(created, /mob/proc/dust), 15 SECONDS)
 	else
-		addtimer(CALLBACK(created, /mob/proc/dust), 15 SEONDS)
+		addtimer(CALLBACK(created, /mob/proc/dust), 15 SECONDS)
 
 /datum/ghostrole/demonic_friend/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
 	. = ..()
@@ -32,7 +32,7 @@
 		if(QDELETED(owner.current) || owner.current.stat == DEAD)
 			to_chat(created, span_danger("Your owner is already dead! You will soon perish."))
 		else
-			GhostroleGiveCustomObjective(created, "Be [owner.name]'s friend, and keep them alive, so you don't get sent back to hell.")
+			GiveCustomObjective(created, "Be [owner.name]'s friend, and keep them alive, so you don't get sent back to hell.")
 	else
 		to_chat(created, span_danger("Your owner is already dead! You will soon perish."))
 
@@ -52,7 +52,7 @@
 
 /obj/structure/ghost_role_spawner/demonic_friend
 	name = "Essence of friendship"
-	des = "Oh boy! Oh boy! A friend!"
+	desc = "Oh boy! Oh boy! A friend!"
 	icon = 'icons/obj/cardboard_cutout.dmi'
 	icon_state = "cutout_basic"
 	role_type = /datum/ghostrole/demonic_friend

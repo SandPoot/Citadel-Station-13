@@ -73,7 +73,7 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 
 /datum/component/ghostrole_spawnpoint/proc/OnSpawn(mob/created, datum/ghostrole/role)
 	if(istype(proc_to_call_or_callback))
-		proc_to_call_or_callback.Invoke(created, roles, params, src)
+		proc_to_call_or_callback.Invoke(created, role, params, src)
 	spawns++
 	if(ispath(proc_to_call_or_callback))
 		if(!hascall(parent, proc_to_call_or_callback))
