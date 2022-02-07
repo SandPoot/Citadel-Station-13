@@ -7,6 +7,7 @@
 	Ensure your nest remains protected at all costs."
 	assigned_role = "Ash Walker"
 	allow_pick_spawner = TRUE
+	jobban_role = ROLE_LAVALAND
 
 /datum/ghostrole/ashwalker/Greet(mob/created)
 	. = ..()
@@ -24,9 +25,9 @@
 			return FALSE
 	return ..()
 
-/datum/ghostrole/ashwalker/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
+/datum/ghostrole/ashwalker/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
 	. = ..()
-	if(spawnpoint?.params["team"])
+	if(params["team"])
 		var/datum/team/ashwalkers/team = spawnpoint.params["team"]
 		team.players_spawned += ckey(created.key)
 		created.mind.add_antag_datum(/datum/antagonist/ashwalker, team)
@@ -37,7 +38,7 @@
 	)
 	equip_outfit = /datum/outfit/ashwalker
 
-/datum/ghostrole_instantiator/human/random/species/ashwalker/Randomize(mob/living/carbon/human/H)
+/datum/ghostrole_instantiator/human/random/species/ashwalker/Randomize(mob/living/carbon/human/H, list/params)
 	. = ..()
 	H.underwear = "Nude"
 	H.undershirt = "Nude"

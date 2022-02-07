@@ -1,51 +1,61 @@
-#warn convert
+/datum/ghostrole/demonic_friend
+	name = "Demonic Friend"
+	desc = "You are someone's demonic friend from hell."
+	instantiator = /datum/ghostrole_instantiator/human/random/demonic_friend
+	assigned_role = "SuperFriend"
 
+/datum/ghostrole/demonic_friend/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
+	. = ..()
+	if(params["spell"])
+		var/obj/effect/proc_holder/spell/targeted/summon_friend/S = spawnpoint?.params["spell"]
+		S.friend = created
+		S.charge_counter = S.charge_max
+	if(!created.mind)
+		CRASH("No mind")
+	created.mind.hasSoul = FALSE
+	if(params["owner"])
+		var/datum/mind/owner = spawnpoint.params["owner"]
+		soullink(/datum/soullink/oneway, owner.current, created)
+		created.name = created.real_name
+		created.real_name = "[owner.name]'s best friend"
+		if(QDELETED(owner.current) || owner.current.stat == DEAD)
+			addtimer(CALLBACK(created, /mob/proc/dust), 15 SECONDS)
+	else
+		addtimer(CALLBACK(created, /mob/proc/dust), 15 SEONDS)
 
-/obj/effect/mob_spawn/human/demonic_friend
+/datum/ghostrole/demonic_friend/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
+	. = ..()
+	if(params["owner"])
+		var/datum/mind/owner = spawnpoint?.params["owner"]
+		to_chat(created, "You have been given a reprieve from your eternity of torment, to be [owner.name]'s friend for their short mortal coil.")
+		to_chat(created, "Be aware that if you do not live up to their expectations, they can send you back to hell with a single thought. [owner.name]'s death will also return you to hell.")
+		if(QDELETED(owner.current) || owner.current.stat == DEAD)
+			to_chat(created, span_danger("Your owner is already dead! You will soon perish."))
+		else
+			GhostroleGiveCustomObjective(created, "Be [owner.name]'s friend, and keep them alive, so you don't get sent back to hell.")
+	else
+		to_chat(created, span_danger("Your owner is already dead! You will soon perish."))
+
+/datum/ghostrole_instantiator/human/random/demonic_friend
+	equip_outfit = /datum/outfit/demonic_friend
+
+/datum/ghostrole_instantiator/human/random/demonic_friend/Equip(client/C, mob/M, list/params)
+	. = ..()
+	var/mob/living/carbon/human/H = .
+	if(!istype(H))
+		return
+	var/obj/item/card/id/ID = H.wear_id?.GetID()
+	if(ID && params["owner"])
+		var/datum/mind/M = params["owner"]
+		ID.registered_name = "[M.name]'s best friend"
+		ID.update_label()
+
+/obj/structure/ghost_role_spawner/demonic_friend
 	name = "Essence of friendship"
-	desc = "Oh boy! Oh boy! A friend!"
-	mob_name = "Demonic friend"
-	job_description = "Demonic Friend"
+	des = "Oh boy! Oh boy! A friend!"
 	icon = 'icons/obj/cardboard_cutout.dmi'
 	icon_state = "cutout_basic"
-	outfit = /datum/outfit/demonic_friend
-	death = FALSE
-	roundstart = FALSE
-	random = TRUE
-	id_job = "SuperFriend"
-	id_access = "assistant"
-	var/obj/effect/proc_holder/spell/targeted/summon_friend/spell
-	var/datum/mind/owner
-	assignedrole = "SuperFriend"
-
-/obj/effect/mob_spawn/human/demonic_friend/Initialize(mapload, datum/mind/owner_mind, obj/effect/proc_holder/spell/targeted/summon_friend/summoning_spell)
-	. = ..()
-	owner = owner_mind
-	flavour_text = "You have been given a reprieve from your eternity of torment, to be [owner.name]'s friend for [owner.p_their()] short mortal coil."
-	important_info = "Be aware that if you do not live up to [owner.name]'s expectations, they can send you back to hell with a single thought. [owner.name]'s death will also return you to hell."
-	var/area/A = get_area(src)
-	if(!mapload && A)
-		notify_ghosts("\A friendship shell has been completed in \the [A.name].", source = src, action=NOTIFY_ATTACK, flashwindow = FALSE, ignore_dnr_observers = TRUE)
-	objectives = "Be [owner.name]'s friend, and keep [owner.name] alive, so you don't get sent back to hell."
-	spell = summoning_spell
-
-
-/obj/effect/mob_spawn/human/demonic_friend/special(mob/living/L)
-	if(!QDELETED(owner.current) && owner.current.stat != DEAD)
-		L.real_name = "[owner.name]'s best friend"
-		L.name = L.real_name
-		soullink(/datum/soullink/oneway, owner.current, L)
-		spell.friend = L
-		spell.charge_counter = spell.charge_max
-		L.mind.hasSoul = FALSE
-		var/mob/living/carbon/human/H = L
-		var/obj/item/worn = H.wear_id
-		var/obj/item/card/id/id = worn.GetID()
-		id.registered_name = L.real_name
-		id.update_label()
-	else
-		to_chat(L, "<span class='userdanger'>Your owner is already dead!  You will soon perish.</span>")
-		addtimer(CALLBACK(L, /mob.proc/dust, 150)) //Give em a few seconds as a mercy.
+	role_type = /datum/ghostrole/demonic_friend
 
 /datum/outfit/demonic_friend
 	name = "Demonic Friend"
@@ -55,3 +65,4 @@
 	back = /obj/item/storage/backpack
 	implants = list(/obj/item/implant/mindshield) //No revolutionaries, he's MY friend.
 	id = /obj/item/card/id
+	access_clone = /datum/job/assistant

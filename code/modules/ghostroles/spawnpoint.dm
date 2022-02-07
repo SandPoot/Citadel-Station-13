@@ -93,8 +93,15 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 			return
 		examine_list += "<b>Click</> this ghostrole spawner to become a [role.name]!"
 
-/datum/component/ghostrole_spawnpoint/proc/GhostInteract(datum/source)
-	#warn spawner specific spawn
+/datum/component/ghostrole_spawnpoint/proc/GhostInteract(datum/source, mob/user)
+	var/datum/ghostrole/role = get_ghostrole_datum(role_type)
+	if(!role)
+		to_chat(user, span_danger("No ghostrole datum found: [role_type]. Contact a coder!"))
+		if(!(datum_flags & DF_VAR_EDITED))
+			stack_trace("Couldn't find role. Deleting self.")
+			qdel(src)
+		return
+	role.AttemptSpawn(user.client, src)
 
 /datum/component/ghostrole_spawnpoint/vv_edit_var(var_name, var_value, massedit)
 	. = ..()

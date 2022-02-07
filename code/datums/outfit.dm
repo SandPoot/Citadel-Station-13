@@ -114,6 +114,14 @@
 	var/list/access_override
 	/// Access added to ID
 	var/list/access_add
+	/// ID assigned role override
+	var/id_role_override
+	/// Clone job access to ID
+	var/access_clone
+	/// ID name override
+	var/id_name_override
+	/// ID automatically names from person equipping to
+	var/id_auto_name
 
 /**
  * Called at the start of the equip proc
@@ -184,8 +192,19 @@
 		if(H.equip_to_slot_or_del(ID, SLOT_WEAR_ID, TRUE) && istype(ID))
 			if(islist(access_override))
 				ID.access = access_override.Copy()
-			else if(islist(access_add))
+			else if(access_clone)
+				var/datum/job/J = SSjob.GetJobAuto(access_clone)
+				if(J)
+					ID.access = J.access.Copy()
+			if(islist(access_add))
 				ID.access |= access_add
+			if(id_role_override)
+				ID.assignment = id_role_override
+			if(id_name_override)
+				ID.registered_name = id_name_override
+			else if(id_auto_name)
+				ID.registered_name = H.real_name
+			ID.update_label()
 
 	if(suit_store)
 		H.equip_to_slot_or_del(new suit_store(H), SLOT_S_STORE, TRUE)

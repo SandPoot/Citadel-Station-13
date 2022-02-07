@@ -51,6 +51,8 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	var/spawnerless = FALSE
 	/// assigned role. defaults to name.
 	var/assigned_role
+	/// jobban name/id, if any
+	var/jobban_role
 
 /datum/ghostrole/New(_id)
 	if(ispath(instantiator, /datum/ghostrole_instantiator))
@@ -73,6 +75,8 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
  * Return TRUe on success, or a string of why it failed.
  */
 /datum/ghostrole/proc/AttemptSpawn(client/C, datum/component/ghostrole_spawnpoint/chosen_spawnpoint)
+	if(BanCheck(C))
+		return "You can't spawn as [src] due to an active job-ban."
 	if(!AllowSpawn(C))
 		return "You can't spawn as this role; Try refreshing the ghostrole/join menu."
 	if(!PreInstantiate(C))
@@ -83,16 +87,16 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	var/atom/location = GetSpawnLoc(C, spawnpoint)
 	if(!location)
 		return "Couldn't get a spawn location."
-	var/mob/created = Instantiate(C, location)
+	var/mob/created = Instantiate(C, location, spawnpoint?.params)
 	if(!created)
 		return "Mob instantiation failed."
-	PostInstantiate(created, spawnpoint)
+	PostInstantiate(created, spawnpoint, spawnpoint?.params)
 	GLOB.join_menu.queue_update()
 	GLOB.ghostrole_menu.queue_update()
 	return TRUE
 
-/datum/ghostrole/proc/Instantiate(client/C, atom/loc)
-	var/mob/living/L = instantiator.Run(C, loc)
+/datum/ghostrole/proc/Instantiate(client/C, atom/loc, list/params)
+	var/mob/living/L = instantiator.Run(C, loc, params)
 	. = istype(L)
 	if(.)
 		L.mind?.assigned_role = assigned_role || name
@@ -111,7 +115,6 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 		return FALSE
 	if(SpawnsLeft(C) <= 0)
 		return FALSE
-	#warn ban check
 	return TRUE
 
 /datum/ghostrole/proc/SpawnsLeft(client/C)
@@ -162,4 +165,21 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
  * Ban check.
  */
 /datum/ghostrole/proc/BanCheck(client/C)
-	return
+	if(!jobban_role)
+		return FALSE
+	return jobban_isbanned(C.mob, jobban_role)
+
+/datum/ghostrole/proc/GiveCustomObjective(mob/created, objective)
+	created.GhostroleGiveCustomObjective(src, objective)
+
+/mob/proc/GhostroleGiveCustomObjective(datum/ghostrole/R, objective)
+	if(!mind)
+		mind_initialize()
+	if(!mind)
+		CRASH("No mind.")
+	var/datum/antagonist/custom/A = mind.has_antag_datum(/datum/antagonist/custom) || mind.add_antag_datum(/datum/antagonist/custom)
+	if(!A)
+		CRASH("Failed to locate/make custom antagonist datum.")
+	var/datum/objective/O = new(objetive)
+	O.owner = mind
+	A.objectives += O

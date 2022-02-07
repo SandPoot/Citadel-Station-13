@@ -30,13 +30,12 @@
 	var/assignedrole
 	var/show_flavour = TRUE
 	var/banType = "lavaland"
-	var/ghost_usable = TRUE
 	var/skip_reentry_check = FALSE //Skips the ghost role blacklist time for people who ghost/suicide/cryo
 
 ///override this to add special spawn conditions to a ghost role
 /obj/effect/mob_spawn/proc/allow_spawn(mob/user, silent = FALSE)
 	return TRUE
-	
+
 //ATTACK GHOST IGNORING PARENT RETURN VALUE
 /obj/effect/mob_spawn/attack_ghost(mob/user, latejoinercalling)
 	if(!SSticker.HasRoundStarted() || !loc || !ghost_usable)
@@ -44,9 +43,7 @@
 	if(!uses)
 		to_chat(user, "<span class='warning'>This spawner is out of charges!</span>")
 		return
-	if(jobban_isbanned(user, banType))
-		to_chat(user, "<span class='warning'>You are jobanned!</span>")
-		return
+
 	if(!allow_spawn(user, silent = FALSE))
 		return
 	if(QDELETED(src) || QDELETED(user))

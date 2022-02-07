@@ -3,7 +3,7 @@
  */
 /datum/ghostrole_instantiator
 
-/datum/ghostrole_instantiator/proc/Run(client/C, atom/location)
+/datum/ghostrole_instantiator/proc/Run(client/C, atom/location, list/params)
 	RETURN_TYPE(/mob)
 	. = Create(C, location)
 	if(!.)
@@ -15,13 +15,13 @@
 		qdel(.)
 		return null
 
-/datum/ghostrole_instantiator/proc/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/proc/Create(client/C, atom/location, list/params)
 	CRASH("Base Create() called on ghostrole instantiator datum.")
 
-/datum/ghostrole_instantiator/proc/Equip(client/C, mob/M)
+/datum/ghostrole_instantiator/proc/Equip(client/C, mob/M, list/params)
 	CRASH("Base Equip() called on ghostrole instantiator datum.")
 
-/datum/ghostrole_instantiator/proc/Transfer(client/C, mob/M)
+/datum/ghostrole_instantiator/proc/Transfer(client/C, mob/M, list/params)
 	CRASH("Base Transfer() called on ghostrole instantiator datum.")
 
 /datum/ghostrole_instantiator/human

@@ -70,7 +70,10 @@
 		return
 	for(var/C in targets)
 		var/mob/living/L = C
-		friendShell = new /obj/effect/mob_spawn/human/demonic_friend(L.loc, L.mind, src)
+		friendShell = new /obj/effect/mob_spawn/human/demonic_friend(L.loc, list(
+			"owner" = user.mind,
+			"spell" = src
+		))
 
 /obj/effect/proc_holder/spell/targeted/conjure_item/spellpacket/robeless
 	clothes_req = NONE
