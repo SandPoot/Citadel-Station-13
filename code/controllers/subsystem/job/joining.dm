@@ -1,4 +1,9 @@
 /datum/controller/subsystem/job/proc/ProcessRoundstartPlayer(mob/M, datum/job/J, loadout = TRUE, client/C)
+	// autodetect
+	if(!C)
+		C = M.client
+	if(!J && M.mind)
+		J = GetJobAuto(M.mind?.assigned_role)
 	// sigh make sure mind is set
 	if(J)
 		M.mind?.assigned_role = J.title
@@ -6,10 +11,16 @@
 	EquipPlayer(M, J, loadout, C.prefs, TRUE, FALSE)
 	J.after_spawn(M, FALSE, C)
 	GreetPlayer(M, J, TRUE, C)
-	SendToRoundstart(M, C, job = J)
+	if(!J?.override_latejoin_spawn(M))
+		SendToRoundstart(M, C, job = J)
 	PostJoin(M, J, C, FALSE)
 
 /datum/controller/subsystem/job/proc/ProcessLatejoinPlayer(mob/M, datum/job/J, loadout = TRUE, client/C)
+	// autodetect
+	if(!C)
+		C = M.client
+	if(!J && M.mind)
+		J = GetJobAuto(M.mind?.assigned_role)
 	// sigh make sure mind is set
 	if(J)
 		M.mind.assigned_role = J.title
@@ -17,7 +28,8 @@
 	EquipPlayer(M, J, loadout, C.prefs, TRUE, TRUE)
 	J.after_spawn(M, TRUE, C)
 	GreetPlayer(M, J, TRUE, C)
-	SendToLatejoin(M, C, job = J)
+	if(!J?.override_latejoin_spawn(M))
+		SendToLatejoin(M, C, job = J)
 	PostJoin(M, J, C, TRUE)
 
 /datum/controller/subsystem/job/proc/GreetPlayer(mob/M, datum/job/J, latejoin, client/C)

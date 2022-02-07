@@ -73,19 +73,8 @@
 	SSjob.Assign(mind, job, TRUE, TRUE)
 
 	var/mob/living/character = create_character(TRUE)	//creates the human and transfers vars and mind
-	var/equip = SSjob.EquipRank(character, rank, TRUE)
-	if(isliving(equip))	//Borgs get borged in the equip, so we need to make sure we handle the new mob.
-		character = equip
 
-	#warn groan
-	if(job && !job.override_latejoin_spawn(character))
-		SSjob.SendToLatejoin(character)
-		if(!arrivals_docked)
-			var/atom/movable/screen/splash/Spl = new(character.client, TRUE)
-			Spl.Fade(TRUE)
-			character.playsound_local(get_turf(character), 'sound/voice/ApproachingTG.ogg', 25)
-
-		character.update_parallax_teleport()
+	SSjob.ProcessLatejoinPlayer(character, job, null)
 
 	job.standard_assign_skills(character.mind)
 

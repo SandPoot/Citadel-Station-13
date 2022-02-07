@@ -70,7 +70,7 @@
 		return
 	for(var/C in targets)
 		var/mob/living/L = C
-		friendShell = new /obj/effect/mob_spawn/human/demonic_friend(L.loc, list(
+		friendShell = new(L.loc, list(
 			"owner" = user.mind,
 			"spell" = src
 		))
