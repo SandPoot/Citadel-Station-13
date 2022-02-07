@@ -7,6 +7,7 @@
 	J.after_spawn(M, FALSE, C)
 	GreetPlayer(M, J, TRUE, C)
 	SendToRoundstart(M, C, job = J)
+	PostJoin(M, J, C, FALSE)
 
 /datum/controller/subsystem/job/proc/ProcessLatejoinPlayer(mob/M, datum/job/J, loadout = TRUE, client/C)
 	// sigh make sure mind is set
@@ -17,8 +18,9 @@
 	J.after_spawn(M, TRUE, C)
 	GreetPlayer(M, J, TRUE, C)
 	SendToLatejoin(M, C, job = J)
+	PostJoin(M, J, C, TRUE)
 
-/datum/controller/subsytsem/job/proc/GreetPlayer(mob/M, datum/job/J, latejoin, client/C)
+/datum/controller/subsystem/job/proc/GreetPlayer(mob/M, datum/job/J, latejoin, client/C)
 	var/client/output = C || M.client
 	if(!J)
 		return
@@ -52,10 +54,7 @@
 
 	HandleLoadoutLeftovers(M, leftovers)
 
-/datum/controller/subsystem/job/proc/PostJoin(mob/M)
-	// if this runtimes screw it and screw you
-	var/datum/job/J = GetJobAuto(M.mind.assigned_role)
-
+/datum/controller/subsystem/job/proc/PostJoin(mob/M, datum/job/J, client/C, latejoin)
 	// job handling
 	if(J)
 		SSpersistence.antag_rep_change[M.client.ckey] += J.GetAntagRep()
@@ -69,29 +68,25 @@
 
 
 	// tcg card handling
-	var/list/tcg_cards
-	if(ishuman(H))
-		if(length(H.client?.prefs?.tcg_cards))
-			tcg_cards = H.client.prefs.tcg_cards
-		else if(length(N?.client?.prefs?.tcg_cards))
-			tcg_cards = N.client.prefs.tcg_cards
-	if(tcg_cards)
+	var/list/tcg_cards = C.prefs.tcg_cargs
+	if(tcg_cards && ishuman(H))
+		var/mob/living/carbon/human/H = M
 		var/obj/item/tcgcard_binder/binder = new(get_turf(H))
 		H.equip_to_slot_if_possible(binder, SLOT_IN_BACKPACK, disable_warning = TRUE, bypass_equip_delay_self = TRUE)
 		for(var/card_type in N.client.prefs.tcg_cards)
 			if(card_type)
-				if(islist(H.client.prefs.tcg_cards[card_type]))
-					for(var/duplicate in N.client.prefs.tcg_cards[card_type])
+				if(islist(tcg_cards[card_type]))
+					for(var/duplicate in tcg_cards[card_type])
 						var/obj/item/tcg_card/card = new(get_turf(H), card_type, duplicate)
 						card.forceMove(binder)
 						binder.cards.Add(card)
 				else
-					var/obj/item/tcg_card/card = new(get_turf(H), card_type, N.client.prefs.tcg_cards[card_type])
+					var/obj/item/tcg_card/card = new(get_turf(H), card_type, tcg_cards[card_type])
 					card.forceMove(binder)
 					binder.cards.Add(card)
 		binder.check_for_exodia()
-		if(length(N.client.prefs.tcg_decks))
-			binder.decks = N.client.prefs.tcg_decks
+		if(length(tcg_decks))
+			binder.decks = tcg_decks
 
 /**
  * Assigns a player to a role.

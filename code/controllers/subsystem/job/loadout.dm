@@ -25,12 +25,13 @@
 		JobDebug("Ignoring EquipLoadout for [M]: Not human.")
 		return
 
-	if(!LAZYLEN(P.chosen_gear))
+	var/list/chosen_gear = P.loadout_data["SAVE_[P.loadout_slot]"]
+
+	if(!LAZYLEN(chosen_gear))
 		JobDebug("Ignoring EquipLoadout for [M]: No gear chosen.")
 		return
 
-	var/list/chosen_gear = P.loadout_data["SAVE_[P.loadout_slot]"]
-	for(var/i in P.chosen_gear)
+	for(var/i in chosen_gear)
 		var/datum/gear/G = istext(i[LOADOUT_ITEM])? text2path(i[LOADOUT_ITEM]) : i[LOADOUT_ITEM]
 		G = GLOB.loadout_items[initial(G.category)][initial(G.subcategory)][initial(G.name)]
 		if(!G)
@@ -87,8 +88,10 @@
 
 /datum/controller/subsystem/job/proc/HandleLoadoutLeftovers(mob/living/M, list/obj/item/items, can_drop = TRUE)
 	for(var/obj/item/I in items)		// don't risk runtime
-		if(M.back && SEND_SIGNAL(M.back, COMSIG_TRY_STORAGE_INSERT, I, null, TRUE, TRUE))
-			continue
+		if(iscarbon(M))
+			var/mob/living/carbon/C = M
+			if(C.back && SEND_SIGNAL(C.back, COMSIG_TRY_STORAGE_INSERT, I, null, TRUE, TRUE))
+				continue
 		if(!can_drop)
 			qdel(I)
 			continue
