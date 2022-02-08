@@ -32,4 +32,4 @@
     CRASH("Auxtools not found")
 
 /proc/auxtools_expr_stub()
-	CRASH("Auxtools not found")w
+	CRASH("Auxtools not found")
