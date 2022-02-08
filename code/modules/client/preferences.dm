@@ -1240,6 +1240,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	for(var/datum/job/job as anything in SSjob.GetAllJobs())
 		if(!(job.join_types & JOB_ROUNDSTART))
 			continue		// not necessary
+		LAZYINITLIST(horrifying_nested_list[job.faction])
+		var/datum/department/D = job.GetPrimaryDepartment()
+		LAZYINITLIST(horrifying_nested_list[job.faction][D])
+		horrifying_nested_list[job.faction][D] += list(list(J.title = J))
 
 	// *sigh
 	var/list/_station = horrifying_nested_list[JOB_FACTION_STATION]
@@ -1265,9 +1269,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			// sort the rest
 			sortTim(L2, /proc/cmp_text_asc, associative = FALSE)
 	// finish
-
-	// prevent dupes
-	var/list/shown = list()
 
 	// here begins the monsterous loop.
 
@@ -1312,9 +1313,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			// put all jobs in
 			for(var/title in data)
 				var/datum/job/J = data[title]
-				if(shown[J])
-					continue
-				shown[J] = TRUE
 				HTML += GenerateOccupationEntry(J)
 				last = J
 				--left
@@ -1329,7 +1327,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 		// fill remaining
 		for(var/i in 1 to left)
-			HTML += "<tr bgcolor='[last.selection_color]'><td width='60%' align='right'>&nbsp</td><td>&nbsp</td></tr>"
+			HTML += "<tr bgcolor='[last?.selection_color || "grey"]'><td width='60%' align='right'>&nbsp</td><td>&nbsp</td></tr>"
 
 		// close current table
 		HTML += "</table></td>"
