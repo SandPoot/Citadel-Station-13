@@ -16,7 +16,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /proc/get_ghostrole_datum(path)
 	if(GLOB.ghostroles[path])
 		return GLOB.ghostroles[path]
-	if(ispath(/datum/ghostrole))
+	if(ispath(path, /datum/ghostrole))
 		GLOB.ghostroles[path] = new path
 		return GLOB.ghostroles[path]
 	CRASH("Failed to get ghostrole: [path]")

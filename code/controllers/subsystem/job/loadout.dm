@@ -92,8 +92,8 @@
 /datum/controller/subsystem/job/proc/HandleLoadoutLeftovers(mob/living/M, list/obj/item/items, can_drop = TRUE, client/C)
 	for(var/obj/item/I in items)		// don't risk runtime
 		if(iscarbon(M))
-			var/mob/living/carbon/C = M
-			if(C.back && SEND_SIGNAL(C.back, COMSIG_TRY_STORAGE_INSERT, I, null, TRUE, TRUE))
+			var/mob/living/carbon/_C = M
+			if(_C.back && SEND_SIGNAL(_C.back, COMSIG_TRY_STORAGE_INSERT, I, null, TRUE, TRUE))
 				continue
 		if(!can_drop)
 			to_chat(C, "Deleting \the [I]: Could not drop on ground.")

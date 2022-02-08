@@ -94,7 +94,7 @@
 	for(var/datum/job/J as anything in jobs)
 		if(!LAZYLEN(J.departments))
 			J.departments = list(/datum/department/misc)
-		misc_department.jobs += J.type
+			misc_department.jobs += J.type
 	return TRUE
 
 /datum/controller/subsystem/job/proc/GetJobAuto(thing)

@@ -20,8 +20,10 @@
 	/// automatic handling - special spawntext
 	var/special_spawntext
 
-/obj/structure/ghost_role_spawner/Initialize(mapload, params, spawns, spawntext)
+/obj/structure/ghost_role_spawner/Initialize(mapload, params, type, spawns, spawntext)
 	. = ..()
+	if(type)
+		src.role_type = type
 	if(params)
 		role_params = params
 	else if(istext(role_params))
@@ -30,7 +32,11 @@
 		role_spawns = spawns
 	if(spawntext)
 		special_spawntext = spawntext
-	AddComponent(/datum/component/ghostrole_spawnpoint, role_type, role_spawns, role_params, /obj/structure/ghost_role_spawner/proc/on_spawn, null, special_spawntext)
+	if(!src.role_type)
+		if(mapload)
+			stack_trace("No role type")
+	else
+		AddComponent(/datum/component/ghostrole_spawnpoint, role_type, role_spawns, role_params, /obj/structure/ghost_role_spawner/proc/on_spawn, null, special_spawntext)
 
 /obj/structure/ghost_role_spawner/proc/on_spawn(mob/created, datum/ghostrole/role, list/params, datum/component/ghostrole_spawnpoint/spawnpoint)
 	if(qdel_on_deplete && !spawnpoint.SpawnsLeft())

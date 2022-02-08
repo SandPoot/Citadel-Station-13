@@ -1,14 +1,14 @@
 /datum/controller/subsystem/job
 	/// All spawnpoints
-	var/list/spawnpoints
+	var/static/list/spawnpoints = list()
 	/// Job spawnpoints keyed to job id/typepath
-	var/list/job_spawnpoints
+	var/static/list/job_spawnpoints = list()
 	/// Generic latejoin spawnpoints, nested list faction = list()
-	var/list/latejoin_spawnpoints
+	var/static/list/latejoin_spawnpoints = list()
 	/// Generic overflow spawnpoints, nested list faction = list()
-	var/list/overflow_spawnpoints
+	var/static/list/overflow_spawnpoints = list()
 	/// Custom spawnpoints, nested list key = list()
-	var/list/custom_spawnpoints
+	var/static/list/custom_spawnpoints = list()
 
 /**
  * Fully resets spawnpoints list and ensures validity

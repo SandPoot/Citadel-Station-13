@@ -668,7 +668,7 @@
 				if(++counter >= JOBS_PER_ROW)
 					dat += "</tr><tr>"
 					counter = 0
-			dat += "</tr></table?"
+			dat += "</tr></table>"
 #undef JOBS_PER_ROW
 
 		//Ghost Roles (light light gray)
