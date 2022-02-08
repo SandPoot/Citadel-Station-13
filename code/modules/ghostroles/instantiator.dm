@@ -41,12 +41,15 @@
 	return H
 
 /datum/ghostrole_instantiator/human/Equip(client/C, mob/M, list/params)
+	var/mob/living/carbon/human/H = M
+
+	H.dna.species.before_equip_job(null, H)
+
 	var/datum/outfit/O = GetOutfit(C, M, params)
 	if(O)
 		O.equip(M)
-	var/mob/living/carbon/human/H = M
 
-	#warn survival gear
+	H.dna.species.after_equip_job(null, H)
 
 /datum/ghostrole_instantiator/human/proc/GetOutfit(client/C, mob/M, list/params)
 	if(ispath(equip_outfit, /datum/outfit))
