@@ -25,6 +25,9 @@
 	/// job names in departments
 	var/static/list/job_names_in_department = list()
 
+	/// used for prefs setup - tgui when lmfao
+	var/static/list/horrifying_preferences_render_list
+
 /datum/controller/subsystem/job/proc/SetupOccupations()
 	var/list/all_jobs = subtypesof(/datum/job)
 	if(!all_jobs.len)
@@ -62,11 +65,13 @@
 	for(var/path in subtypesof(/datum/department))
 		var/datum/department/D = new path
 		departments += D
-		departments_temporary
+		departments_temporary += D
 		department_type_lookup[path] = D
 		department_name_lookup[D.name] = D
 	// assign departments to jobs and vice versa
 	sortTim(departments_temporary, /proc/cmp_department_priority_dsc, FALSE)
+	// why don't we sort the real departments list while we're at it
+	sortTim(departments, /proc/cmp_department_priority_dsc, FALSE)
 	for(var/datum/department/D as anything in departments_temporary)
 		for(var/path in D.jobs)
 			if(!ispath(path))
@@ -76,6 +81,11 @@
 			J.departments += D.type
 			LAZYOR(job_types_in_department[D.type], J.type)
 			LAZYOR(job_names_in_department[D.type], J.title)
+		// force head to first
+		if(D.supervisor && (D.supervisor in D.jobs))
+			D.jobs -= D.supervisor
+			D.jobs.Insert(1, D.supervisor)
+		// end
 		if(D.supervisor)
 			if(!ispath(D.supervisor))
 				stack_trace("[D.supervisor] in [D.type]'s supervisor is not a typepath.")
@@ -87,8 +97,14 @@
 	for(var/datum/job/J as anything in jobs)
 		if(!LAZYLEN(J.departments))
 			J.departments = list(/datum/department/misc)
-		misc_department.jobs += J.type
+			misc_department.jobs += J.type
+	RecomputePreferencesRender()
 	return TRUE
+
+/datum/controller/subsystem/job/proc/GetJobAuto(thing)
+	. = job_type_lookup[thing] || job_name_lookup[thing]
+	if(!.)
+		CRASH("Failed JobAutoLookup: [thing].")
 
 /datum/controller/subsystem/job/proc/GetJobType(path)
 	RETURN_TYPE(/datum/job)
@@ -239,3 +255,69 @@
 	if(!D)
 		CRASH("Failed to look up [department_id]")
 	return D.GetJobs()
+
+/**
+ * gets the effective hud icon of a job
+ */
+/datum/controller/subsystem/job/proc/GetJobHUDIcon(title)
+	if(alt_title_lookup[title])
+		title = alt_title_lookup[title]
+	if(job_name_lookup[title])
+		var/datum/job/J = job_name_lookup[title]
+		if(J.hud_icon_state)
+			var/state = J.hud_icon_state
+			return state == "DEFAFULT_TO_TITLE"? ckey(J.GetName()) : J.hud_icon_state
+	if(title in get_all_centcom_jobs())
+		return "CentCom"
+	return "Unknown"
+
+/**
+ * i'm so fucking sorry
+ * tgui preferences (not awful edition) when?
+ */
+/datum/controller/subsystem/job/proc/RecomputePreferencesRender()
+	// inefficient and awful but hey, player UI experience am i right gamers :/
+	// list is horrfiying_nested_list[faction as define text][department instance] = list(title = job instance)
+	horrifying_preferences_render_list = list()
+	var/list/horrifying_nested_list = horrifying_preferences_render_list
+	for(var/datum/job/job as anything in GetAllJobs())
+		if(!(job.join_types & JOB_ROUNDSTART))
+			continue		// not necessary
+		var/list/faction
+		if(horrifying_nested_list[job.faction])
+			faction = horrifying_nested_list[job.faction]
+		else
+			faction = horrifying_nested_list[job.faction] = list()
+		var/datum/department/D = job.GetPrimaryDepartment()
+		var/list/dept
+		if(horrifying_nested_list[job.faction][D])
+			dept = horrifying_nested_list[job.faction][D]
+		else
+			dept = horrifying_nested_list[job.faction][D] = list()
+		dept += list(list(job.title = job))
+
+	// *sigh
+	var/list/_station = horrifying_nested_list[JOB_FACTION_STATION]
+	// force station at top
+	horrifying_nested_list -= JOB_FACTION_STATION
+	horrifying_nested_list.Insert(1, JOB_FACTION_STATION)
+	horrifying_nested_list[JOB_FACTION_STATION] = _station
+	// sort rest
+	sortTim(horrifying_nested_list, /proc/cmp_text_asc, associative = FALSE, fromIndex = 2)
+	for(var/faction as anything in horrifying_nested_list)
+		// sort departments
+		var/list/L1 = horrifying_nested_list[faction]
+		sortTim(L1, /proc/cmp_department_priority_dsc, associative = FALSE)
+		for(var/datum/department/D as anything in L1)
+			// sort jobs
+			var/list/L2 = L1[D]
+			// force head at top
+			var/headname = D.GetSupervisorName()
+			var/datum/job/_head = L2[headname]
+			L2 -= headname
+			L2.Insert(1, headname)
+			L2[headname] = _head
+			// sort the rest
+			sortTim(L2, /proc/cmp_text_asc, associative = FALSE)
+	// finish
+

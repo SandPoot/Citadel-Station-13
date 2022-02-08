@@ -1,5 +1,7 @@
 GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 
+#warn finish menu
+
 /**
  * Global singleton for holding TGUI data for players joining.
  */
@@ -168,7 +170,7 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 						to_chat(usr, "<span class='warning'>Failed to find ghostrole [R]</span>")
 						return
 					to_chat(usr, "<span class='warning'>Attempting to ghostrole as [id] ([R.name]).</span>")
-					R.AttemptSpawn(client)
+					R.AttemptSpawn(N.client)
 		if("queue")
 			AttemptQueue(usr)
 
@@ -193,7 +195,7 @@ GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
  */
 /datum/join_menu/proc/AttemptQueue(mob/dead/new_player/N)
 	. = TRUE
-	if(QueueActive() && !(ckey(key) in GLOB.admin_datums))
+	if(QueueActive() && !(ckey(N.key) in GLOB.admin_datums))
 		var/queue_position = SSticker.queued_players.Find(usr)
 		if(queue_position == 1)
 			if(living_player_count() < CONFIG_GET(number/hard_popcap))

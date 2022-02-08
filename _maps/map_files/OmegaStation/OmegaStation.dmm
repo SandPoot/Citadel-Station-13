@@ -36359,9 +36359,6 @@
 /area/medical/medbay/zone3)
 "bfH" = (
 /atom/movable/landmark/spawnpoint/job/virologist,
-/obj/machinery/atmospherics/pipe/manifold/scrubbers/hidden{
-	dir = 4
-	},
 /obj/machinery/power/apc/highcap/five_k{
 	areastring = "/area/medical/virology";
 	dir = 1;
@@ -41812,6 +41809,9 @@
 /area/engineering/atmos)
 "hUL" = (
 /atom/movable/landmark/spawnpoint/job/atmospheric_technician,
+/obj/machinery/atmospherics/pipe/simple/green/visible{
+	dir = 10
+	},
 /turf/open/floor/plasteel,
 /area/engineering/atmos)
 "hVE" = (
@@ -42043,6 +42043,9 @@
 "iYt" = (
 /obj/structure/chair/office/dark,
 /atom/movable/landmark/spawnpoint/job/lawyer,
+/obj/machinery/atmospherics/components/unary/vent_scrubber/on{
+	dir = 8
+	},
 /turf/open/floor/carpet/green/airless,
 /area/service/lawoffice)
 "iZQ" = (
@@ -42612,6 +42615,9 @@
 	pixel_y = 24
 	},
 /atom/movable/landmark/spawnpoint/job/lawyer,
+/obj/machinery/atmospherics/components/unary/vent_pump/on{
+	dir = 8
+	},
 /turf/open/floor/wood,
 /area/service/lawoffice)
 "loX" = (
@@ -47805,7 +47811,8 @@
 /obj/machinery/atmospherics/pipe/simple/scrubbers/visible{
 	dir = 4
 	},
-/atom/movable/landmark/event_spawn,
+/obj/effect/landmark/event_spawn,
+/obj/machinery/atmospherics/pipe/simple/general/visible,
 /turf/open/floor/plasteel,
 /area/engineering/atmos)
 "xiZ" = (

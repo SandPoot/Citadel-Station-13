@@ -2,8 +2,10 @@
  * Handles mob creation, equip, and ckey transfer.
  */
 /datum/ghostrole_instantiator
+	/// traits to add to mob : will be made with GHOSTROLE_TRAIT source
+	var/list/mob_traits
 
-/datum/ghostrole_instantiator/proc/Run(client/C, atom/location)
+/datum/ghostrole_instantiator/proc/Run(client/C, atom/location, list/params)
 	RETURN_TYPE(/mob)
 	. = Create(C, location)
 	if(!.)
@@ -11,18 +13,12 @@
 	if(!Equip(C, .))
 		qdel(.)
 		return null
-	if(!Transfer(C, .))
-		qdel(.)
-		return null
 
-/datum/ghostrole_instantiator/proc/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/proc/Create(client/C, atom/location, list/params)
 	CRASH("Base Create() called on ghostrole instantiator datum.")
 
-/datum/ghostrole_instantiator/proc/Equip(client/C, mob/M)
+/datum/ghostrole_instantiator/proc/Equip(client/C, mob/M, list/params)
 	CRASH("Base Equip() called on ghostrole instantiator datum.")
-
-/datum/ghostrole_instantiator/proc/Transfer(client/C, mob/M)
-	CRASH("Base Transfer() called on ghostrole instantiator datum.")
 
 /datum/ghostrole_instantiator/human
 	/// outfit to equip
@@ -30,26 +26,40 @@
 	/// exempt from midround health events
 	var/exempt_health_events = FALSE
 
-/datum/ghostrole_instantiator/human/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/human/Create(client/C, atom/location, list/params)
 	var/mob/living/carbon/human/H = new(location)
 	if(exempt_health_events)
 		ADD_TRAIT(H, TRAIT_EXEMPT_HEALTH_EVENTS, GHOSTROLE_TRAIT)
+	for(var/trait in mob_traits)
+		ADD_TRAIT(H, trait, GHOSTROLE_TRAIT)
 	return H
 
-/datum/ghostrole_instantiator/human/Equip(client/C, mob/M)
-	if(ispath(equip_outfit, /datum/outfit))
-		var/datum/outfit/O = new equip_outfit
+/datum/ghostrole_instantiator/human/Equip(client/C, mob/M, list/params)
+	var/mob/living/carbon/human/H = M
+
+	H.dna.species.before_equip_job(null, H)
+
+	var/datum/outfit/O = GetOutfit(C, M, params)
+	if(O)
 		O.equip(M)
-	#warn survival gear
+
+	H.dna.species.after_equip_job(null, H)
+
+/datum/ghostrole_instantiator/human/proc/GetOutfit(client/C, mob/M, list/params)
+	if(ispath(equip_outfit, /datum/outfit))
+		return new equip_outfit
+	if(istype(equip_outfit, /datum/outfit))
+		return equip_outfit
+	return new /datum/outfit
 
 /datum/ghostrole_instantiator/human/random
 
-/datum/ghostrole_instantiator/human/random/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/human/random/Create(client/C, atom/location, list/params)
 	var/mob/living/carbon/human/H = ..()
-	Randomize(H)
+	Randomize(H, params)
 	return H
 
-/datum/ghostrole_instantiator/human/random/proc/Randomize(mob/living/carbon/human/H)
+/datum/ghostrole_instantiator/human/random/proc/Randomize(mob/living/carbon/human/H, list/params)
 	return			// tgcode does this automatically
 
 /datum/ghostrole_instantiator/human/random/species
@@ -59,12 +69,28 @@
 		/datum/species/lizard,
 		/datum/species/plasmaman,
 		/datum/species/jelly,
-		/datum/species/ipc,
+		/datum/species/ipc
 	)
 
-/datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H)
+/datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H, list/params)
 	. = ..()
-	#warn impl
+	var/species = pick(possible_species)
+	H.set_species(new species)
+	var/new_name
+	switch(H.dna.species.type)
+		if(/datum/species/lizard)
+			new_name = random_unique_lizard_name()
+		if(/datum/species/ethereal)
+			new_name = random_unique_ethereal_name()
+		if(/datum/species/plasmaman)
+			new_name = random_unique_plasmaman_name()
+		if(/datum/species/insect)
+			new_name = random_unique_moth_name()
+		if(/datum/species/arachnid)
+			new_name = random_unique_arachnid_name()
+		else
+			new_name = random_unique_name()
+	H.fully_replace_character_name(H.real_name, new_name)
 
 /datum/ghostrole_instantiator/human/player_static
 	/// equip loadout
@@ -72,7 +98,13 @@
 	/// equip traits
 	var/equip_traits = TRUE
 
-/datum/ghostrole_instantiator/human/player_static/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/human/player_static/Create(client/C, atom/location, list/params)
 	var/mob/living/carbon/human/H = ..()
 	LoadSavefile(C, H)
 	return H
+
+/datum/ghostrole_instantiator/human/player_static/proc/LoadSavefile(client/C, mob/living/carbon/human/H)
+	C.prefs.copy_to(H)
+	SSjob.EquipLoadout(H, FALSE, null, C.prefs, C.ckey)
+	if(CONFIG_GET(flag/roundstart_traits))
+		SSquirks.AssignQuirks(H, C, TRUE, FALSE, null, FALSE, C)

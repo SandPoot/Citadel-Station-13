@@ -1,162 +1,207 @@
-//Gives the player the stuff he should have with his rank
-/datum/controller/subsystem/job/proc/EquipRank(mob/M, rank, joined_late = FALSE)
-	var/mob/dead/new_player/N
-	var/mob/living/H
-	if(!joined_late)
-		N = M
-		H = N.new_character
-	else
-		H = M
+/datum/controller/subsystem/job/proc/ProcessRoundstartPlayer(mob/M, datum/job/J, loadout = TRUE, client/C)
+	// autodetect
+	if(!C)
+		C = M.client
+	if(!J && M.mind)
+		J = GetJobAuto(M.mind?.assigned_role)
+	// sigh make sure mind is set
+	if(J)
+		M.mind?.assigned_role = J.title
+		M.job = J.title
+	EquipPlayer(M, J, loadout, C.prefs, TRUE, FALSE, C)
+	J.after_spawn(M, FALSE, C)
+	GreetPlayer(M, J, TRUE, C)
+	if(!J?.override_latejoin_spawn(M))
+		SendToRoundstart(M, C, J)
+	PostJoin(M, J, C, FALSE)
 
-	var/datum/job/job = GetJobName(rank)
+/datum/controller/subsystem/job/proc/ProcessLatejoinPlayer(mob/M, datum/job/J, loadout = TRUE, client/C)
+	// autodetect
+	if(!C)
+		C = M.client
+	if(!J && M.mind)
+		J = GetJobAuto(M.mind?.assigned_role)
+	// sigh make sure mind is set
+	if(J)
+		M.mind.assigned_role = J.title
+		M.job = J.title
+	EquipPlayer(M, J, loadout, C.prefs, TRUE, TRUE, C)
+	J.after_spawn(M, TRUE, C)
+	GreetPlayer(M, J, TRUE, C)
+	if(!J?.override_latejoin_spawn(M))
+		SendToLatejoin(M, C, job = J)
+	PostJoin(M, J, C, TRUE)
 
-	H.job = rank
+/datum/controller/subsystem/job/proc/GreetPlayer(mob/M, datum/job/J, latejoin, client/C)
+	var/client/output = C || M.client
+	if(!J)
+		return
+	var/effective_title = output.prefs.GetPreferredAltTitle(J.title)
+	to_chat(output, span_bold("You are the [effective_title]"))
+	to_chat(output, span_bold("As the [effective_title] you answer directly to [J.GetSupervisorText()]. Special circumstances may change this."))
+	J.radio_help_message(M)
+	if(J.req_admin_notify)
+		to_chat(output, "<b>You are playing a job that is important for Game Progression. If you have to disconnect immediately, please notify the admins via adminhelp. Otherwise put your locker gear back into the locker and cryo out.</b>")
+	if(J.custom_spawn_text)
+		to_chat(output, "<b>[J.custom_spawn_text]</b>")
+	if(CONFIG_GET(number/minimal_access_threshold))
+		to_chat(output, "<span class='notice'><B>As this station was initially staffed with a [CONFIG_GET(flag/jobs_have_minimal_access) ? "full crew, only your job's necessities" : "skeleton crew, additional access may"] have been added to your ID card.</B></span>")
+	if(ishuman(M))
+		var/mob/living/carbon/human/wageslave = M
+		to_chat(output, "<b><span class = 'big'>Your account ID is [wageslave.account_id].</span></b>")
+		M.add_memory("Your account ID is [wageslave.account_id].")
 
-	//If we joined at roundstart we should be positioned at our workstation
-	if(!joined_late)
-		var/atom/movable/landmark/spawnpoint/S = GetRoundstartSpawnpoint(H, H.client || N.client, job.type, job.faction)
-		if(!S)
-			stack_trace("Couldn't find a roundstart spawnpoint for [H] ([H.client || N.client]) - [job.type] ([job.faction]).")
-			SendToLateJoin(H)
-		else
-			var/atom/A = S.GetSpawnLoc()
-			H.forceMove(A)
-			S.OnSpawn(H, H.client || N.client)
+/datum/controller/subsystem/job/proc/EquipPlayer(mob/M, datum/job/J, loadout = TRUE, datum/preferences/prefs, announce, latejoin, client/C)
+	if(!istype(J))
+		J = GetJobAuto(J)
+	ASSERT(istype(J))
+	// attempt autodetect prefs
+	if(!prefs)
+		prefs = M.client?.prefs
+	// if dress code compliant or no job, do loadout only. otherwise, do loadout first or job first based on dress code compliance
+	var/list/obj/item/leftovers
+	if(!J || !J.dresscodecompliant)
+		leftovers = EquipLoadout(M, FALSE, null, prefs, C)
+		HandleLoadoutLeftovers(M, leftovers, null, C)
+		return
 
-	if(H.mind)
-		H.mind.assigned_role = rank
+	J.equip(M, FALSE, announce, latejoin, null, prefs)
 
-	if(job)
-		if(!job.dresscodecompliant)// CIT CHANGE - dress code compliance
-			equip_loadout(N, H) // CIT CHANGE - allows players to spawn with loadout items
-		var/new_mob = job.equip(H, null, null, joined_late , null, M.client)
-		if(ismob(new_mob))
-			H = new_mob
-			if(!joined_late)
-				N.new_character = H
-			else
-				M = H
+	if(J.dresscodecompliant)
+		leftovers = EquipLoadout(M, FALSE, null, prefs, C)
 
-		SSpersistence.antag_rep_change[M.client.ckey] += job.GetAntagRep()
+	HandleLoadoutLeftovers(M, leftovers, null, C)
 
+/datum/controller/subsystem/job/proc/PostJoin(mob/M, datum/job/J, client/C, latejoin)
+	// job handling
+	if(J)
+		SSpersistence.antag_rep_change[M.client.ckey] += J.GetAntagRep()
+
+	// auto deadmin
 /*		if(M.client.holder)
 			if(CONFIG_GET(flag/auto_deadmin_players) || (M.client.prefs?.toggles & DEADMIN_ALWAYS))
 				M.client.holder.auto_deadmin()
 			else
 				handle_auto_deadmin_roles(M.client, rank) */
 
-	to_chat(M, "<b>You are the [rank].</b>")
-	if(job)
-		to_chat(M, "<b>As the [rank] you answer directly to [job.supervisors]. Special circumstances may change this.</b>")
-		job.radio_help_message(M)
-		if(job.req_admin_notify)
-			to_chat(M, "<b>You are playing a job that is important for Game Progression. If you have to disconnect immediately, please notify the admins via adminhelp. Otherwise put your locker gear back into the locker and cryo out.</b>")
-		if(job.custom_spawn_text)
-			to_chat(M, "<b>[job.custom_spawn_text]</b>")
-		if(CONFIG_GET(number/minimal_access_threshold))
-			to_chat(M, "<span class='notice'><B>As this station was initially staffed with a [CONFIG_GET(flag/jobs_have_minimal_access) ? "full crew, only your job's necessities" : "skeleton crew, additional access may"] have been added to your ID card.</B></span>")
-	if(ishuman(H))
-		var/mob/living/carbon/human/wageslave = H
-		to_chat(M, "<b><span class = 'big'>Your account ID is [wageslave.account_id].</span></b>")
-		H.add_memory("Your account ID is [wageslave.account_id].")
-	if(job && H)
-		if(job.dresscodecompliant)// CIT CHANGE - dress code compliance
-			equip_loadout(N, H) // CIT CHANGE - allows players to spawn with loadout items
-		job.after_spawn(H, M, joined_late) // note: this happens before the mob has a key! M will always have a client, H might not.
-		equip_loadout(N, H, TRUE)//CIT CHANGE - makes players spawn with in-backpack loadout items properly. A little hacky but it works
 
-	var/list/tcg_cards
-	if(ishuman(H))
-		if(length(H.client?.prefs?.tcg_cards))
-			tcg_cards = H.client.prefs.tcg_cards
-		else if(length(N?.client?.prefs?.tcg_cards))
-			tcg_cards = N.client.prefs.tcg_cards
-	if(tcg_cards)
+	// tcg card handling
+	var/list/tcg_cards = C.prefs.tcg_cards
+	var/list/tcg_decks = C.prefs.tcg_decks
+	if(tcg_cards && ishuman(M))
+		var/mob/living/carbon/human/H = M
 		var/obj/item/tcgcard_binder/binder = new(get_turf(H))
 		H.equip_to_slot_if_possible(binder, SLOT_IN_BACKPACK, disable_warning = TRUE, bypass_equip_delay_self = TRUE)
-		for(var/card_type in N.client.prefs.tcg_cards)
+		for(var/card_type in tcg_cards)
 			if(card_type)
-				if(islist(H.client.prefs.tcg_cards[card_type]))
-					for(var/duplicate in N.client.prefs.tcg_cards[card_type])
+				if(islist(tcg_cards[card_type]))
+					for(var/duplicate in tcg_cards[card_type])
 						var/obj/item/tcg_card/card = new(get_turf(H), card_type, duplicate)
 						card.forceMove(binder)
 						binder.cards.Add(card)
 				else
-					var/obj/item/tcg_card/card = new(get_turf(H), card_type, N.client.prefs.tcg_cards[card_type])
+					var/obj/item/tcg_card/card = new(get_turf(H), card_type, tcg_cards[card_type])
 					card.forceMove(binder)
 					binder.cards.Add(card)
 		binder.check_for_exodia()
-		if(length(N.client.prefs.tcg_decks))
-			binder.decks = N.client.prefs.tcg_decks
+		if(length(tcg_decks))
+			binder.decks = tcg_decks
 
-	return H
+	if(latejoin)
+		AnnounceJoin(M, J, C)
 
-/datum/controller/subsystem/job/proc/SendToLateJoin(mob/M, buckle = TRUE)
-	var/atom/destination
-	if(M.mind && M.mind.assigned_role && length(GLOB.jobspawn_overrides[M.mind.assigned_role])) //We're doing something special today.
-		destination = pick(GLOB.jobspawn_overrides[M.mind.assigned_role])
-		destination.JoinPlayerHere(M, FALSE)
-		return
-
-	if(latejoin_trackers.len)
-		destination = pick(latejoin_trackers)
-		destination.JoinPlayerHere(M, buckle)
-		return
-
-	//bad mojo
-	var/area/shuttle/arrival/A = GLOB.areas_by_type[/area/shuttle/arrival]
-	if(A)
-		//first check if we can find a chair
-		var/obj/structure/chair/C = locate() in A
-		if(C)
-			C.JoinPlayerHere(M, buckle)
-			return
-
-		//last hurrah
-		var/list/avail = list()
-		for(var/turf/T in A)
-			if(!is_blocked_turf(T, TRUE))
-				avail += T
-		if(avail.len)
-			destination = pick(avail)
-			destination.JoinPlayerHere(M, FALSE)
-			return
-
-	//pick an open spot on arrivals and dump em
-	var/list/arrivals_turfs = shuffle(get_area_turfs(/area/shuttle/arrival))
-	if(arrivals_turfs.len)
-		for(var/turf/T in arrivals_turfs)
-			if(!is_blocked_turf(T, TRUE))
-				T.JoinPlayerHere(M, FALSE)
-				return
-		//last chance, pick ANY spot on arrivals and dump em
-		destination = arrivals_turfs[1]
-		destination.JoinPlayerHere(M, FALSE)
+/datum/controller/subsystem/job/proc/AnnounceJoin(mob/M, datum/job/J, client/C)
+	if(istype(get_area(M), /area/shuttle/arrival) && SSshuttle.arrivals)
+		SSshuttle.arrivals.QueueAnnounce(M, J.title)
 	else
-		var/msg = "Unable to send mob [M] to late join!"
-		message_admins(msg)
-		CRASH(msg)
+		AnnounceArrival(M, J.title)
+/**
+ * Assigns a player to a role.
+ * @params
+ * - M - mind or mob
+ * - J - job , job title, or job type
+ * - latejoin - latejoining mob?
+ * - force - bypass checks
+ */
+/datum/controller/subsystem/job/proc/Assign(datum/mind/M, datum/job/J, latejoin = FALSE, force = FALSE)
+	if(ismob(M))
+		var/mob/_M = M
+		M = _M.mind
+	if(!istype(M))
+		CRASH("Invalid mind.")
+	if(!istype(J))
+		J = GetJobAuto(J)
+	if(!istype(J))
+		CRASH("Invalid job.")
+	JobDebug("ASSIGN: [M], [J], latejoin: [latejoin]")
+	if(!force && !CanAssign(M, J, latejoin))
+		JobDebug("ASSIGN: Failed CanAssign")
+		return FALSE
+	JobDebug("ASSIGN: Passed: JCP: [J.current_positions] (incremented)")
+	M.assigned_role = J.title
+	// hook into roundstart system so it doesn't have to call this manually
+	if(unassigned)
+		unassigned -= M.current
+	J.current_positions++
+	return TRUE
 
+/datum/controller/subsystem/job/proc/CanAssign(M, datum/job/J, latejoin)
+	var/mob/checking = ismob(M) && M
+	if(!checking)
+		if(istype(M, /datum/mind))
+			var/datum/mind/_M = M
+			checking = _M.current
+		if(istype(M, /client))
+			var/client/_C = M
+			checking = _C.mob
+	. = FALSE
+	if(!checking)
+		CRASH("No mob")
+	if(!istype(J))
+		CRASH("No job")
+	if(jobban_isbanned(checking, J.title))
+		return FALSE
+	if(!J.player_old_enough(checking.client))
+		return FALSE
+	if(J.required_playtime_remaining(checking.client))
+		return FALSE
+	var/position_limit = latejoin? J.total_positions : J.roundstart_positions
+	if(J.current_positions + 1 > position_limit)
+		return FALSE
+	return TRUE
 
-/atom/proc/JoinPlayerHere(mob/M, buckle)
-	// By default, just place the mob on the same turf as the marker or whatever.
-	M.forceMove(get_turf(src))
+/**
+ * Sends a mob to a spawnpoint. Set override = TRUE to disable auto-detect of job.
+ */
+/datum/controller/subsystem/job/proc/SendToLatejoin(mob/M, client/C = M.client, faction, job, method, override)
+	if(!override && M.mind?.assigned_role)
+		var/datum/job/J = SSjob.GetJobName(M.mind.assigned_role)
+		if(J)
+			faction = J.faction
+			job = J.GetID()
 
-/obj/structure/chair/JoinPlayerHere(mob/M, buckle)
-	// Placing a mob in a chair will attempt to buckle it, or else fall back to default.
-	if (buckle && isliving(M) && buckle_mob(M, FALSE, FALSE))
-		return
-	..()
+	var/atom/movable/landmark/spawnpoint/S
 
-/datum/controller/subsystem/job/proc/PopcapReached()
-	var/hpc = CONFIG_GET(number/hard_popcap)
-	var/epc = CONFIG_GET(number/extreme_popcap)
-	if(hpc || epc)
-		var/relevent_cap = max(hpc, epc)
-		if((initial_players_to_assign - unassigned.len) >= relevent_cap)
-			return 1
-	return 0
+	S = SSjob.GetLatejoinSpawnpoint(C, job, faction, method)
 
+	if(S)
+		M.forceMove(S.GetSpawnLoc())
+		S.OnSpawn(M, C)
+
+	var/error_message = "Unable to send [key_name(M)] to latejoin."
+	message_admins(error_message)
+	subsystem_log(error_message)
+	CRASH(error_message)		// this is serious.
+
+/datum/controller/subsystem/job/proc/SendToRoundstart(mob/M, client/C, datum/job/J)
+	var/atom/movable/landmark/spawnpoint/S = GetRoundstartSpawnpoint(M, C, J.GetID(), J.faction)
+	if(!S)
+		stack_trace("Couldn't find a roundstart spawnpoint for [M] ([C]) - [J.type] ([J.faction]).")
+		SendToLatejoin(M)
+	else
+		var/atom/A = S.GetSpawnLoc()
+		M.forceMove(A)
+		S.OnSpawn(M, C)
 
 /*
 /datum/controller/subsystem/job/proc/handle_auto_deadmin_roles(client/C, rank)

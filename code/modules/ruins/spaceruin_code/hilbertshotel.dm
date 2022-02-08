@@ -302,7 +302,7 @@ GLOBAL_VAR_INIT(hhmysteryRoomNumber, 1337)
 		user.reset_perspective(parentSphere)
 		user.set_machine(src)
 		var/datum/action/peepholeCancel/PHC = new
-		user.overlay_fullscreen("remote_view", /atom/movable/screen/fullscreen/impaired, 1)
+		user.overlay_fullscreen("remote_view", /atom/movable/screen/fullscreen/scaled/impaired, 1)
 		PHC.Grant(user)
 		return TRUE
 
@@ -462,7 +462,6 @@ GLOBAL_VAR_INIT(hhmysteryRoomNumber, 1337)
 	mob_name = "Doctor Hilbert"
 	mob_gender = "male"
 	assignedrole = null
-	ghost_usable = FALSE
 	oxy_damage = 500
 	mob_species = /datum/species/skeleton
 	id_job = "Head Researcher"

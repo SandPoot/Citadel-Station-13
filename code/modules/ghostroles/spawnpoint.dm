@@ -19,7 +19,7 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 	/// custom HTML spawntext to show, if any
 	var/spawntext
 
-/datum/component/ghostrole_spawnpoint/Initialize(role_type, allowed_spawns = INFINITY, list/params, datum/callback/proc_to_call_or_callback, notify_ghosts = TRUE)
+/datum/component/ghostrole_spawnpoint/Initialize(role_type, allowed_spawns = INFINITY, list/params, datum/callback/proc_to_call_or_callback, notify_ghosts = TRUE, spawntext)
 	if((. = ..()) & COMPONENT_INCOMPATIBLE)
 		return
 	if(!isatom(parent))
@@ -27,6 +27,7 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 	max_spawns = allowed_spawns
 	src.role_type = role_type
 	src.params = params
+	src.spawntext = spawntext
 	src.proc_to_call_or_callback = proc_to_call_or_callback
 	if(notify_ghosts)
 		var/datum/ghostrole/role = get_ghostrole_datum(role_type)
@@ -73,12 +74,12 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 
 /datum/component/ghostrole_spawnpoint/proc/OnSpawn(mob/created, datum/ghostrole/role)
 	if(istype(proc_to_call_or_callback))
-		proc_to_call_or_callback.Invoke(created, role)
+		proc_to_call_or_callback.Invoke(created, role, params, src)
 	spawns++
 	if(ispath(proc_to_call_or_callback))
 		if(!hascall(parent, proc_to_call_or_callback))
 			CRASH("Invalid proc [proc_to_call_or_callback] on [parent]")
-		call(parent, proc_to_call_or_callback)(created, role, params)
+		call(parent, proc_to_call_or_callback)(created, role, params, src)
 
 /datum/component/ghostrole_spawnpoint/vv_edit_var(var_name, var_value, massedit)
 	if(var_name == NAMEOF(src, proc_to_call_or_callback))
@@ -93,8 +94,15 @@ GLOBAL_LIST_EMPTY(ghostrole_spawnpoints)
 			return
 		examine_list += "<b>Click</> this ghostrole spawner to become a [role.name]!"
 
-/datum/component/ghostrole_spawnpoint/proc/GhostInteract(datum/source)
-	#warn spawner specific spawn
+/datum/component/ghostrole_spawnpoint/proc/GhostInteract(datum/source, mob/user)
+	var/datum/ghostrole/role = get_ghostrole_datum(role_type)
+	if(!role)
+		to_chat(user, span_danger("No ghostrole datum found: [role_type]. Contact a coder!"))
+		if(!(datum_flags & DF_VAR_EDITED))
+			stack_trace("Couldn't find role. Deleting self.")
+			qdel(src)
+		return
+	role.AttemptSpawn(user.client, src)
 
 /datum/component/ghostrole_spawnpoint/vv_edit_var(var_name, var_value, massedit)
 	. = ..()

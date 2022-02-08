@@ -147,6 +147,9 @@
 /datum/datacore/proc/manifest_inject(mob/living/carbon/human/H, client/C, datum/preferences/prefs)
 	set waitfor = FALSE
 	var/static/list/show_directions = list(SOUTH, WEST)
+	var/datum/job/J = SSjob.GetJobAuto(H.mind.assigned_role)
+	if(!J || J.faction != JOB_FACTION_STATION)
+		return			// no job, can't inject - snowflake until we Somehow Have different manifests for each faction :/
 	if(H.mind && (H.mind.assigned_role != H.mind.special_role))
 		var/assignment
 		if(H.mind.assigned_role)

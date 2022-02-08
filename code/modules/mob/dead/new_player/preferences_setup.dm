@@ -48,11 +48,11 @@
 
 	if(current_tab == LOADOUT_TAB)
 		//give it its loadout if not on the appearance tab
-		SSjob.equip_loadout(parent.mob, mannequin, FALSE, bypass_prereqs = TRUE, can_drop = FALSE)
+		SSjob.EquipLoadout(mannequin, TRUE, null, src, parent.ckey)
 	else
 		if(previewJob && equip_job)
 			mannequin.job = previewJob.title
-			previewJob.equip(mannequin, TRUE, preference_source = parent)
+			previewJob.equip(mannequin, TRUE, prefs = src)
 
 	mannequin.regenerate_icons()
 

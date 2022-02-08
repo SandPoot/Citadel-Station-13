@@ -1,5 +1,7 @@
 GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 
+#warn finish menu
+
 /datum/ghostrole_menu
 
 /datum/ghostrole_menu/ui_state(mob/user)
@@ -13,8 +15,6 @@ GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 
 /datum/ghostrole_menu/ui_static_data(mob/user)
 	. = ..()
-
-	var/list/spawners = list()
 	for(var/datum/ghostrole/role in GLOB.ghostroles)
 		var/list/data = list()
 		data["id"] = role.id || role.type
@@ -39,7 +39,7 @@ GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 				return
 			var/atom/A = role.GetSpawnLoc(usr.client, role.GetSpawnpoint(usr.client))
 			if(!A)
-				to_chat(usr, "<span class='warning'>Could not find a spawnpoint for [role]. This sometimes mean it isn't loaded in until someone attempts to spawn.</span>")
+				to_chat(usr, "<span class='warning'>Could not find a spawnpoint for [role]. This sometimes mean it isn't loaded in until someone attempts to spawn. Alternatively, you didn't pick one!</span>")
 				return
 			if(!A.loc)
 				to_chat(usr, "<span class='danger'>BUG: Spawnpoint was nullspace.</span>")

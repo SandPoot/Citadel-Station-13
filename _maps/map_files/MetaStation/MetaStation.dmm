@@ -54292,8 +54292,13 @@
 /obj/effect/turf_decal/tile/yellow{
 	dir = 4
 	},
-/atom/movable/landmark/event_spawn,
-/turf/open/floor/plasteel,
+/obj/machinery/button/door{
+	id = "atmos";
+	name = "Atmospherics Lockdown";
+	pixel_x = 26;
+	req_access_txt = "24"
+	},
+/turf/open/floor/plasteel/dark/corner,
 /area/engineering/atmos)
 "gGH" = (
 /obj/structure/cable/yellow{
@@ -80610,6 +80615,12 @@
 	dir = 4
 	},
 /atom/movable/landmark/spawnpoint/job/atmospheric_technician,
+/obj/structure/cable/yellow{
+	icon_state = "4-8"
+	},
+/obj/machinery/atmospherics/pipe/simple/scrubbers/hidden{
+	dir = 4
+	},
 /turf/open/floor/plasteel,
 /area/engineering/atmos)
 "vzs" = (

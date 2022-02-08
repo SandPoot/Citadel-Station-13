@@ -13,6 +13,8 @@
 	var/list/departments_supervised
 	/// Determines if this job can be spawned into by players
 	var/join_types = JOB_ROUNDSTART | JOB_LATEJOIN
+	/// HUD icon state
+	var/hud_icon_state = "DEFAULT_TO_TITLE"
 
 	// !!Stateful variables!! - If Recover() is ever implemented, these need to be carried over.
 	/// How many players have this job
@@ -72,8 +74,6 @@
 	var/list/mind_traits // Traits added to the mind of the mob assigned this job
 	var/list/blacklisted_quirks		//list of quirk typepaths blacklisted.
 
-	var/display_order = JOB_DISPLAY_ORDER_DEFAULT
-
 	//If a job complies with dresscodes, loadout items will not be equipped instead of the job's outfit, instead placing the items into the player's backpack.
 	var/dresscodecompliant = TRUE
 	// How much threat this job is worth in dynamic. Is subtracted if the player's not an antag, added if they are.
@@ -117,6 +117,12 @@
 	return desc
 
 /**
+ * Get the unique ID/type of the job
+ */
+/datum/job/proc/GetID()
+	return type
+
+/**
  * Get possible alt titles names, associated to their descriptions
  */
 /datum/job/proc/GetTitles()
@@ -147,7 +153,7 @@
  * Get deparments supervised
  */
 /datum/job/proc/GetSupervisedDepartments()
-	RETURN_TYPE(/datum/department)
+	RETURN_TYPE(/list)
 	. = list()
 	for(var/id in departments_supervised)
 		return SSjob.GetDepartmentType(id)
@@ -162,7 +168,7 @@
  * Get departments
  */
 /datum/job/proc/GetDepartments()
-	RETURN_TYPE(/datum/department)
+	RETURN_TYPE(/list)
 	. = list()
 	for(var/id in departments)
 		return SSjob.GetDepartmentType(id)
@@ -173,6 +179,60 @@
 /datum/job/proc/GetPrimaryDepartment()
 	RETURN_TYPE(/datum/department)
 	return LAZYLEN(departments) && SSjob.GetDepartmentType(departments[1])
+
+/**
+ * Get subordinate datums
+ */
+/datum/job/proc/GetSubordinates()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments_supervised)
+		. |= SSjob.GetDepartmentJobDatums(id)
+
+/**
+ * Get subordinate names
+ */
+/datum/job/proc/GetSubordinateNames()	// seriously screw byond, where's my .filter((dep) => dep.name)
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments_supervised)
+		. |= SSjob.GetDepartmentJobNames(id)
+
+/**
+ * Get subordinate IDs
+ */
+/datum/job/proc/GetSubordinateIDs()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments_supervised)
+		. |= SSjob.GetDepartmentJobIDs(id)
+
+/**
+ * Get head datums
+ */
+/datum/job/proc/GetHeads()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments)
+		. |= SSjob.GetJobType(SSjob.GetDepartmentType(id).supervisor)
+
+/**
+ * Get head names
+ */
+/datum/job/proc/GetHeadNames()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments)
+		. |= SSjob.GetJobType(SSjob.GetDepartmentType(id).supervisor).GetName()
+
+/**
+ * Get head IDs
+ */
+/datum/job/proc/GetHeadIDs()
+	RETURN_TYPE(/list)
+	. = list()
+	for(var/id in departments)
+		. |= SSjob.GetDepartmentType(id).supervisor
 
 /**
  * Get minds
@@ -210,22 +270,35 @@
 /datum/job/proc/SlotsRemaining()
 	return max(0, total_positions - current_positions)
 
+/**
+ * Get spawntext for supervisors
+ */
+/datum/job/proc/GetSupervisorText()
+	return supervisor_text_override || english_list(GetHeadNames())
+
 //Only override this proc
 //H is usually a human unless an /equip override transformed it
-/datum/job/proc/after_spawn(mob/living/H, mob/M, latejoin = FALSE)
+/datum/job/proc/after_spawn(mob/M, latejoin, client/C)
 	//do actions on H but send messages to M as the key may not have been transferred_yet
 	if(mind_traits)
 		for(var/t in mind_traits)
-			ADD_TRAIT(H.mind, t, JOB_TRAIT)
-	if(/datum/quirk/paraplegic in blacklisted_quirks)
-		H.regenerate_limbs() //if you can't be a paraplegic, attempt to regenerate limbs to stop amputated limb selection
-		H.set_resting(FALSE, TRUE) //they probably shouldn't be on the floor because they had no legs then suddenly had legs
+			ADD_TRAIT(M.mind, t, JOB_TRAIT)
+	if(ishuman(M))
+		var/mob/living/carbon/human/H = M
+		if(/datum/quirk/paraplegic in blacklisted_quirks)
+			H.regenerate_limbs() //if you can't be a paraplegic, attempt to regenerate limbs to stop amputated limb selection
+			H.set_resting(FALSE, TRUE) //they probably shouldn't be on the floor because they had no legs then suddenly had legs
 
 /datum/job/proc/announce(mob/living/carbon/human/H)
-	if(head_announce)
-		announce_head(H, head_announce)
+	if(!GLOB.announcement_systems.len)
+		return
+	if(!H)
+		return
+	for(var/datum/department/D as anything in GetSupervisedDepartments())
+		//timer because these should come after the captain announcement
+		SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, .proc/_addtimer, CALLBACK(pick(GLOB.announcement_systems), /obj/machinery/announcement_system/proc/announce, "NEWHEAD", H.real_name, H.job, D.supervisor_announce_channels), 1))
 
-#warn replace with something allowing for no spawnpoints on ai
+
 /datum/job/proc/override_latejoin_spawn(mob/living/carbon/human/H)		//Return TRUE to force latejoining to not automatically place the person in latejoin shuttle/whatever.
 	return FALSE
 
@@ -250,9 +323,10 @@
 		return threat
 
 //Don't override this unless the job transforms into a non-human (Silicons do this for example)
-/datum/job/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, client/preference_source)
+/datum/job/proc/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, datum/preferences/prefs)
 	if(!H)
 		return FALSE
+
 	if(!visualsOnly)
 		var/datum/bank_account/bank_account = new(H.real_name, src)
 		bank_account.account_holder = H.real_name
@@ -260,18 +334,18 @@
 		bank_account.account_id = rand(111111,999999)
 		bank_account.payday(STARTING_PAYCHECKS, TRUE)
 		H.account_id = bank_account.account_id
-	if(CONFIG_GET(flag/enforce_human_authority) && (title in SSjob.GetDepartmentType(/datum/department/command).GetJobNames()))
 
+	if(CONFIG_GET(flag/enforce_human_authority) && (title in SSjob.GetDepartmentType(/datum/department/command).GetJobNames()))
 		if(H.dna.species.id != "human")
 			H.set_species(/datum/species/human)
-			H.apply_pref_name("human", preference_source)
+			H.apply_pref_name("human", prefs)
 
 	//Equip the rest of the gear
 	H.dna.species.before_equip_job(src, H, visualsOnly)
 
 	var/datum/outfit/job/O = outfit_override || outfit
 	if(O)
-		H.equipOutfit(O, visualsOnly, preference_source) //mob doesn't have a client yet.
+		H.equipOutfit(O, visualsOnly, prefs) //mob doesn't have a client yet.
 
 	H.dna.species.after_equip_job(src, H, visualsOnly)
 
@@ -291,11 +365,6 @@
 
 	if(CONFIG_GET(flag/everyone_has_maint_access)) //Config has global maint access set
 		. |= list(ACCESS_MAINT_TUNNELS)
-
-/datum/job/proc/announce_head(var/mob/living/carbon/human/H, var/channels) //tells the given channel that the given mob is the new department head. See communications.dm for valid channels.
-	if(H && GLOB.announcement_systems.len)
-		//timer because these should come after the captain announcement
-		SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, .proc/_addtimer, CALLBACK(pick(GLOB.announcement_systems), /obj/machinery/announcement_system/proc/announce, "NEWHEAD", H.real_name, H.job, channels), 1))
 
 //If the configuration option is set to require players to be logged as old enough to play certain jobs, then this proc checks that they are, otherwise it just returns 1
 /datum/job/proc/player_old_enough(client/C)
@@ -328,100 +397,6 @@
 		return
 	for(var/mod in starting_modifiers)
 		ADD_SINGLETON_SKILL_MODIFIER(M, mod, null)
-
-/datum/outfit/job
-	name = "Standard Gear"
-
-	var/jobtype = null
-
-	uniform = /obj/item/clothing/under/color/grey
-	id = /obj/item/card/id
-	ears = /obj/item/radio/headset
-	belt = /obj/item/pda
-	back = /obj/item/storage/backpack
-	shoes = /obj/item/clothing/shoes/sneakers/black
-	box = /obj/item/storage/box/survival
-
-	var/backpack = /obj/item/storage/backpack
-	var/satchel  = /obj/item/storage/backpack/satchel
-	var/duffelbag = /obj/item/storage/backpack/duffelbag
-
-	var/pda_slot = SLOT_BELT
-
-/datum/outfit/job/pre_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
-	var/preference_backpack = preference_source?.prefs.backbag
-
-	if(preference_backpack)
-		switch(preference_backpack)
-			if(DBACKPACK)
-				back = backpack //Department backpack
-			if(DSATCHEL)
-				back = satchel //Department satchel
-			if(DDUFFELBAG)
-				back = duffelbag //Department duffel bag
-			else
-				var/find_preference_backpack = GLOB.backbaglist[preference_backpack] //attempt to find non-department backpack
-				if(find_preference_backpack)
-					back = find_preference_backpack
-				else //tried loading in a backpack that we don't allow as a loadout one
-					back = backpack
-	else //somehow doesn't have a preference set, should never reach this point but just-in-case
-		back = backpack
-
-	//converts the uniform string into the path we'll wear, whether it's the skirt or regular variant
-	var/holder
-	if(preference_source && preference_source.prefs.jumpsuit_style == PREF_SKIRT)
-		holder = "[uniform]/skirt"
-		if(!text2path(holder))
-			holder = "[uniform]"
-	else
-		holder = "[uniform]"
-	uniform = text2path(holder)
-
-/datum/outfit/job/post_equip(mob/living/carbon/human/H, visualsOnly = FALSE, client/preference_source)
-	if(visualsOnly)
-		return
-
-	var/datum/job/J = SSjob.GetJobType(jobtype)
-	if(!J)
-		J = SSjob.GetJobName(H.job)
-
-	if(H.nameless && J.dresscodecompliant)
-		if(J.title in GLOB.command_positions)
-			H.real_name = J.title
-		else
-			H.real_name = "[J.title] #[rand(10000, 99999)]"
-
-	var/obj/item/card/id/C = H.wear_id
-	if(istype(C) && C.bank_support)
-		C.access = J.get_access()
-		shuffle_inplace(C.access) // Shuffle access list to make NTNet passkeys less predictable
-		C.registered_name = H.real_name
-		C.assignment = J.title
-		C.update_label()
-		for(var/A in SSeconomy.bank_accounts)
-			var/datum/bank_account/B = A
-			if(B.account_id == H.account_id)
-				C.registered_account = B
-				B.bank_cards += C
-				break
-		H.sec_hud_set_ID()
-
-	var/obj/item/pda/PDA = H.get_item_by_slot(pda_slot)
-	if(istype(PDA))
-		PDA.owner = H.real_name
-		PDA.ownjob = J.title
-		PDA.update_label()
-		if(preference_source && !PDA.equipped) //PDA's screen color, font style and look depend on client preferences.
-			PDA.update_style(preference_source)
-
-/datum/outfit/job/get_chameleon_disguise_info()
-	var/list/types = ..()
-	types -= /obj/item/storage/backpack //otherwise this will override the actual backpacks
-	types += backpack
-	types += satchel
-	types += duffelbag
-	return types
 
 //Warden and regular officers add this result to their get_access()
 /datum/job/proc/check_config_for_sec_maint()

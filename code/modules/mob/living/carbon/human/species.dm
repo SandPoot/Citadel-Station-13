@@ -589,7 +589,7 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 				if(Q.type in blacklisted_quirks)
 					removed_quirks += Q.type
 					. += 1
-					qdel(Q)			
+					qdel(Q)
 		else
 			var/point_overhead = 0
 			for(var/datum/quirk/Q as anything in C.roundstart_quirks)
@@ -1195,7 +1195,7 @@ GLOBAL_LIST_EMPTY(roundstart_race_names)
 			if(!HAS_TRAIT(H, TRAIT_ROBOTIC_ORGANISM))
 				H.adjustBruteLoss(1)
 			else
-				H.adjustFireLoss(1) //Robots melt instead of taking brute.	
+				H.adjustFireLoss(1) //Robots melt instead of taking brute.
 
 /datum/species/proc/spec_death(gibbed, mob/living/carbon/human/H)
 	if(H)

@@ -704,7 +704,7 @@
 	set category = "Admin"
 	set name = "Unprison"
 	if (is_centcom_level(M.z))
-		SSjob.SendToLateJoin(M)
+		SSjob.SendToLatejoin(M)
 		message_admins("[key_name_admin(usr)] has unprisoned [key_name_admin(M)]")
 		log_admin("[key_name(usr)] has unprisoned [key_name(M)]")
 	else

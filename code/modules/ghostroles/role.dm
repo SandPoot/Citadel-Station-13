@@ -16,7 +16,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /proc/get_ghostrole_datum(path)
 	if(GLOB.ghostroles[path])
 		return GLOB.ghostroles[path]
-	if(ispath(/datum/ghostrole))
+	if(ispath(path, /datum/ghostrole))
 		GLOB.ghostroles[path] = new path
 		return GLOB.ghostroles[path]
 	CRASH("Failed to get ghostrole: [path]")
@@ -51,13 +51,15 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 	var/spawnerless = FALSE
 	/// assigned role. defaults to name.
 	var/assigned_role
+	/// jobban name/id, if any
+	var/jobban_role
 
 /datum/ghostrole/New(_id)
 	if(ispath(instantiator, /datum/ghostrole_instantiator))
 		instantiator = new instantiator
 	id = _id || type
 
-/datum/ghostrole/proc/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
+/datum/ghostrole/proc/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
 	if(show_standard_greeting)
 		to_chat(created, {"<center><b><font size='16px'>You have spawned as a ghostrole.</font></b></center>
 		These roles are usually more roleplay oriented than standard hard-defined antagonist roles - besure to follow spawntext (if any), as well as server rules.
@@ -66,6 +68,7 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 		to_chat(created, spawntext)
 	if(spawnpoint.spawntext)
 		to_chat(created, spawntext)
+	// todo: policyconfig
 
 /**
  * Master proc for spawning someone as this role.
@@ -73,27 +76,40 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
  * Return TRUe on success, or a string of why it failed.
  */
 /datum/ghostrole/proc/AttemptSpawn(client/C, datum/component/ghostrole_spawnpoint/chosen_spawnpoint)
+	if(BanCheck(C))
+		return "You can't spawn as [src] due to an active job-ban."
 	if(!AllowSpawn(C))
 		return "You can't spawn as this role; Try refreshing the ghostrole/join menu."
 	if(!PreInstantiate(C))
 		return "PreInstantiate() failed."
-	var/datum/component/ghostrole_spawnpoint/spawnpoint = (spawnerless && null) || chosen_spawnpoint || GetSpawnpoint(C)
+	var/datum/component/ghostrole_spawnpoint/spawnpoint = spawnerless? null : (chosen_spawnpoint || GetSpawnpoint(C))
+	var/list/params = islist(spawnpoint?.params)? spawnpoint.params.Copy() : list()		// clone/new, because procs CAN MODIFY THIS.
+	if(!AllowSpawn(C, params))		// check again with params
+		return "The spawnpoint refused to let you spawn."
 	var/atom/location = GetSpawnLoc(C, spawnpoint)
 	if(!location)
 		return "Couldn't get a spawn location."
-	var/mob/created = Instantiate(C, location)
+	var/mob/created = Instantiate(C, location, params)
 	if(!created)
 		return "Mob instantiation failed."
-	PostInstantiate(created, spawnpoint)
+	if(!Transfer(C, created))
+		qdel(created)
+		return "Mob transfer failed."
+	PostInstantiate(created, spawnpoint, params)
 	GLOB.join_menu.queue_update()
 	GLOB.ghostrole_menu.queue_update()
 	return TRUE
 
-/datum/ghostrole/proc/Instantiate(client/C, atom/loc)
-	var/mob/living/L = instantiator.Run(C, loc)
+/datum/ghostrole/proc/Instantiate(client/C, atom/loc, list/params)
+	var/mob/living/L = instantiator.Run(C, loc, params)
 	. = istype(L)
 	if(.)
 		L.mind?.assigned_role = assigned_role || name
+
+/datum/ghostrole/proc/Transfer(client/C, mob/created)
+	if(!isnewplayer(C.mob))
+		C.mob.ghostize(TRUE, TRUE)
+	created.ckey = C.ckey
 
 /**
  * Ran before anything else is at AttemptSpawn()
@@ -104,12 +120,11 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /**
  * Checks if the client is a valid user mob and if we can allow a spawn from them
  */
-/datum/ghostrole/proc/AllowSpawn(client/C)
+/datum/ghostrole/proc/AllowSpawn(client/C, list/params)
 	if(!isobserver(C) && !isnewplayer(C))
 		return FALSE
 	if(SpawnsLeft(C) <= 0)
 		return FALSE
-	#warn ban check
 	return TRUE
 
 /datum/ghostrole/proc/SpawnsLeft(client/C)
@@ -151,8 +166,8 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 /**
  * Spawnpoint can be null here, if we're not using a spawnpoint
  */
-/datum/ghostrole/proc/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint)
-	Greet(created, spawnpoint)
+/datum/ghostrole/proc/PostInstantiate(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
+	Greet(created, spawnpoint, params)
 	spawns++
 	spawnpoint?.OnSpawn(created, src)
 
@@ -160,4 +175,21 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
  * Ban check.
  */
 /datum/ghostrole/proc/BanCheck(client/C)
-	return
+	if(!jobban_role)
+		return FALSE
+	return jobban_isbanned(C.mob, jobban_role)
+
+/datum/ghostrole/proc/GiveCustomObjective(mob/created, objective)
+	created.GhostroleGiveCustomObjective(src, objective)
+
+/mob/proc/GhostroleGiveCustomObjective(datum/ghostrole/R, objective)
+	if(!mind)
+		mind_initialize()
+	if(!mind)
+		CRASH("No mind.")
+	var/datum/antagonist/custom/A = mind.has_antag_datum(/datum/antagonist/custom) || mind.add_antag_datum(/datum/antagonist/custom)
+	if(!A)
+		CRASH("Failed to locate/make custom antagonist datum.")
+	var/datum/objective/O = new(objective)
+	O.owner = mind
+	A.objectives += O

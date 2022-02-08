@@ -1,14 +1,14 @@
 /datum/controller/subsystem/job
 	/// All spawnpoints
-	var/list/spawnpoints
+	var/static/list/spawnpoints = list()
 	/// Job spawnpoints keyed to job id/typepath
-	var/list/job_spawnpoints
+	var/static/list/job_spawnpoints = list()
 	/// Generic latejoin spawnpoints, nested list faction = list()
-	var/list/latejoin_spawnpoints
+	var/static/list/latejoin_spawnpoints = list()
 	/// Generic overflow spawnpoints, nested list faction = list()
-	var/list/overflow_spawnpoints
+	var/static/list/overflow_spawnpoints = list()
 	/// Custom spawnpoints, nested list key = list()
-	var/list/custom_spawnpoints
+	var/static/list/custom_spawnpoints = list()
 
 /**
  * Fully resets spawnpoints list and ensures validity
@@ -55,7 +55,7 @@
 	// Priority 1: Job specific spawnpoints
 	if(job_path && length(job_spawnpoints[job_path]))
 		for(var/atom/movable/landmark/spawnpoint/job/J as anything in job_spawnpoints[job_path])
-			if(!S.roundstart)
+			if(!J.roundstart)
 				continue
 			if(!J.Available(M, C, harder))
 				continue
@@ -85,7 +85,7 @@
  * - method - (optional) required method for the spawnpoint - this will make the proc return null instead of an overflow, if it can't find something for the method.
  * - harder - used when the first iteration failed, tells spawnpoints to skip certain checks
  */
-/datum/controller/subsystem/job/proc/GetLatejoinSpawnpoint(client/C, job_path, faction, method, harder = FALSE)
+/datum/controller/subsystem/job/proc/GetLatejoinSpawnpoint(client/C, job_path, faction = JOB_FACTION_STATION, method, harder = FALSE)
 	// Priority 1: Job specific spawnpoints
 	if(job_path && length(job_spawnpoints[job_path]))
 		for(var/atom/movable/landmark/spawnpoint/job/J as anything in job_spawnpoints[job_path])
@@ -97,7 +97,7 @@
 				continue
 			return J
 	// Priority 2: Latejoin spawnpoints, if latejoin
-	if(!roundstart && length(latejoin_spawnpoints[faction]))
+	if(length(latejoin_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/latejoin/S as anything in latejoin_spawnpoints[faction])
 			if(!S.Available(null, C, harder))
 				continue
@@ -141,7 +141,7 @@
 				continue
 			. |= J.method
 	// Get all standard latejoin methods
-	if(!roundstart && length(latejoin_spawnpoints[faction]))
+	if(length(latejoin_spawnpoints[faction]))
 		for(var/atom/movable/landmark/spawnpoint/latejoin/S as anything in latejoin_spawnpoints[faction])
 			if(!S.Available(null, C, TRUE))
 				continue

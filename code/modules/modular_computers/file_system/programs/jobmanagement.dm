@@ -99,7 +99,7 @@
 		if("PRG_priority")
 			var/priority_target = params["target"]
 			var/datum/job/j = SSjob.GetJobName(priority_target)
-			if(!j)
+			if(!j || (j?.GetName() in blacklisted))
 				return
 			if(j.total_positions <= j.current_positions)
 				return
@@ -126,8 +126,7 @@
 	data["authed"] = authed
 
 	var/list/pos = list()
-	for(var/j in SSjob.occupations)
-		var/datum/job/job = j
+	for(var/datum/job/job as anything in SSjob.GetAllJobs())
 		if(job.title in blacklisted)
 			continue
 

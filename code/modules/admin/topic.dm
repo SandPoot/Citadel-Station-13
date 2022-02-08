@@ -668,7 +668,7 @@
 				if(++counter >= JOBS_PER_ROW)
 					dat += "</tr><tr>"
 					counter = 0
-			dat += "</tr></table?"
+			dat += "</tr></table>"
 #undef JOBS_PER_ROW
 
 		//Ghost Roles (light light gray)
@@ -1753,8 +1753,8 @@
 			if(!newtime)
 				to_chat(owner, "Setting to amount of positions filled for the job")
 				job.total_positions = job.current_positions
-				break
-			job.total_positions = newtime
+			else
+				job.total_positions = newtime
 
 		manage_free_slots()
 

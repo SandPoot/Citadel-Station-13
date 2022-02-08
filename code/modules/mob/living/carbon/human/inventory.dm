@@ -209,7 +209,7 @@
 			update_tint()
 		if(G.vision_correction)
 			if(HAS_TRAIT(src, TRAIT_NEARSIGHT))
-				overlay_fullscreen("nearsighted", /atom/movable/screen/fullscreen/impaired, 1)
+				overlay_fullscreen("nearsighted", /atom/movable/screen/fullscreen/scaled/impaired, 1)
 		if(G.vision_flags || G.darkness_view || G.invis_override || G.invis_view || !isnull(G.lighting_alpha))
 			update_sight()
 		if(!QDELETED(src))
@@ -270,7 +270,7 @@
 	sec_hud_set_security_status()
 	..()
 
-/mob/living/carbon/human/proc/equipOutfit(outfit, visualsOnly = FALSE, client/preference_source)
+/mob/living/carbon/human/proc/equipOutfit(outfit, visualsOnly = FALSE, datum/preferences/prefs)
 	var/datum/outfit/O = null
 
 	if(ispath(outfit))
@@ -282,7 +282,7 @@
 	if(!O)
 		return 0
 
-	return O.equip(src, visualsOnly, preference_source)
+	return O.equip(src, visualsOnly, prefs)
 
 
 //delete all equipment without dropping anything

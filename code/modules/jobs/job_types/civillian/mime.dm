@@ -17,9 +17,9 @@
 
 	threat = 0
 
-/datum/job/mime/after_spawn(mob/living/carbon/human/H, mob/M)
+/datum/job/mime/after_spawn(mob/M, latejoin, client/C)
 	. = ..()
-	H.apply_pref_name("mime", M.client)
+	M.apply_pref_name("mime", C.prefs)
 
 /datum/outfit/job/mime
 	name = "Mime"

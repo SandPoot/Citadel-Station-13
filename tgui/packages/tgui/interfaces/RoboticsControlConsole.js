@@ -32,9 +32,7 @@ export const RoboticsControlConsole = (props, context) => {
           </Tabs.Tab>
         </Tabs>
         {tab === 1 && (
-          <Cyborgs cyborgs={cyborgs}
-            can_hack={can_hack}
-            can_convert={can_convert} />
+          <Cyborgs cyborgs={cyborgs} can_hack={can_hack} />
         )}
         {tab === 2 && (
           <Drones drones={drones} />
