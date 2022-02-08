@@ -12,7 +12,7 @@
 	if(SSshuttle.arrivals.mode == SHUTTLE_CALL)
 		var/atom/movable/screen/splash/Spl = new(C, TRUE)
 		Spl.Fade(TRUE)
-		M.playsound_local(get_turf(character), 'sound/voice/ApproachingTG.ogg', 25)
+		M.playsound_local(get_turf(M), 'sound/voice/ApproachingTG.ogg', 25)
 
 /atom/movable/landmark/spawnpoint/overflow/station
 	faction = JOB_FACTION_STATION

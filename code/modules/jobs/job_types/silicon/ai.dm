@@ -19,7 +19,7 @@
 
 	starting_modifiers = list(/datum/skill_modifier/job/level/wiring/basic)
 
-/datum/job/ai/equip(mob/living/carbon/human/H, visualsOnly, announce, latejoin, datum/outfit/outfit_override, client/preference_source = null)
+/datum/job/ai/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, datum/preferences/prefs)
 	if(visualsOnly)
 		CRASH("dynamic preview is unsupported")
 	. = H.AIize(latejoin,preference_source)

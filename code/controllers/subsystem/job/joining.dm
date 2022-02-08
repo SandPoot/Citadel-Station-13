@@ -107,6 +107,14 @@
 		if(length(tcg_decks))
 			binder.decks = tcg_decks
 
+	if(latejoin)
+		AnnounceJoin(M, J, C)
+
+/datum/controller/subsystem/job/proc/AnnounceJoin(mob/M, datum/job/J, client/C)
+	if(istype(get_area(M), /area/shuttle/arrival) && SSshuttle.arrivals)
+		SSshuttle.arrivals.QueueAnnounce(M, J.title)
+	else
+		AnnounceArrival(M, J.title)
 /**
  * Assigns a player to a role.
  * @params

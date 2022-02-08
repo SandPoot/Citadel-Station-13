@@ -1226,7 +1226,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 
 	var/width = widthPerColumn
 
-	var/HTML = list()
+	var/list/HTML = list()
 	HTML += "<center>"
 
 	HTML += "<b>Choose occupation chances</b><br>"
@@ -1386,7 +1386,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		var/prefUpperLevel = -1 // level to assign on left click
 		var/prefLowerLevel = -1 // level to assign on right click
 
-		switch(job_preferences["[job.title]"])
+		switch(job_preferences["[J.title]"])
 			if(JP_HIGH)
 				prefLevelLabel = "High"
 				prefLevelColor = "slateblue"
@@ -1407,14 +1407,14 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 				prefLevelColor = "red"
 				prefUpperLevel = 3
 				prefLowerLevel = 1
-		preftext = "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[prefUpperLevel];text=[rank]' \
-		oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[rank]\");'>\
+		preftext = "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[prefUpperLevel];text=[J.title]' \
+		oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[J.title]\");'>\
 		<font color=[prefLevelColor]>[prefLevelLabel]</font></a>"
 	else
 		// overflow is special
 		var/enabled = job_preferences["[SSjob.overflow_role]"] == JP_LOW
-		preftext = "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[enabled? 0 : JP_LOW];text=[rank]' \
-		oncontextmenu='javascript:return setJobPrefRedirect([prefLowerLevel], \"[rank]\");'>\
+		preftext = "<a class='white' href='?_src_=prefs;preference=job;task=setJobLevel;level=[enabled? 0 : JP_LOW];text=[J.title]' \
+		oncontextmenu='javascript:return setJobPrefRedirect([enabled? 0 : JP_LOW], \"[J.title]\");'>\
 		<font color=[enabled? "orange" : "red"]>[enabled? "Yes" : "No"]</font></a>"
 
 	var/right = "<a href='_src_=prefs;jobhelp=[J.title]'>\[?]</a> [preftext]"
@@ -1589,6 +1589,20 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			text += ".</span>"
 			to_chat(user, text, confidential = TRUE)
 		qdel(query_get_jobban)
+		return
+
+	if(href_list["jobhelp"])
+		var/datum/job/J = SSjob.GetJobAuto(href_list["jobhelp"])
+		to_chat(user, J.GetHelpText())
+		SetChoices(user)
+		return
+
+	if(href_list["setalttitle"])
+		var/datum/job/J = SSjob.GetJobAuto(href_list["setalttitle"])
+		var/list/titles = J.GetTitles()
+		var/preferred = input(user, "Select a title for [J.title]", "Alt Titles", J.title) as null|anything in titles
+		alt_titles[J.title] = preferred
+		SetChoices(user)
 		return
 
 	if(href_list["preference"] == "job")

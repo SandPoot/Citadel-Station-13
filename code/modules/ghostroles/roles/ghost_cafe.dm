@@ -112,6 +112,7 @@
 	var/mob/living/carbon/human/H = .
 	H.AddElement(/datum/element/ghost_role_eligibility, free_ghosting = TRUE)
 	H.AddElement(/datum/element/dusts_on_catatonia)
+	var/area/A = get_area(H)
 	H.AddElement(/datum/element/dusts_on_leaving_area,list(A.type,/area/hilbertshotel))
 	var/datum/action/toggle_dead_chat_mob/D = new(H)
 	D.Grant(H)

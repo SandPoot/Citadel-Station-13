@@ -12,7 +12,7 @@
 	to lose this opportunity. Find a way to get out of this mess and back to where you rightfully belong - your [pick("house", "apartment", "spaceship", "station")]."))
 
 /datum/ghostrole_instantiator/human/random/lavaland_prisoner
-	outfit = /datum/outfit/lavalandprisoner
+	equip_outfit = /datum/outfit/lavalandprisoner
 
 /datum/ghostrole_instantiator/human/random/lavaland_prisoner/Randomize(mob/living/carbon/human/H, list/params)
 	. = ..()

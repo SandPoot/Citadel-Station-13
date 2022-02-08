@@ -56,7 +56,7 @@
 		J = SSjob.GetJobName(H.job)
 
 	if(H.nameless && J.dresscodecompliant)
-		if(J.title in GLOB.command_positions)
+		if(J.title in SSjob.GetDepartmentJobNames(/datum/department/command))
 			H.real_name = J.title
 		else
 			H.real_name = "[J.title] #[rand(10000, 99999)]"

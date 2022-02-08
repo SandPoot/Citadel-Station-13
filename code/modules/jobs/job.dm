@@ -290,10 +290,15 @@
 			H.set_resting(FALSE, TRUE) //they probably shouldn't be on the floor because they had no legs then suddenly had legs
 
 /datum/job/proc/announce(mob/living/carbon/human/H)
-	if(head_announce)
-		announce_head(H, head_announce)
+	if(!GLOB.announcement_systems.len)
+		return
+	if(!H)
+		return
+	for(var/datum/department/D as anything in GetSupervisedDepartments())
+		//timer because these should come after the captain announcement
+		SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, .proc/_addtimer, CALLBACK(pick(GLOB.announcement_systems), /obj/machinery/announcement_system/proc/announce, "NEWHEAD", H.real_name, H.job, D.supervisor_announce_channels), 1))
 
-#warn replace with something allowing for no spawnpoints on ai
+
 /datum/job/proc/override_latejoin_spawn(mob/living/carbon/human/H)		//Return TRUE to force latejoining to not automatically place the person in latejoin shuttle/whatever.
 	return FALSE
 
@@ -360,11 +365,6 @@
 
 	if(CONFIG_GET(flag/everyone_has_maint_access)) //Config has global maint access set
 		. |= list(ACCESS_MAINT_TUNNELS)
-
-/datum/job/proc/announce_head(var/mob/living/carbon/human/H, var/channels) //tells the given channel that the given mob is the new department head. See communications.dm for valid channels.
-	if(H && GLOB.announcement_systems.len)
-		//timer because these should come after the captain announcement
-		SSticker.OnRoundstart(CALLBACK(GLOBAL_PROC, .proc/_addtimer, CALLBACK(pick(GLOB.announcement_systems), /obj/machinery/announcement_system/proc/announce, "NEWHEAD", H.real_name, H.job, channels), 1))
 
 //If the configuration option is set to require players to be logged as old enough to play certain jobs, then this proc checks that they are, otherwise it just returns 1
 /datum/job/proc/player_old_enough(client/C)

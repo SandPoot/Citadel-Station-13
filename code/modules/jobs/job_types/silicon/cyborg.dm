@@ -14,7 +14,7 @@
 
 	starting_modifiers = list(/datum/skill_modifier/job/level/wiring/basic)
 
-/datum/job/cyborg/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, client/preference_source = null)
+/datum/job/cyborg/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, datum/preferences/prefs)
 	if(visualsOnly)
 		CRASH("dynamic preview is unsupported")
 	return H.Robotize(FALSE, latejoin)
