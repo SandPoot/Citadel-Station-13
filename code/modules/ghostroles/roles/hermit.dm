@@ -19,7 +19,7 @@
 
 /datum/ghostrole/hermit/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
 	. = ..()
-	var/flavourtext = "Each day you barely scrape by, and between the terrible conditions of your makeshift shelter, \
+	var/flavour_text = "Each day you barely scrape by, and between the terrible conditions of your makeshift shelter, \
 	the hostile creatures, and the ash drakes swooping down from the cloudless skies, all you can wish for is the feel of soft grass between your toes and \
 	the fresh air of Earth. These thoughts are dispelled by yet another recollection of how you got here... "
 	switch(params["fluff"])
@@ -38,7 +38,7 @@
 			flavour_text += "you were always joked about by your friends for \"not playing with a full deck\", as they so <i>kindly</i> put it. It seems that they were right when you, on a tour \
 			at one of Nanotrasen's state-of-the-art research facilities, were in one of the escape pods alone and saw the red button. It was big and shiny, and it caught your eye. You pressed \
 			it, and after a terrifying and fast ride for days, you landed here. You've had time to wisen up since then, and you think that your old friends wouldn't be laughing now."
-	to_chat(created, flavourtext)
+	to_chat(created, flavour_text)
 
 /datum/ghostrole_instantiator/human/random/hermit
 	mob_traits = list(
