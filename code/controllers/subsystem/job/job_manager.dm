@@ -278,7 +278,8 @@
 /datum/controller/subsystem/job/proc/RecomputePreferencesRender()
 	// inefficient and awful but hey, player UI experience am i right gamers :/
 	// list is horrfiying_nested_list[faction as define text][department instance] = list(title = job instance)
-	var/list/horrifying_nested_list = horrifying_preferences_render_list = list()
+	horrifying_preferences_render_list = list()
+	var/list/horrifying_nested_list = horrifying_preferences_render_list
 	for(var/datum/job/job as anything in GetAllJobs())
 		if(!(job.join_types & JOB_ROUNDSTART))
 			continue		// not necessary

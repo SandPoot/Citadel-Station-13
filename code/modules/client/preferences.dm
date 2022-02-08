@@ -1259,7 +1259,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		HTML += "<td width='20%'><table width='100%' cellpadding='1' cellspacing='0'>"
 
 		// iterate departments
-		var/list/datum/department/departments = horrifying_nested_list[faction]
+		var/list/datum/department/departments = SSjob.horrifying_preferences_render_list[faction]
 		for(var/datum/department/D as anything in departments)
 			// if it isn't the first one and we're out of space, start a new column
 			if(left != jobs_per_column && length(departments[D]) > left)
