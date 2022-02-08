@@ -13,9 +13,6 @@
 	if(!Equip(C, .))
 		qdel(.)
 		return null
-	if(!Transfer(C, .))
-		qdel(.)
-		return null
 
 /datum/ghostrole_instantiator/proc/Create(client/C, atom/location, list/params)
 	CRASH("Base Create() called on ghostrole instantiator datum.")

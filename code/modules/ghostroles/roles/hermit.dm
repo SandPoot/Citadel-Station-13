@@ -19,7 +19,7 @@
 
 /datum/ghostrole/hermit/Greet(mob/created, datum/component/ghostrole_spawnpoint/spawnpoint, list/params)
 	. = ..()
-	var/flavortext = "Each day you barely scrape by, and between the terrible conditions of your makeshift shelter, \
+	var/flavourtext = "Each day you barely scrape by, and between the terrible conditions of your makeshift shelter, \
 	the hostile creatures, and the ash drakes swooping down from the cloudless skies, all you can wish for is the feel of soft grass between your toes and \
 	the fresh air of Earth. These thoughts are dispelled by yet another recollection of how you got here... "
 	switch(params["fluff"])
@@ -38,7 +38,7 @@
 			flavour_text += "you were always joked about by your friends for \"not playing with a full deck\", as they so <i>kindly</i> put it. It seems that they were right when you, on a tour \
 			at one of Nanotrasen's state-of-the-art research facilities, were in one of the escape pods alone and saw the red button. It was big and shiny, and it caught your eye. You pressed \
 			it, and after a terrifying and fast ride for days, you landed here. You've had time to wisen up since then, and you think that your old friends wouldn't be laughing now."
-	to_chat(created, flavortext)
+	to_chat(created, flavourtext)
 
 /datum/ghostrole_instantiator/human/random/hermit
 	mob_traits = list(
@@ -46,7 +46,7 @@
 	)
 
 /datum/ghostrole_instantiator/human/random/hermit/GetOutfit(client/C, mob/M, list/params)
-	var/datum/outfit/O = ..()
+	var/datum/outfit/outfit = ..()
 	switch(params["fluff"])
 		if("proper")
 			outfit.uniform = /obj/item/clothing/under/misc/assistantformal
@@ -65,6 +65,7 @@
 			outfit.uniform = /obj/item/clothing/under/color/grey/glorf
 			outfit.shoes = /obj/item/clothing/shoes/sneakers/black
 			outfit.back = /obj/item/storage/backpack
+	return outfit
 
 //Malfunctioning cryostasis sleepers: Spawns in makeshift shelters in lavaland. Ghosts become hermits with knowledge of how they got to where they are now.
 /obj/structure/ghost_role_spawner/hermit
@@ -72,7 +73,6 @@
 	desc = "A humming sleeper with a silhouetted occupant inside. Its stasis function is broken and it's likely being used as a bed."
 	icon = 'icons/obj/lavaland/spawners.dmi'
 	icon_state = "cryostasis_sleeper"
-	short_desc = "You've been stranded in this godless prison of a planet for longer than you can remember."
 
 /obj/structure/ghost_role_spawner/hermit/Destroy()
 	new/obj/structure/fluff/empty_cryostasis_sleeper(get_turf(src))
