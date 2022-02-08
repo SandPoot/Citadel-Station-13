@@ -1,5 +1,7 @@
 GLOBAL_DATUM_INIT(ghostrole_menu, /datum/ghostrole_menu, new)
 
+#warn finish menu
+
 /datum/ghostrole_menu
 
 /datum/ghostrole_menu/ui_state(mob/user)

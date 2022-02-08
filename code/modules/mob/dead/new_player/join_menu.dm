@@ -1,5 +1,7 @@
 GLOBAL_DATUM_INIT(join_menu, /datum/join_menu, new)
 
+#warn finish menu
+
 /**
  * Global singleton for holding TGUI data for players joining.
  */
