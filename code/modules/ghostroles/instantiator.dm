@@ -23,9 +23,6 @@
 /datum/ghostrole_instantiator/proc/Equip(client/C, mob/M, list/params)
 	CRASH("Base Equip() called on ghostrole instantiator datum.")
 
-/datum/ghostrole_instantiator/proc/Transfer(client/C, mob/M, list/params)
-	CRASH("Base Transfer() called on ghostrole instantiator datum.")
-
 /datum/ghostrole_instantiator/human
 	/// outfit to equip
 	var/equip_outfit
