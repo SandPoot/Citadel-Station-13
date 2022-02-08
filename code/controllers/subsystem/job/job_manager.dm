@@ -62,7 +62,7 @@
 	for(var/path in subtypesof(/datum/department))
 		var/datum/department/D = new path
 		departments += D
-		departments_temporary
+		departments_temporary += D
 		department_type_lookup[path] = D
 		department_name_lookup[D.name] = D
 	// assign departments to jobs and vice versa

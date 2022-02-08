@@ -1,7 +1,7 @@
 /**
  * returns list of items that need to be placed in backpack/dropped on ground
  */
-/datum/controller/subsystem/job/proc/EquipLoadout(mob/living/M, ignore_restrictions = FALSE, datum/job/J, datum/preferences/P, ckey)
+/datum/controller/subsystem/job/proc/EquipLoadout(mob/living/M, ignore_restrictions = FALSE, datum/job/J, datum/preferences/P, ckey, client/C)
 	. = list()
 	ASSERT(M)
 	// allow autodetection of ckey, prefs
@@ -15,8 +15,9 @@
 		J = M.mind?.assigned_role
 		if(J)
 			J = GetJobAuto(J)
+
 	// for chat output
-	var/client/C = GLOB.directory[ckey] || M.client
+	C = C || M.client
 
 	// failures before this point runtime
 	JobDebug("EquipLoadout: [M], ignore [ignore_restrictions], job [J.title], ckey [ckey]")
@@ -73,6 +74,8 @@
 		if(!M.equip_to_slot_if_possible(I, G.slot, disable_warning = TRUE, bypass_equip_delay_self = TRUE))
 			. += I
 			continue
+		else
+			to_chat(C, "Equipping you with \the [I].")
 
 /datum/controller/subsystem/job/proc/CanEquipGear(datum/gear/G, ckey, datum/job/J)
 	. = FALSE
@@ -86,13 +89,15 @@
 		return
 	return TRUE
 
-/datum/controller/subsystem/job/proc/HandleLoadoutLeftovers(mob/living/M, list/obj/item/items, can_drop = TRUE)
+/datum/controller/subsystem/job/proc/HandleLoadoutLeftovers(mob/living/M, list/obj/item/items, can_drop = TRUE, client/C)
 	for(var/obj/item/I in items)		// don't risk runtime
 		if(iscarbon(M))
 			var/mob/living/carbon/C = M
 			if(C.back && SEND_SIGNAL(C.back, COMSIG_TRY_STORAGE_INSERT, I, null, TRUE, TRUE))
 				continue
 		if(!can_drop)
+			to_chat(C, "Deleting \the [I]: Could not drop on ground.")
 			qdel(I)
 			continue
+		to_chat(C, "Dropping \the [I] on the ground.")
 		I.forceMove(M.drop_location())

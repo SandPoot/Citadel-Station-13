@@ -8,25 +8,25 @@
 	desc = "You are a crewmember aboard the syndicate flagship: the SBC Starfury."
 	spawntext = "Your job is to follow your captain's orders, maintain the ship, and keep the engine running. If you are not familiar with how the supermatter engine functions: do not attempt to start it. \
 	<br>Furthermore, the armory is not a candy store, and your role is not to assault the station directly, leave that work to the assault operatives."
-	instantiator = /datum/ghostrole_instantiator/cybersun/ship
+	instantiator = /datum/ghostrole_instantiator/human/random/cybersun/ship
 
 /datum/ghostrole/cybersun/assault
 	name = "Cybersun Assault Operative"
 	desc = "You are an assault operative aboard the syndicate flagship: the SBC Starfury."
 	spawntext = "Your job is to follow your captain's orders, keep intruders out of the ship, and assault Space Station 13. There is an armory, multiple assault ships, and beam cannons to attack the station with. \
 	<br>Work as a team with your fellow operatives and work out a plan of attack. If you are overwhelmed, escape back to your ship!"
-	instantiator = /datum/ghostrole_instantiator/cybersun/assault
+	instantiator = /datum/ghostrole_instantiator/human/random/cybersun/assault
 
 /datum/ghostrole/cybersun/captain
 	name = "Cybersun Ship Captain"
 	desc = "You are the captain aboard the syndicate flagship: the SBC Starfury."
 	spawntext = "Your job is to oversee your crew, defend the ship, and destroy Space Station 13. The ship has an armory, multiple ships, beam cannons, and multiple crewmembers to accomplish this goal. \
 		<br>As the captain, this whole operation falls on your shoulders. You do not need to nuke the station, causing sufficient damage and preventing your ship from being destroyed will be enough."
-	instantiator = /datum/ghostrole_instantiator/cybersun/captain
+	instantiator = /datum/ghostrole_instantiator/human/random/cybersun/captain
 
 /datum/ghostrole_instantiator/human/random/cybersun
 
-/datum/ghostrole_instantiator/cybersun/Create(client/C, atom/location)
+/datum/ghostrole_instantiator/human/random/cybersun/Create(client/C, atom/location)
 	. = ..()
 	if(!.)
 		return

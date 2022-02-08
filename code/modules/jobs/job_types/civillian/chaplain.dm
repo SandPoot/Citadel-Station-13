@@ -31,7 +31,7 @@
 		to_chat(C, "There is already an established religion onboard the station. You are an acolyte of [GLOB.deity]. Defer to the Chaplain.")
 		M.equip_to_slot_or_del(B, SLOT_IN_BACKPACK)
 		var/nrt = GLOB.holy_weapon_type || /obj/item/nullrod
-		var/obj/item/nullrod/N = new nrt(H)
+		var/obj/item/nullrod/N = new nrt(M)
 		M.put_in_hands(N)
 		return
 

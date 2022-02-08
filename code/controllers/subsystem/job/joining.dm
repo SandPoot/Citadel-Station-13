@@ -8,7 +8,7 @@
 	if(J)
 		M.mind?.assigned_role = J.title
 		M.job = J.title
-	EquipPlayer(M, J, loadout, C.prefs, TRUE, FALSE)
+	EquipPlayer(M, J, loadout, C.prefs, TRUE, FALSE, C)
 	J.after_spawn(M, FALSE, C)
 	GreetPlayer(M, J, TRUE, C)
 	if(!J?.override_latejoin_spawn(M))
@@ -25,7 +25,7 @@
 	if(J)
 		M.mind.assigned_role = J.title
 		M.job = J.title
-	EquipPlayer(M, J, loadout, C.prefs, TRUE, TRUE)
+	EquipPlayer(M, J, loadout, C.prefs, TRUE, TRUE, C)
 	J.after_spawn(M, TRUE, C)
 	GreetPlayer(M, J, TRUE, C)
 	if(!J?.override_latejoin_spawn(M))
@@ -51,7 +51,7 @@
 		to_chat(output, "<b><span class = 'big'>Your account ID is [wageslave.account_id].</span></b>")
 		M.add_memory("Your account ID is [wageslave.account_id].")
 
-/datum/controller/subsystem/job/proc/EquipPlayer(mob/M, datum/job/J, loadout = TRUE, datum/preferences/prefs, announce, latejoin)
+/datum/controller/subsystem/job/proc/EquipPlayer(mob/M, datum/job/J, loadout = TRUE, datum/preferences/prefs, announce, latejoin, client/C)
 	if(!istype(J))
 		J = GetJobAuto(J)
 	ASSERT(istype(J))
@@ -61,16 +61,16 @@
 	// if dress code compliant or no job, do loadout only. otherwise, do loadout first or job first based on dress code compliance
 	var/list/obj/item/leftovers
 	if(!J || !J.dresscodecompliant)
-		leftovers = EquipLoadout(M, FALSE, null, prefs)
-		HandleLoadoutLeftovers(M, leftovers)
+		leftovers = EquipLoadout(M, FALSE, null, prefs, C)
+		HandleLoadoutLeftovers(M, leftovers, null, C)
 		return
 
 	J.equip(M, FALSE, announce, latejoin, null, prefs)
 
 	if(J.dresscodecompliant)
-		leftovers = EquipLoadout(M, FALSE, null, prefs)
+		leftovers = EquipLoadout(M, FALSE, null, prefs, C)
 
-	HandleLoadoutLeftovers(M, leftovers)
+	HandleLoadoutLeftovers(M, leftovers, null, C)
 
 /datum/controller/subsystem/job/proc/PostJoin(mob/M, datum/job/J, client/C, latejoin)
 	// job handling

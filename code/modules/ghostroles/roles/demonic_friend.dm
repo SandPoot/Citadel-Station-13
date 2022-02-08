@@ -46,8 +46,8 @@
 		return
 	var/obj/item/card/id/ID = H.wear_id?.GetID()
 	if(ID && params["owner"])
-		var/datum/mind/M = params["owner"]
-		ID.registered_name = "[M.name]'s best friend"
+		var/datum/mind/_M = params["owner"]
+		ID.registered_name = "[_M.name]'s best friend"
 		ID.update_label()
 
 /obj/structure/ghost_role_spawner/demonic_friend

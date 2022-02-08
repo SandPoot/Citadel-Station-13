@@ -67,8 +67,8 @@
 			ui.send_full_update()
 		return
 	// neither specified, send all
-	for(var/datum/tgui/ui as anything in SStgui.get_open_uis(src))
-		ui.send_full_update()
+	for(var/datum/tgui/_ui as anything in SStgui.get_open_uis(src))
+		_ui.send_full_update()
 
 /**
  * public

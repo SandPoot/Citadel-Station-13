@@ -1312,6 +1312,9 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			// put all jobs in
 			for(var/title in data)
 				var/datum/job/J = data[title]
+				if(shown[J])
+					continue
+				shown[J] = TRUE
 				HTML += GenerateOccupationEntry(J)
 				last = J
 				--left
