@@ -82,19 +82,20 @@ GLOBAL_LIST_INIT(ghostroles, init_ghostroles())
 		return "You can't spawn as this role; Try refreshing the ghostrole/join menu."
 	if(!PreInstantiate(C))
 		return "PreInstantiate() failed."
-	var/datum/component/ghostrole_spawnpoint/spawnpoint = (spawnerless && null) || chosen_spawnpoint || GetSpawnpoint(C)
-	if(!AllowSpawn(C, spawnpoint?.params))		// check again with params
+	var/datum/component/ghostrole_spawnpoint/spawnpoint = spawnerless? null : (chosen_spawnpoint || GetSpawnpoint(C))
+	var/list/params = (islist(spawnpoint?.params) && spawnpoint.params.Copy()) : list()		// clone/new, because procs CAN MODIFY THIS.
+	if(!AllowSpawn(C, params))		// check again with params
 		return "The spawnpoint refused to let you spawn."
 	var/atom/location = GetSpawnLoc(C, spawnpoint)
 	if(!location)
 		return "Couldn't get a spawn location."
-	var/mob/created = Instantiate(C, location, spawnpoint?.params)
+	var/mob/created = Instantiate(C, location, params)
 	if(!created)
 		return "Mob instantiation failed."
 	if(!Transfer(C, created))
 		qdel(created)
 		return "Mob transfer failed."
-	PostInstantiate(created, spawnpoint, spawnpoint?.params)
+	PostInstantiate(created, spawnpoint, params)
 	GLOB.join_menu.queue_update()
 	GLOB.ghostrole_menu.queue_update()
 	return TRUE

@@ -53,6 +53,7 @@
 		return new equip_outfit
 	if(istype(equip_outfit, /datum/outfit))
 		return equip_outfit
+	return new /datum/outfit
 
 /datum/ghostrole_instantiator/human/random
 

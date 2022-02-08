@@ -5,6 +5,7 @@
 	name = "Ghost Role Spawner"
 	desc = "if you're seeing this a coder fucked up"
 	resistance_flags = INDESTRUCTIBLE
+	density = TRUE
 	icon = 'icons/obj/machines/sleeper.dmi'
 	icon_state = "sleeper"
 
