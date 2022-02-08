@@ -1369,7 +1369,7 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	if(jobban_isbanned(parent.mob, J.title))
 		preftext = "<a href='?_src_=prefs;bancheck=[J.title]'>BANNED</a>"
 	else if(J.required_playtime_remaining(parent))
-		preftext = "<font color='red'>\[ [get_exp_format(J.required_playtime_remaining(parent)] as [J.get_exp_req_type()] ]</font>"
+		preftext = "<font color='red'>\[ [get_exp_format(J.required_playtime_remaining(parent))] as [J.get_exp_req_type()] ]</font>"
 	else if(!J.player_old_enough(parent))
 		var/days_left = J.available_in_days(parent)
 		preftext = "<font color='red'>\[ IN [days_left] DAYS ]</font>"
