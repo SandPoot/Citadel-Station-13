@@ -71,7 +71,7 @@
 		/datum/species/lizard,
 		/datum/species/plasmaman,
 		/datum/species/jelly,
-		/datum/species/ipc,
+		/datum/species/ipc
 	)
 
 /datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H, list/params)
@@ -85,12 +85,12 @@
 			new_name = random_unique_ethereal_name()
 		if(/datum/species/plasmaman)
 			new_name = random_unique_plasmaman_name()
-		if(/datum/species/moth)
-			new_name = random_unique_moth_name
+		if(/datum/species/insect)
+			new_name = random_unique_moth_name()
 		if(/datum/species/arachnid)
-			new_name = random_unique_arachnid_name
+			new_name = random_unique_arachnid_name()
 		else
-			new_name = random_unique_name
+			new_name = random_unique_name()
 	H.fully_replace_character_name(H.real_name, new_name)
 
 /datum/ghostrole_instantiator/human/player_static
