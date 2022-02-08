@@ -22,7 +22,7 @@
 /datum/job/ai/equip(mob/living/carbon/human/H, visualsOnly = FALSE, announce = TRUE, latejoin = FALSE, datum/outfit/outfit_override = null, datum/preferences/prefs)
 	if(visualsOnly)
 		CRASH("dynamic preview is unsupported")
-	. = H.AIize(latejoin,preference_source)
+	. = H.AIize(latejoin, prefs)
 
 /datum/job/ai/after_spawn(mob/M, latejoin, client/C)
 	. = ..()

@@ -153,7 +153,7 @@
  * Get deparments supervised
  */
 /datum/job/proc/GetSupervisedDepartments()
-	RETURN_TYPE(/datum/department)
+	RETURN_TYPE(/list)
 	. = list()
 	for(var/id in departments_supervised)
 		return SSjob.GetDepartmentType(id)

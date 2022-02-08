@@ -76,7 +76,22 @@
 
 /datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H, list/params)
 	. = ..()
-	#warn impl
+	H.set_species(new pick(possible_species))
+	var/new_name
+	switch(H.dna.species.type)
+		if(/datum/species/lizard)
+			new_name = random_unique_lizard_name()
+		if(/datum/species/ethereal)
+			new_name = random_unique_ethereal_name()
+		if(/datum/species/plasmaman)
+			new_name = random_unique_plasmaman_name()
+		if(/datum/species/moth)
+			new_name = random_unique_moth_name
+		if(/datum/species/arachnid)
+			new_name = random_unique_arachnid_name
+		else
+			new_name = random_unique_name
+	H.fully_replace_character_name(H.real_name, new_name)
 
 /datum/ghostrole_instantiator/human/player_static
 	/// equip loadout
