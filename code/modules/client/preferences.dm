@@ -1234,46 +1234,10 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	HTML += "<center><a href='?_src_=prefs;preference=job;task=close'>Done</a></center><br>" // Easier to press up here.
 	HTML += "<script type='text/javascript'>function setJobPrefRedirect(level, rank) { window.location.href='?_src_=prefs;preference=job;task=setJobLevel;level=' + level + ';text=' + encodeURIComponent(rank); return false; }</script>"
 
-	// inefficient and awful but hey, player UI experience am i right gamers :/
-	// list is horrfiying_nested_list[faction as define text][department instance] = list(title = job instance)
-	var/list/horrifying_nested_list = list()
-	for(var/datum/job/job as anything in SSjob.GetAllJobs())
-		if(!(job.join_types & JOB_ROUNDSTART))
-			continue		// not necessary
-		LAZYINITLIST(horrifying_nested_list[job.faction])
-		var/datum/department/D = job.GetPrimaryDepartment()
-		LAZYINITLIST(horrifying_nested_list[job.faction][D])
-		horrifying_nested_list[job.faction][D] += list(list(J.title = J))
-
-	// *sigh
-	var/list/_station = horrifying_nested_list[JOB_FACTION_STATION]
-	// force station at top
-	horrifying_nested_list -= JOB_FACTION_STATION
-	horrifying_nested_list.Insert(1, JOB_FACTION_STATION)
-	horrifying_nested_list[JOB_FACTION_STATION] = _station
-	// sort rest
-	sortTim(horrifying_nested_list, /proc/cmp_text_asc, associative = FALSE, fromIndex = 2)
-	for(var/faction as anything in horrifying_nested_list)
-		// sort departments
-		var/list/L1 = horrifying_nested_list[faction]
-		sortTim(L1, /proc/cmp_department_priority_dsc, associative = FALSE)
-		for(var/datum/department/D as anything in L1)
-			// sort jobs
-			var/list/L2 = L1[D]
-			// force head at top
-			var/headname = D.GetSupervisorName()
-			var/datum/job/_head = L2[headname]
-			L2 -= headname
-			L2.Insert(1, headname)
-			L2[headname] = _head
-			// sort the rest
-			sortTim(L2, /proc/cmp_text_asc, associative = FALSE)
-	// finish
-
 	// here begins the monsterous loop.
 
 	// for each faction,
-	for(var/faction in horrifying_nested_list)
+	for(var/faction in SSjob.horrifying_preferences_render_list)
 		// title
 		HTML += "<center><b>[faction]</b></center>"
 

@@ -25,6 +25,9 @@
 	/// job names in departments
 	var/static/list/job_names_in_department = list()
 
+	/// used for prefs setup - tgui when lmfao
+	var/static/list/horrifying_preferences_render_list
+
 /datum/controller/subsystem/job/proc/SetupOccupations()
 	var/list/all_jobs = subtypesof(/datum/job)
 	if(!all_jobs.len)
@@ -95,6 +98,7 @@
 		if(!LAZYLEN(J.departments))
 			J.departments = list(/datum/department/misc)
 			misc_department.jobs += J.type
+	RecomputePreferencesRender()
 	return TRUE
 
 /datum/controller/subsystem/job/proc/GetJobAuto(thing)
@@ -266,3 +270,53 @@
 	if(title in get_all_centcom_jobs())
 		return "CentCom"
 	return "Unknown"
+
+/**
+ * i'm so fucking sorry
+ * tgui preferences (not awful edition) when?
+ */
+/datum/controller/subsystem/job/proc/RecomputePreferencesRender()
+	// inefficient and awful but hey, player UI experience am i right gamers :/
+	// list is horrfiying_nested_list[faction as define text][department instance] = list(title = job instance)
+	var/list/horrifying_nested_list = horrifying_preferences_render_list = list()
+	for(var/datum/job/job as anything in GetAllJobs())
+		if(!(job.join_types & JOB_ROUNDSTART))
+			continue		// not necessary
+		var/list/faction
+		if(horrifying_nested_list[job.faction])
+			faction = horrifying_nested_list[job.faction]
+		else
+			faction = horrifying_nested_list[job.faction] = list()
+		var/datum/department/D = job.GetPrimaryDepartment()
+		var/list/dept
+		if(horrifying_nested_list[job.faction][D])
+			dept = horrifying_nested_list[job.faction][D]
+		else
+			dept = horrifying_nested_list[job.faction][D] = list()
+		dept += list(list(job.title = job))
+
+	// *sigh
+	var/list/_station = horrifying_nested_list[JOB_FACTION_STATION]
+	// force station at top
+	horrifying_nested_list -= JOB_FACTION_STATION
+	horrifying_nested_list.Insert(1, JOB_FACTION_STATION)
+	horrifying_nested_list[JOB_FACTION_STATION] = _station
+	// sort rest
+	sortTim(horrifying_nested_list, /proc/cmp_text_asc, associative = FALSE, fromIndex = 2)
+	for(var/faction as anything in horrifying_nested_list)
+		// sort departments
+		var/list/L1 = horrifying_nested_list[faction]
+		sortTim(L1, /proc/cmp_department_priority_dsc, associative = FALSE)
+		for(var/datum/department/D as anything in L1)
+			// sort jobs
+			var/list/L2 = L1[D]
+			// force head at top
+			var/headname = D.GetSupervisorName()
+			var/datum/job/_head = L2[headname]
+			L2 -= headname
+			L2.Insert(1, headname)
+			L2[headname] = _head
+			// sort the rest
+			sortTim(L2, /proc/cmp_text_asc, associative = FALSE)
+	// finish
+
