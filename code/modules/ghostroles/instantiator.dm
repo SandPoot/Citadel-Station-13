@@ -74,7 +74,8 @@
 
 /datum/ghostrole_instantiator/human/random/species/Randomize(mob/living/carbon/human/H, list/params)
 	. = ..()
-	H.set_species(new pick(possible_species))
+	var/species = pick(possible_species)
+	H.set_species(new species)
 	var/new_name
 	switch(H.dna.species.type)
 		if(/datum/species/lizard)

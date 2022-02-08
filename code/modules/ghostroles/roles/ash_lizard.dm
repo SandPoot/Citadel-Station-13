@@ -55,7 +55,7 @@
 	anchored = FALSE
 	move_resist = MOVE_FORCE_NORMAL
 	density = FALSE
-	role_type = /datum/ghsotrole/ashwalker
+	role_type = /datum/ghostrole/ashwalker
 	role_spawns = 1
 	resistance_flags = LAVA_PROOF | FIRE_PROOF | FREEZE_PROOF
 	max_integrity = 80
