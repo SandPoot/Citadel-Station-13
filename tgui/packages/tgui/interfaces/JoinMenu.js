@@ -7,14 +7,14 @@ export const JoinMenu = (props, context) => {
   const { act, data } = useBackend(context);
   const { charname, duration, evacuated, jobs, security_level } = data;
   return (
-    <Window width={400} height={600} overflow="auto">
-      <Window.Content>
+    <Window width={400} height={600}>
+      <Window.Content overflow="auto">
         <Section title={"Welcome " + charname}>
           Shift has lasted {duration}<br />
           The current alert level is {security_level}<br />
           {evacuated ? "The Station is under evacuation procedures." : null}
         </Section>
-        <Section title="Join a Shift" overflow="hidden">
+        <Section title="Join a Shift">
           {
             Object.keys(jobs).map(faction => (
               <Collapsible title={faction} key={faction} color="transparent">
@@ -33,6 +33,7 @@ export const JoinMenu = (props, context) => {
                                       icon="sign-in-alt"
                                       content="Join"
                                       color="transparent"
+                                      // disabled={jobs[faction][job][rank].slots <= 0}
                                       onClick={() => act('join', {
                                         id: jobs[faction][job][rank].id,
                                         type: "job",
