@@ -20,13 +20,13 @@ export const JoinMenu = (props, context) => {
               <Collapsible title={faction} key={faction} color="transparent">
                 {
                   Object.keys(jobs[faction]).map(job => (
-                    <Collapsible title={job} key={job} left={1} color="transparent">
-                      <Section left={1}>
+                    <Collapsible title={job} key={job} color="transparent" style={{ "padding-left": "5%" }}>
+                      <Section style={{ "padding-left": "5%" }}>
                         <Table>
                           {
                             Object.keys(jobs[faction][job]).map(rank => (
                               <tr class="Table__row candystripe" key={rank}>
-                                <Collapsible title={rank} left={1} color="transparent" buttons={
+                                <Collapsible title={rank} color="transparent" style={{ "padding-left": "5%" }} buttons={
                                   <Button
                                     icon="sign-in-alt"
                                     content="Join"
@@ -35,7 +35,7 @@ export const JoinMenu = (props, context) => {
                                       type: "job",
                                     })} />
                                 }>
-                                  <Section left={1}>
+                                  <Section style={{ "padding-left": "5%" }}>
                                     Description: {jobs[faction][job][rank].desc}
                                     <td>
                                       Free slots: {jobs[faction][job][rank].slots}
