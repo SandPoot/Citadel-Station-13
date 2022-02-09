@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { useBackend } from '../backend';
-import { Button, Collapsible, Section, Table } from '../components';
+import { Button, Collapsible, Icon, Section, Table, Tooltip } from '../components';
 import { Window } from '../layouts';
 
 export const JoinMenu = (props, context) => {
@@ -27,19 +27,20 @@ export const JoinMenu = (props, context) => {
                             Object.keys(jobs[faction][job]).map(rank => (
                               <tr class="Table__row candystripe" key={rank}>
                                 <Collapsible title={rank} color="transparent" style={{ "padding-left": "5%" }} buttons={
-                                  <Button
-                                    icon="sign-in-alt"
-                                    content="Join"
-                                    onClick={() => act('join', {
-                                      id: jobs[faction][job][rank].id,
-                                      type: "job",
-                                    })} />
+                                  <>
+                                    {jobs[faction][job][rank].slots} <Icon name="user-friends" />
+                                    <Button
+                                      icon="sign-in-alt"
+                                      content="Join"
+                                      color="transparent"
+                                      onClick={() => act('join', {
+                                        id: jobs[faction][job][rank].id,
+                                        type: "job",
+                                      })} />
+                                  </>
                                 }>
                                   <Section style={{ "padding-left": "5%" }}>
                                     Description: {jobs[faction][job][rank].desc}
-                                    <td>
-                                      Free slots: {jobs[faction][job][rank].slots}
-                                    </td>
                                   </Section>
                                 </Collapsible>
                               </tr>
