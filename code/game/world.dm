@@ -9,9 +9,13 @@ GLOBAL_LIST(topic_status_cache)
 //So subsystems globals exist, but are not initialised
 
 /world/New()
-	var/dll = GetConfig("env", "AUXTOOLS_DEBUG_DLL")
-	if (dll)
-		LIBCALL(dll, "auxtools_init")()
+#ifdef USE_BYOND_TRACY
+	#warn USE_BYOND_TRACY is enabled
+	init_byond_tracy()
+#endif
+	var/debug_server = world.GetConfig("env", "AUXTOOLS_DEBUG_DLL")
+	if (debug_server)
+		LIBCALL(debug_server, "auxtools_init")()
 		enable_debugging()
 
 	world.Profile(PROFILE_START)
@@ -37,6 +41,10 @@ GLOBAL_LIST(topic_status_cache)
 	SSdbcore.CheckSchemaVersion()
 	SSdbcore.SetRoundID()
 	SetupLogs()
+
+	#ifdef ENABLE_BYOND_TRACY
+	LIBCALL("prof.dll", "destroy")() // Setup Tracy integration
+	#endif
 
 #ifndef USE_CUSTOM_ERROR_HANDLER
 	world.log = file("[GLOB.log_directory]/dd.log")
@@ -369,3 +377,18 @@ GLOBAL_LIST(topic_status_cache)
 
 /world/proc/on_tickrate_change()
 	SStimer?.reset_buckets()
+
+/world/proc/init_byond_tracy()
+	var/library
+
+	switch (system_type)
+		if (MS_WINDOWS)
+			library = "prof.dll"
+		if (UNIX)
+			library = "libprof.so"
+		else
+			CRASH("Unsupported platform: [system_type]")
+
+	var/init_result = call(library, "init")()
+	if (init_result != "0")
+		CRASH("Error initializing byond-tracy: [init_result]")
