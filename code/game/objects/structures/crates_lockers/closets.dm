@@ -76,8 +76,7 @@
 		. += "[icon_door_override ? icon_door : icon_state]_open"
 		return
 
-	if(icon_door)
-		. += "[icon_door || icon_state]_door"
+	. += "[icon_door || icon_state]_door"
 	if(welded)
 		. += icon_welded
 
