@@ -43,12 +43,12 @@
 	P.ignore_source_check = TRUE
 	switch(redirection_mode)
 		if(REDIRECT_METHOD_DEFLECT)
-			P.setAngle(SIMPLIFY_DEGREES(P.Angle + rand(120, 240)))
+			P.set_angle(SIMPLIFY_DEGREES(P.Angle + rand(120, 240)))
 			if(!silent)
 				visible_message("<span class='danger'>[P] gets deflected by [src]!</span>", \
 					"<span class='userdanger'>You deflect [P]!</span>")
 		if(REDIRECT_METHOD_REFLECT)
-			P.setAngle(SIMPLIFY_DEGREES(P.Angle + 180))
+			P.set_angle(SIMPLIFY_DEGREES(P.Angle + 180))
 			if(!silent)
 				visible_message("<span class='danger'>[P] gets reflected by [src]!</span>", \
 					"<span class='userdanger'>You reflect [P]!</span>")
@@ -62,9 +62,9 @@
 				visible_message("<span class='danger'>[src] deflects [P] back at their attacker!</span>", \
 					"<span class='userdanger'>You deflect [P] back at your attacker!</span>")
 			if(P.firer)
-				P.setAngle(Get_Angle(src, P.firer))
+				P.set_angle(Get_Angle(src, P.firer))
 			else
-				P.setAngle(SIMPLIFY_DEGREES(P.Angle + 180))
+				P.set_angle(SIMPLIFY_DEGREES(P.Angle + 180))
 		else
 			CRASH("Invalid rediretion mode [redirection_mode]")
 

@@ -521,7 +521,7 @@
 	hitsound = 'sound/effects/splat.ogg'
 	var/chain
 
-/obj/item/projectile/hook/fire(setAngle)
+/obj/item/projectile/hook/fire(set_angle)
 	if(firer)
 		chain = firer.Beam(src, icon_state = "chain", time = INFINITY, maxdistance = INFINITY)
 	..()

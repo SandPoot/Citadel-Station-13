@@ -230,7 +230,7 @@
 		if(STAGE_3)
 			var/hex = ""
 			for(var/i in 1 to 8)
-				hex += num2hex(rand(1,16))
+				hex += num2hex(rand(1,16), 2)
 			msg = "CRC mismatch at 0x[hex] in calculated route buffer. Full reset initiated of FTL_NAVIGATION_SERVICES. Memory decrypted for automatic repair."
 		if(STAGE_4)
 			msg = "~ACS_directive module_load(cyberdyne.exploit.nanotrasen.shuttlenav)... NT key mismatch. Confirm load? Y...###Reboot complete. $SET transponder_state = 0; System link initiated with connected engines..."

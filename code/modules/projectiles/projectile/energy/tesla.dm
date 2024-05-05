@@ -7,7 +7,7 @@
 	var/zap_range = 3
 	var/power = 10000
 
-/obj/item/projectile/energy/tesla/fire(setAngle, atom/direct_target)
+/obj/item/projectile/energy/tesla/fire(set_angle, atom/direct_target)
 	var/atom/source = fired_from || firer
 	if(source)
 		chain = source.Beam(src, icon_state = "lightning[rand(1, 12)]", time = INFINITY, maxdistance = INFINITY)

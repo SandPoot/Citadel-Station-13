@@ -124,7 +124,7 @@
 	/// Reference to the beam following the projectile.
 	var/line
 
-/obj/item/projectile/tether/fire(setAngle)
+/obj/item/projectile/tether/fire(set_angle)
 	if(firer)
 		line = firer.Beam(src, "line", 'icons/obj/clothing/modsuit/mod_modules.dmi')
 	..()

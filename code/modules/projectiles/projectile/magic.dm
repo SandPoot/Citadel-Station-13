@@ -444,7 +444,7 @@
 	var/chain
 	var/mob/living/caster
 
-/obj/item/projectile/magic/aoe/lightning/fire(setAngle)
+/obj/item/projectile/magic/aoe/lightning/fire(set_angle)
 	if(caster)
 		chain = caster.Beam(src, icon_state = "lightning[rand(1, 12)]", time = INFINITY, maxdistance = INFINITY)
 	..()

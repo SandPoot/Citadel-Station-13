@@ -319,7 +319,7 @@
 	source = loc
 	. = ..()
 
-/obj/item/projectile/tentacle/fire(setAngle)
+/obj/item/projectile/tentacle/fire(set_angle)
 	if(firer)
 		chain = firer.Beam(src, icon_state = "tentacle", time = INFINITY, maxdistance = INFINITY, beam_sleep_time = 1)
 	..()

@@ -212,7 +212,7 @@
 	var/obj/item/projectile/magic/nuclear/P = new(get_turf(src))
 	P.victim = target
 	target.forceMove(P)
-	P.setAngle(angle)
+	P.set_angle(angle)
 	P.original = user
 	P.firer = user
 	P.fire()
