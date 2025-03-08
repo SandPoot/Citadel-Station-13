@@ -27,7 +27,7 @@
 
 	var/list/pixel_coords = params2screenpixel(screen_loc)
 
-	pixel_coords[1] -= adjust_for_irregular_size * world.icon_size
+	pixel_coords[1] -= (adjust_for_irregular_size * world.icon_size) * 0.5
 
 	var/x_divide = text2num(view_list[1]) / world.maxx
 	var/y_divide = text2num(view_list[2]) / world.maxy
