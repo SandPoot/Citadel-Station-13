@@ -55,16 +55,18 @@
 	open_minimap(owner)
 
 /datum/component/minimap/proc/obj_grabbed(obj/item/item, mob/requester, slot)
-	holder = requester
-	if(holder != requester)
+	if(holder == requester)
 		return
+	holder = requester
 	open_minimap.Grant(holder)
 	RegisterSignal(holder, COMSIG_MOVABLE_MOVED, PROC_REF(update_position_marker))
 	RegisterSignal(holder, COMSIG_MOVABLE_Z_CHANGED, PROC_REF(update_view))
 
 /datum/component/minimap/proc/obj_dropped(obj/item/item, mob/dropper)
-	open_minimap.Remove(dropper)
-	close_minimap(dropper)
+	if(!holder)
+		return
+	open_minimap.Remove(holder)
+	close_minimap(holder)
 	UnregisterSignal(holder, list(COMSIG_MOVABLE_MOVED, COMSIG_MOVABLE_Z_CHANGED))
 	holder = null
 
@@ -124,6 +126,6 @@
 		return
 
 	if(holder)
-		marker.screen_loc = turf2screenpixel(get_turf(viewer))
+		marker.screen_loc = turf2screenloc_minimap(get_turf(viewer))
 		return
-	marker.screen_loc = turf2screenpixel(get_turf(viewer))
+	marker.screen_loc = turf2screenloc_minimap(get_turf(viewer))

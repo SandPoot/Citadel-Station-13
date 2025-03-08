@@ -827,15 +827,6 @@ GLOBAL_LIST_INIT(WALLITEMS_INVERSE, typecacheof(list(
 	var/y = (text2num(y_dirty[1])-1)*world.icon_size + text2num(y_dirty[2])
 	return list(x, y)
 
-/// Converts a turf to a x,y coordinate pixel on the screen
-/proc/turf2screenpixel(turf/turf)
-	if(QDELETED(turf))
-		return list(0, 0)
-	var/x = FLOOR(turf.x * ((MINIMAP_SIZE * world.icon_size) / world.maxx), 1)
-	var/y = FLOOR(turf.y * ((MINIMAP_SIZE * world.icon_size) / world.maxy), 1)
-
-	return "1:[x],1:[y]"
-
 /proc/screen_loc2turf(text, turf/origin, client/C)
 	if(!text)
 		return null
