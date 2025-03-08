@@ -232,3 +232,26 @@
 	layer = LIGHTING_LAYER
 	blend_mode = BLEND_ADD
 	show_when_dead = TRUE
+
+/// Minimap special object!!
+/atom/movable/screen/fullscreen/special/minimap
+	name = "Minimap"
+	plane = ABOVE_HUD_PLANE
+	layer = ABOVE_HUD_LAYER
+	show_when_dead = TRUE
+	appearance_flags = parent_type::appearance_flags & ~PIXEL_SCALE
+
+	var/static/matrix/screen_setup
+
+/atom/movable/screen/fullscreen/special/minimap/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	set_appearance()
+
+/atom/movable/screen/fullscreen/special/minimap/proc/set_appearance()
+	if(!screen_setup)
+		var/matrix/M = new()
+		var/size_value = ((MINIMAP_SIZE * 32) / world.maxx)
+		M.Scale(size_value)
+		M.Translate((MINIMAP_SIZE / 2) * MINIMAP_SIZE, (MINIMAP_SIZE / 2) * MINIMAP_SIZE)
+		screen_setup = M
+	transform = screen_setup

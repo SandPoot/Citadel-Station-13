@@ -4,6 +4,7 @@
 	// The map icons
 	var/icon/map_icon
 	var/icon/meta_icon
+	var/image/map_full_image
 
 	var/list/color_area_names = list()
 
@@ -86,6 +87,12 @@
 
 			map_icon.DrawBox(color, img_x, img_y)
 
+	map_icon.DrawBox("#000000", x1, y1)
+	map_icon.DrawBox("#000000", x1, y2)
+	map_icon.DrawBox("#000000", x2, y1)
+	map_icon.DrawBox("#000000", x2, y2)
+
+	map_full_image = image(map_icon)
 	map_icon.Crop(crop_x1, crop_y1, crop_x2, crop_y2)
 	meta_icon.Crop(crop_x1, crop_y1, crop_x2, crop_y2)
 	minx = crop_x1

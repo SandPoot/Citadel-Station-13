@@ -818,6 +818,24 @@ GLOBAL_LIST_INIT(WALLITEMS_INVERSE, typecacheof(list(
 	tY = clamp(origin.y + text2num(tY) - round(actual_view[2] / 2) - 1, 1, world.maxy)
 	return locate(tX, tY, tZ)
 
+///Converts a screen loc param to a x,y coordinate pixel on the screen
+/proc/params2screenpixel(scr_loc)
+	var/list/x_and_y = splittext(scr_loc, ",")
+	var/list/x_dirty = splittext(x_and_y[1], ":")
+	var/list/y_dirty = splittext(x_and_y[2], ":")
+	var/x = (text2num(x_dirty[1])-1)*world.icon_size + text2num(x_dirty[2])
+	var/y = (text2num(y_dirty[1])-1)*world.icon_size + text2num(y_dirty[2])
+	return list(x, y)
+
+/// Converts a turf to a x,y coordinate pixel on the screen
+/proc/turf2screenpixel(turf/turf)
+	if(QDELETED(turf))
+		return list(0, 0)
+	var/x = FLOOR(turf.x * ((MINIMAP_SIZE * world.icon_size) / world.maxx), 1)
+	var/y = FLOOR(turf.y * ((MINIMAP_SIZE * world.icon_size) / world.maxy), 1)
+
+	return "1:[x],1:[y]"
+
 /proc/screen_loc2turf(text, turf/origin, client/C)
 	if(!text)
 		return null
