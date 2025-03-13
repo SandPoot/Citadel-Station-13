@@ -16,7 +16,7 @@
 	if(ismob(A))
 		ai_actual_track(A)
 	else
-		A.move_camera_by_click()
+		A.move_camera_by_click(src)
 
 /mob/living/silicon/ai/ClickOn(var/atom/A, params)
 	if(!can_interact_with(A))

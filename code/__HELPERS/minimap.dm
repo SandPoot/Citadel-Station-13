@@ -31,8 +31,8 @@
 
 	var/x_divide = text2num(view_list[1]) / world.maxx
 	var/y_divide = text2num(view_list[2]) / world.maxy
-	var/the_x = clamp((text2num(pixel_coords[1]) / x_divide), 1, world.maxx)
-	var/the_y = clamp((text2num(pixel_coords[2]) / y_divide), 1, world.maxy)
+	var/the_x = clamp((text2num(pixel_coords[1]) / x_divide) + 1, 1, world.maxx)
+	var/the_y = clamp((text2num(pixel_coords[2]) / y_divide) + 1, 1, world.maxy)
 
 	var/turf/location = locate(the_x, the_y, z)
 	if(!location)

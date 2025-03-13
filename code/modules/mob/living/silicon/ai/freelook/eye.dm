@@ -137,13 +137,13 @@
 		QDEL_LIST(L)
 	return ..()
 
-/atom/proc/move_camera_by_click()
-	if(isAI(usr))
-		var/mob/living/silicon/ai/AI = usr
-		if(AI.eyeobj && (AI.multicam_on || (AI.client.eye == AI.eyeobj)) && (AI.eyeobj.z == z))
-			AI.cameraFollow = null
-			if (isturf(loc) || isturf(src))
-				AI.eyeobj.setLoc(src)
+/atom/proc/move_camera_by_click(mob/living/silicon/ai/AI)
+	if(!isAI(AI))
+		return
+	if(AI.eyeobj && (AI.multicam_on || (AI.client.eye == AI.eyeobj)) && (AI.eyeobj.z == z))
+		AI.cameraFollow = null
+		if (isturf(loc) || isturf(src))
+			AI.eyeobj.setLoc(src)
 
 // This will move the AIEye. It will also cause lights near the eye to light up, if toggled.
 // This is handled in the proc below this one.
@@ -198,6 +198,12 @@
 	eyeobj.setLoc(loc)
 	eyeobj.name = "[name] (AI Eye)"
 	set_eyeobj_visible(TRUE)
+	RegisterSignal(eyeobj, COMSIG_PARENT_QDELETING, PROC_REF(on_eye_deletion))
+	SEND_SIGNAL(src, COMSIG_AI_EYE_CREATED, eyeobj)
+
+/mob/living/silicon/ai/proc/on_eye_deletion()
+	UnregisterSignal(eyeobj, COMSIG_PARENT_QDELETING)
+	eyeobj = null
 
 /mob/living/silicon/ai/proc/set_eyeobj_visible(state = TRUE)
 	if(!eyeobj)

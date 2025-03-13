@@ -5,7 +5,7 @@
 	var/datum/action/minimap/open_minimap
 	var/atom/movable/screen/fullscreen/special/minimap/map
 
-	var/obj/effect/abstract/position_marker/marker
+	var/atom/movable/screen/position_marker/marker
 
 	var/mob/holder
 
