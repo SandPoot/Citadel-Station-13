@@ -19,6 +19,7 @@
 	if(ismob(parent))
 		open_minimap.Grant(parent)
 		RegisterSignal(open_minimap, COMSIG_ACTION_TRIGGER, PROC_REF(mob_requesting_map))
+		RegisterSignal(parent, COMSIG_MOB_CLIENT_LOGOUT, PROC_REF(on_client_disconnect))
 		RegisterSignal(parent, COMSIG_MOVABLE_Z_CHANGED, PROC_REF(update_view))
 		RegisterSignal(parent, COMSIG_MOVABLE_MOVED, PROC_REF(update_position_marker))
 
@@ -31,7 +32,7 @@
 	if(isitem(parent))
 		obj_dropped(parent, holder)
 
-	UnregisterSignal(parent, list(COMSIG_MOVABLE_Z_CHANGED, COMSIG_ITEM_EQUIPPED, COMSIG_ITEM_DROPPED))
+	UnregisterSignal(parent, list(COMSIG_MOB_CLIENT_LOGOUT, COMSIG_MOVABLE_Z_CHANGED, COMSIG_ITEM_EQUIPPED, COMSIG_ITEM_DROPPED))
 	if(open_minimap)
 		open_minimap.UnregisterSignal(parent, COMSIG_ACTION_TRIGGER)
 		QDEL_NULL(open_minimap)
@@ -54,6 +55,11 @@
 
 	open_minimap(owner)
 
+/datum/component/minimap/proc/on_client_disconnect(client/client)
+	if(!visible)
+		return
+	close_minimap(parent)
+
 /datum/component/minimap/proc/obj_grabbed(obj/item/item, mob/requester, slot)
 	if(holder == requester)
 		return
@@ -61,13 +67,14 @@
 	open_minimap.Grant(holder)
 	RegisterSignal(holder, COMSIG_MOVABLE_MOVED, PROC_REF(update_position_marker))
 	RegisterSignal(holder, COMSIG_MOVABLE_Z_CHANGED, PROC_REF(update_view))
+	RegisterSignal(holder, COMSIG_MOB_CLIENT_LOGOUT, PROC_REF(obj_holder_disconnect))
 
 /datum/component/minimap/proc/obj_dropped(obj/item/item, mob/dropper)
 	if(!holder)
 		return
 	open_minimap.Remove(holder)
 	close_minimap(holder)
-	UnregisterSignal(holder, list(COMSIG_MOVABLE_MOVED, COMSIG_MOVABLE_Z_CHANGED))
+	UnregisterSignal(holder, list(COMSIG_MOB_CLIENT_LOGOUT, COMSIG_MOVABLE_MOVED, COMSIG_MOVABLE_Z_CHANGED))
 	holder = null
 
 /datum/component/minimap/proc/obj_requesting_map(datum/action/pressed, obj/item/owner)
@@ -80,6 +87,12 @@
 
 	open_minimap(holder)
 
+/datum/component/minimap/proc/obj_holder_disconnect(client/client)
+	if(!holder)
+		return
+
+	close_minimap(holder)
+
 /datum/component/minimap/proc/open_minimap(mob/to_whom)
 	visible = TRUE
 	map = to_whom.overlay_fullscreen("[REF(src)]", MINIMAP_TYPE)
@@ -89,7 +102,7 @@
 	visible = FALSE
 	if(from_whom)
 		from_whom.clear_fullscreen("[REF(src)]", 0)
-		from_whom.client.screen -= marker
+		from_whom.client?.screen -= marker
 	map = null
 
 /datum/component/minimap/proc/update_view(mob/viewer)
@@ -108,14 +121,14 @@
 		map.icon_state = "noise"
 		map.transform = null
 		map.screen_loc = "WEST+1,SOUTH+1 to EAST-1,NORTH-1"
-		viewer.client.screen -= marker
+		viewer.client?.screen -= marker
 		return
 	map.icon = correct_map.map_full_image
 	map.icon_state = null
 	map.set_appearance()
 	map.screen_loc = initial(map.screen_loc)
 
-	viewer.client.screen += marker
+	viewer.client?.screen += marker
 	update_position_marker(viewer)
 
 /datum/component/minimap/proc/update_position_marker(mob/viewer)

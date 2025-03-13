@@ -21,7 +21,7 @@
 	if(!length(modifiers))
 		return
 
-	var/turf/location = screenloc2turf_minimap(modifiers[SCREEN_LOC], clicker.z, clicker.client.view_size.getView())
+	var/turf/location = screenloc2turf_minimap(modifiers[SCREEN_LOC], clicker.z, clicker.client?.view_size.getView())
 	if(!location)
 		to_chat(clicker, span_warning("Invalid location!"))
 		return

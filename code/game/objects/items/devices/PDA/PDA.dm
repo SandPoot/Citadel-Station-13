@@ -168,6 +168,8 @@ GLOBAL_LIST_EMPTY(PDAs)
 
 	register_context()
 
+	AddComponent(/datum/component/minimap)
+
 /obj/item/pda/reskin_obj(mob/M)
 	. = ..()
 	new_overlays = TRUE

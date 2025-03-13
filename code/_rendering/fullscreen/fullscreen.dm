@@ -242,9 +242,12 @@
 	appearance_flags = parent_type::appearance_flags & ~PIXEL_SCALE
 
 	var/static/matrix/screen_setup
+	var/size = 30
+	var/glow_color = "#00cc66"
 
 /atom/movable/screen/fullscreen/special/minimap/Initialize(mapload, datum/hud/hud_owner)
 	. = ..()
+	set_filter()
 	set_appearance()
 
 /atom/movable/screen/fullscreen/special/minimap/proc/set_appearance()
@@ -255,3 +258,10 @@
 		M.Translate((MINIMAP_SIZE / 2) * MINIMAP_SIZE, (MINIMAP_SIZE / 2) * MINIMAP_SIZE)
 		screen_setup = M
 	transform = screen_setup
+
+/atom/movable/screen/fullscreen/special/minimap/proc/set_filter(color, size)
+	if(color)
+		glow_color = color
+	if(size)
+		src.size = size
+	add_filter("glow", 0, outline_filter(size = src.size, color = "[glow_color]22"))
