@@ -20,7 +20,7 @@
 		open_minimap.Grant(parent)
 		RegisterSignal(open_minimap, COMSIG_ACTION_TRIGGER, PROC_REF(mob_requesting_map))
 		RegisterSignal(parent, COMSIG_MOB_CLIENT_LOGOUT, PROC_REF(on_client_disconnect))
-		RegisterSignal(parent, COMSIG_MOVABLE_Z_CHANGED, PROC_REF(update_view))
+		RegisterSignal(parent, COMSIG_MOVABLE_Z_CHANGED, PROC_REF(on_z_changed))
 		RegisterSignal(parent, COMSIG_MOVABLE_MOVED, PROC_REF(update_position_marker))
 
 	if(isitem(parent))
@@ -109,27 +109,24 @@
 	if(!visible)
 		return
 
-	var/datum/minimap/correct_map
-	for(var/datum/minimap/minimap as anything in SSminimaps.station_minimaps)
-		if(minimap.z_level != viewer.z)
-			continue
-		correct_map = minimap
-		break
+	var/datum/minimap/correct_map = LAZYACCESS(SSminimaps.minimap_list, "[viewer.z]")
 
 	if(!correct_map)
 		map.icon = 'icons/mob/screen_gen.dmi'
 		map.icon_state = "noise"
 		map.transform = null
-		map.screen_loc = "WEST+1,SOUTH+1 to EAST-1,NORTH-1"
+		map.screen_loc = "CENTER-7,CENTER-7 to CENTER+7,CENTER+7"
 		viewer.client?.screen -= marker
 		return
 	map.icon = correct_map.map_full_image
 	map.icon_state = null
-	map.set_appearance()
 	map.screen_loc = initial(map.screen_loc)
 
 	viewer.client?.screen += marker
 	update_position_marker(viewer)
+
+/datum/component/minimap/proc/on_z_changed(mob/viewer, old_z, new_z)
+	update_view(viewer)
 
 /datum/component/minimap/proc/update_position_marker(mob/viewer)
 	if(!visible)
