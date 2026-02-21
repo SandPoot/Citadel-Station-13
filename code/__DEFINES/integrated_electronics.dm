@@ -27,7 +27,8 @@
 #define IC_FORMAT_LIST			"\<LIST\>"
 #define IC_FORMAT_INDEX			"\<INDEX\>"
 
-#define IC_FORMAT_PULSE			"\<PULSE\>"
+#define IC_FORMAT_PULSE_IN		"\<PULSE IN\>"
+#define IC_FORMAT_PULSE_OUT		"\<PULSE OUT\>"
 
 // Used inside input/output list to tell the constructor what pin to make.
 #define IC_PINTYPE_ANY				/datum/integrated_io

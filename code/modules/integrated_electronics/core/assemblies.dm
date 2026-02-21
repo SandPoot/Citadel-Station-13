@@ -70,9 +70,9 @@
 /obj/item/electronic_assembly/examine(mob/user)
 	. = ..()
 	if(can_anchor)
-		. += "<span class='notice'>The anchoring bolts [anchored ? "are" : "can be"] <b>wrenched</b> in place and the maintenance panel [opened ? "can be" : "is"] <b>screwed</b> in place.</span>"
+		. += span_notice("The anchoring bolts [anchored ? "are" : "can be"] <b>wrenched</b> in place and the maintenance panel [opened ? "can be" : "is"] <b>screwed</b> in place.")
 	else
-		. += "<span class='notice'>The maintenance panel [opened ? "can be" : "is"] <b>screwed</b> in place.</span>"
+		. += span_notice("The maintenance panel [opened ? "can be" : "is"] <b>screwed</b> in place.")
 
 	if((isobserver(user) && ckeys_allowed_to_scan[user.ckey]) || IsAdminGhost(user))
 		. += "You can <a href='?src=[REF(src)];ghostscan=1'>scan</a> this circuit."
@@ -98,7 +98,7 @@
 
 /obj/item/electronic_assembly/Initialize(mapload)
 	LAZYSET(custom_materials, /datum/material/iron, round((max_complexity + max_components) * 0.25) * SScircuit.cost_multiplier)
-	.=..()
+	. = ..()
 	START_PROCESSING(SScircuit, src)
 
 	//sets up diagnostic hud view
@@ -139,11 +139,208 @@
 			if(!draw_power(IC.power_draw_idle))
 				IC.power_fail()
 
-/obj/item/electronic_assembly/interact(mob/user)
+/obj/item/electronic_assembly/verb/open_tgui()
+	set name = "Open TGUI"
+	set desc = "If this ends up in the main server, you can shoot me"
+	set src in view(1)
+
+	ui_interact(usr)
+
+/obj/item/electronic_assembly/CtrlShiftClick(mob/user)
+	. = ..()
 	ui_interact(user)
 
-/obj/item/electronic_assembly/ui_interact(mob/user)
+/obj/item/electronic_assembly/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "CircuitryAssembly")
+		ui.open()
+
+/obj/item/electronic_assembly/ui_data(mob/user)
+	var/list/data = list()
+	data["name"] = name
+	data["total_part_size"] = return_total_size()
+	data["max_components"] = max_components
+	data["total_complexity"] = return_total_complexity()
+	data["max_complexity"] = max_complexity
+	data["battery_charge"] = battery?.charge
+	data["battery_maxcharge"] = battery?.maxcharge
+	var/obj/item/data_carrier = user?.get_active_held_item()
+	data["data_ref"] = data_carrier?.selected_io ? REF(data_carrier.selected_io) : null
+	return data
+
+/obj/item/electronic_assembly/ui_static_data(mob/user)
 	. = ..()
+	var/list/circuits = list()
+	for(var/obj/item/integrated_circuit/circuit as anything in assembly_components)
+		var/list/add_me = list()
+		add_me["name"] = circuit.displayed_name
+		add_me["desc"] = circuit.desc
+		add_me["long_desc"] = circuit.extended_desc
+		add_me["removable"] = circuit.removable
+		add_me["ref"] = REF(circuit)
+		add_me["complexity"] = circuit.complexity
+		add_me["size"] = circuit.size
+		add_me["type"] = circuit.name
+		add_me["cooldown_per_use"] = circuit.cooldown_per_use
+		add_me["inputs"] = list()
+		for(var/input in 1 to length(circuit.inputs))
+			var/list/input_single = list()
+			input_single["index"] = input
+			input_single["name"] = circuit.inputs[input]
+			var/datum/integrated_io/io = input_single["name"]
+			input_single["ref"] = REF(io)
+			input_single["type"] = io.display_pin_type()
+			input_single["data"] = io.display_data(circuit.get_pin_data(IC_INPUT, input))
+			var/list/links = list()
+			for(var/link in 1 to length(io.linked))
+				var/list/link_to_add = list()
+				var/datum/integrated_io/linked = io.linked[link]
+				link_to_add["name"] = linked
+				link_to_add["pin"] = REF(linked)
+				link_to_add["source"] = REF(linked.holder)
+				links += list(link_to_add)
+			input_single["links"] = links
+			add_me["inputs"] += list(input_single)
+		add_me["outputs"] = list()
+		for(var/output in 1 to length(circuit.outputs))
+			var/list/output_single = list()
+			output_single["index"] = output
+			output_single["name"] = circuit.outputs[output]
+			var/datum/integrated_io/io = output_single["name"]
+			output_single["ref"] = REF(io)
+			output_single["type"] = io.display_pin_type()
+			output_single["data"] = io.display_data(circuit.get_pin_data(IC_OUTPUT, output))
+			var/list/links = list()
+			for(var/link in 1 to length(io.linked))
+				var/list/link_to_add = list()
+				var/datum/integrated_io/linked = io.linked[link]
+				link_to_add["name"] = linked
+				link_to_add["pin"] = REF(linked)
+				link_to_add["source"] = REF(linked.holder)
+				links += list(link_to_add)
+			output_single["links"] = links
+			add_me["outputs"] += list(output_single)
+		add_me["activators"] = list()
+		for(var/activator in 1 to length(circuit.activators))
+			var/list/activator_single = list()
+			activator_single["index"] = activator
+			activator_single["name"] = circuit.activators[activator]
+			var/datum/integrated_io/io = activator_single["name"]
+			activator_single["ref"] = REF(io)
+			activator_single["type"] = io.display_pin_type()
+			activator_single["data"] = io.display_data(circuit.get_pin_data(IC_ACTIVATOR, activator))
+			var/list/links = list()
+			for(var/link in 1 to length(io.linked))
+				var/list/link_to_add = list()
+				var/datum/integrated_io/linked = io.linked[link]
+				link_to_add["name"] = linked
+				link_to_add["pin"] = REF(linked)
+				link_to_add["source"] = REF(linked.holder)
+				links += list(link_to_add)
+			activator_single["links"] = links
+			add_me["activators"] += list(activator_single)
+		circuits += list(add_me)
+	.["circuits"] = circuits
+
+/obj/item/electronic_assembly/ui_act(action, params, ui)
+	if(..())
+		return
+	switch(action)
+		if("rename")
+			var/new_name = params["new_name"]
+			if(!new_name)
+				return
+			rename(usr, new_name)
+
+		if("remove_cell")
+			if(!battery)
+				to_chat(usr, span_warning("There's no power cell to remove from \the [src]."))
+			else
+				battery.forceMove(drop_location())
+				playsound(src, 'sound/items/Crowbar.ogg', 50, 1)
+				to_chat(usr, span_notice("You pull \the [battery] out of \the [src]'s power supplier."))
+				usr.put_in_hands(battery)
+				battery = null
+				diag_hud_set_circuitstat() //update diagnostic hud
+
+		if("remove")
+			var/obj/item/integrated_circuit/to_remove = locate(params["circuit"])
+			if(QDELETED(to_remove))
+				return
+			try_remove_component(to_remove, usr)
+
+		if("move")
+			var/direction = params["direction"]
+			var/obj/item/integrated_circuit/circuit = locate(params["circuit"])
+			if(QDELETED(circuit))
+				return
+			var/current_pos = assembly_components.Find(circuit)
+
+			switch(direction)
+				if("up")
+					current_pos--
+				if("down")
+					current_pos++
+				else
+					var/valid_number = text2num(direction)
+					if(!valid_number)
+						return
+					current_pos = clamp(text2num(direction), 0, length(assembly_components))
+
+			assembly_components.Remove(circuit)
+			assembly_components.Insert(current_pos, circuit)
+
+		if("pin")
+			var/obj/item/integrated_circuit/circuit = locate(params["circuit"])
+			if(QDELETED(circuit))
+				return
+			var/datum/integrated_io/pin = locate(params["pin"]) in circuit.inputs + circuit.outputs + circuit.activators
+			if(QDELETED(pin))
+				return
+			var/obj/item/held_item = usr.get_active_held_item()
+			var/datum/integrated_io/linked
+			var/success
+			if(params["link"])
+				linked = locate(params["link"]) in pin.linked
+
+			if(!QDELETED(held_item) && (istype(held_item, /obj/item/integrated_electronics) || held_item.tool_behaviour == TOOL_MULTITOOL))
+				pin.handle_wire(linked, held_item, params["act"], usr)
+			else
+				to_chat(usr, span_warning("You can't do a whole lot without the proper tools."))
+				success = FALSE
+			if(success)
+				add_allowed_scanner(usr.ckey)
+
+		if("scan")
+			var/obj/item/integrated_circuit/circuit = locate(params["circuit"])
+			if(QDELETED(circuit))
+				return
+			var/obj/item/held_item = usr.get_active_held_item()
+			if(istype(held_item, /obj/item/integrated_electronics/debugger))
+				var/obj/item/integrated_electronics/debugger/D = held_item
+				if(D.accepting_refs)
+					D.afterattack(circuit, usr, TRUE)
+				else
+					to_chat(usr, span_warning("The debugger's 'ref scanner' needs to be on."))
+			else
+				to_chat(usr, span_warning("You need a debugger set to 'ref' mode to do that."))
+
+		if("rename_circuit")
+			var/obj/item/integrated_circuit/circuit = locate(params["circuit"])
+			if(QDELETED(circuit))
+				return
+			var/new_name = params["new_name"]
+			if(!new_name)
+				return
+			if(circuit.rename_component(usr, new_name))
+				add_allowed_scanner(usr.ckey)
+
+		if("copypasta")
+			to_chat(usr, params["say"])
+	update_static_data(usr, ui)
+
+/obj/item/electronic_assembly/interact(mob/user)
 	if(!check_interactivity(user))
 		return
 
@@ -159,7 +356,7 @@
 	if(battery)
 		HTML += "[round(battery.charge, 0.1)]/[battery.maxcharge] ([round(battery.percent(), 0.1)]%) cell charge. <a href='?src=[REF(src)];remove_cell=1'>\[Remove\]</a>"
 	else
-		HTML += "<span class='danger'>No power cell detected!</span>"
+		HTML += span_danger("No power cell detected!")
 	HTML += "<br><br>"
 
 
@@ -210,7 +407,7 @@
 				var/saved = "On circuit printers with cloning enabled, you may use the code below to clone the circuit:<br><br><code>[SScircuit.save_electronic_assembly(src)]</code>"
 				usr << browse(saved, "window=circuit_scan;size=500x600;border=1;can_resize=1;can_close=1;can_minimize=1")
 			else
-				to_chat(usr, "<span class='warning'>The circuit is empty!</span>")
+				to_chat(usr, span_warning("The circuit is empty!"))
 		return
 
 	if(!check_interactivity(usr))
@@ -221,11 +418,11 @@
 
 	if(href_list["remove_cell"])
 		if(!battery)
-			to_chat(usr, "<span class='warning'>There's no power cell to remove from \the [src].</span>")
+			to_chat(usr, span_warning("There's no power cell to remove from \the [src]."))
 		else
 			battery.forceMove(drop_location())
 			playsound(src, 'sound/items/Crowbar.ogg', 50, 1)
-			to_chat(usr, "<span class='notice'>You pull \the [battery] out of \the [src]'s power supplier.</span>")
+			to_chat(usr, span_notice("You pull \the [battery] out of \the [src]'s power supplier."))
 			battery = null
 			diag_hud_set_circuitstat() //update diagnostic hud
 
@@ -289,17 +486,22 @@
 	diag_hud_set_circuitstat()
 	diag_hud_set_circuittracking()
 
-/obj/item/electronic_assembly/proc/rename()
-	var/mob/M = usr
-	if(!check_interactivity(M))
-		return
+/obj/item/electronic_assembly/proc/rename(mob/user = usr, new_name)
+	if(!check_interactivity(user))
+		return FALSE
 
-	var/input = reject_bad_name(input("What do you want to name this?", "Rename", src.name) as null|text, TRUE)
-	if(!check_interactivity(M))
-		return
-	if(src && input)
-		to_chat(M, "<span class='notice'>The machine now has a label reading '[input]'.</span>")
-		name = input
+	if(!new_name)
+		new_name = input(user, "What do you want to name this?", "Rename", name) as null|text
+		if(!new_name)
+			return FALSE
+	if(!check_interactivity(user))
+		return FALSE
+	new_name = reject_bad_name(new_name, TRUE)
+	if(!new_name)
+		return FALSE
+	to_chat(user, span_notice("The machine now has a label reading '[new_name]'."))
+	name = new_name
+	return TRUE
 
 /obj/item/electronic_assembly/proc/add_allowed_scanner(ckey)
 	ckeys_allowed_to_scan[ckey] = TRUE
@@ -336,33 +538,34 @@
 // Returns true if the circuit made it inside.
 /obj/item/electronic_assembly/proc/try_add_component(obj/item/integrated_circuit/IC, mob/user)
 	if(!opened)
-		to_chat(user, "<span class='warning'>\The [src]'s hatch is closed, you can't put anything inside.</span>")
+		to_chat(user, span_warning("\The [src]'s hatch is closed, you can't put anything inside."))
 		return FALSE
 
 	if(IC.w_class > w_class)
-		to_chat(user, "<span class='warning'>\The [IC] is way too big to fit into \the [src].</span>")
+		to_chat(user, span_warning("\The [IC] is way too big to fit into \the [src]."))
 		return FALSE
 
 	var/total_part_size = return_total_size()
 	var/total_complexity = return_total_complexity()
 
 	if((total_part_size + IC.size) > max_components)
-		to_chat(user, "<span class='warning'>You can't seem to add the '[IC]', as there's insufficient space.</span>")
+		to_chat(user, span_warning("You can't seem to add the '[IC]', as there's insufficient space."))
 		return FALSE
 	if((total_complexity + IC.complexity) > max_complexity)
-		to_chat(user, "<span class='warning'>You can't seem to add the '[IC]', since this setup's too complicated for the case.</span>")
+		to_chat(user, span_warning("You can't seem to add the '[IC]', since this setup's too complicated for the case."))
 		return FALSE
 	if((allowed_circuit_action_flags & IC.action_flags) != IC.action_flags)
-		to_chat(user, "<span class='warning'>You can't seem to add the '[IC]', since the case doesn't support the circuit type.</span>")
+		to_chat(user, span_warning("You can't seem to add the '[IC]', since the case doesn't support the circuit type."))
 		return FALSE
 
 	if(!user.transferItemToLoc(IC, src))
 		return FALSE
 
-	to_chat(user, "<span class='notice'>You slide [IC] inside [src].</span>")
+	to_chat(user, span_notice("You slide [IC] inside [src]."))
 	playsound(src, 'sound/items/Deconstruct.ogg', 50, 1)
 	add_allowed_scanner(user.ckey)
 	investigate_log("had [IC]([IC.type]) inserted by [key_name(user)].", INVESTIGATE_CIRCUIT)
+	update_static_data(user)
 
 	add_component(IC)
 	return TRUE
@@ -388,17 +591,17 @@
 /obj/item/electronic_assembly/proc/try_remove_component(obj/item/integrated_circuit/IC, mob/user, silent)
 	if(!opened)
 		if(!silent)
-			to_chat(user, "<span class='warning'>[src]'s hatch is closed, so you can't fiddle with the internal components.</span>")
+			to_chat(user, span_warning("[src]'s hatch is closed, so you can't fiddle with the internal components."))
 		return FALSE
 
 	if(!IC.removable)
 		if(!silent)
-			to_chat(user, "<span class='warning'>[src] is permanently attached to the case.</span>")
+			to_chat(user, span_warning("[src] is permanently attached to the case."))
 		return FALSE
 
 	remove_component(IC)
 	if(!silent)
-		to_chat(user, "<span class='notice'>You pop \the [IC] out of the case, and slide it out.</span>")
+		to_chat(user, span_notice("You pop \the [IC] out of the case, and slide it out."))
 		playsound(src, 'sound/items/crowbar.ogg', 50, 1)
 		user.put_in_hands(IC)
 	add_allowed_scanner(user.ckey)
@@ -428,7 +631,7 @@
 	. = ..()
 	for(var/obj/item/integrated_circuit/input/S in assembly_components)
 		if(S.sense(target,user,proximity))
-			visible_message("<span class='notice'> [user] waves [src] around [target].</span>")
+			visible_message(span_notice("[user] waves [src] around [target]."))
 
 
 /obj/item/electronic_assembly/screwdriver_act(mob/living/user, obj/item/I)
@@ -436,7 +639,7 @@
 		return TRUE
 	I.play_tool_sound(src)
 	opened = !opened
-	to_chat(user, "<span class='notice'>You [opened ? "open" : "close"] the maintenance hatch of [src].</span>")
+	to_chat(user, span_notice("You [opened ? "open" : "close"] the maintenance hatch of [src]."))
 	update_icon()
 	return TRUE
 
@@ -457,18 +660,18 @@
 			interact(user)
 			return TRUE
 		else
-			to_chat(user, "<span class='warning'>[src]'s hatch is closed, so you can't fiddle with the internal components.</span>")
+			to_chat(user, span_warning("[src]'s hatch is closed, so you can't fiddle with the internal components."))
 			for(var/obj/item/integrated_circuit/input/S in assembly_components)
 				S.attackby_react(I,user,user.a_intent)
 			return ..()
 	else if(istype(I, /obj/item/stock_parts/cell))
 		if(!opened)
-			to_chat(user, "<span class='warning'>[src]'s hatch is closed, so you can't access \the [src]'s power supplier.</span>")
+			to_chat(user, span_warning("[src]'s hatch is closed, so you can't access \the [src]'s power supplier."))
 			for(var/obj/item/integrated_circuit/input/S in assembly_components)
 				S.attackby_react(I,user,user.a_intent)
 			return ..()
 		if(battery)
-			to_chat(user, "<span class='warning'>[src] already has \a [battery] installed. Remove it first if you want to replace it.</span>")
+			to_chat(user, span_warning("[src] already has \a [battery] installed. Remove it first if you want to replace it."))
 			for(var/obj/item/integrated_circuit/input/S in assembly_components)
 				S.attackby_react(I,user,user.a_intent)
 			return ..()
@@ -476,7 +679,7 @@
 		battery = I
 		diag_hud_set_circuitstat() //update diagnostic hud
 		playsound(get_turf(src), 'sound/items/Deconstruct.ogg', 50, 1)
-		to_chat(user, "<span class='notice'>You slot the [I] inside \the [src]'s power supplier.</span>")
+		to_chat(user, span_notice("You slot the [I] inside \the [src]'s power supplier."))
 		return TRUE
 	else if(istype(I, /obj/item/integrated_electronics/detailer))
 		var/obj/item/integrated_electronics/detailer/D = I
@@ -856,15 +1059,15 @@
 		return
 	var/turf/T = get_turf(user)
 	if(!isfloorturf(T))
-		to_chat(user, "<span class='warning'>You cannot place [src] on this spot!</span>")
+		to_chat(user, span_warning("You cannot place [src] on this spot!"))
 		return
 	if(gotwallitem(T, ndir))
-		to_chat(user, "<span class='warning'>There's already an item on this wall!</span>")
+		to_chat(user, span_warning("There's already an item on this wall!"))
 		return
 	playsound(src.loc, 'sound/machines/click.ogg', 75, 1)
 	user.visible_message("[user.name] attaches [src] to the wall.",
-		"<span class='notice'>You attach [src] to the wall.</span>",
-		"<span class='italics'>You hear clicking.</span>")
+		span_notice("You attach [src] to the wall."),
+		span_italics("You hear clicking."))
 	user.dropItemToGround(src)
 	switch(ndir)
 		if(NORTH)

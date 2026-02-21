@@ -92,7 +92,8 @@
 		io.connect_pin(selected_io)
 
 		to_chat(user, "<span class='notice'>You connect \the [selected_io.holder]'s [selected_io.name] to \the [io.holder]'s [io.name].</span>")
-		selected_io.holder.interact(user) // This is to update the UI.
+		// selected_io.holder.interact(user) // This is to update the UI.
+		io.holder.assembly.update_static_data(user)
 		selected_io = null
 
 	else
@@ -114,7 +115,8 @@
 		io1.disconnect_pin(io2)
 		to_chat(user, "<span class='notice'>You clip the data connection between the [io1.holder.displayed_name]'s \
 		[io1.name] and the [io2.holder.displayed_name]'s [io2.name].</span>")
-		io1.holder.interact(user) // This is to update the UI.
+		// io1.holder.interact(user) // This is to update the UI.
+		io1.holder.assembly.update_static_data(user)
 		update_icon()
 
 

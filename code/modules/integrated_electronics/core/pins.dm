@@ -90,7 +90,7 @@ D [1]/  ||
 	return IC_FORMAT_ANY
 
 /datum/integrated_io/activate/display_pin_type()
-	return IC_FORMAT_PULSE
+	return IC_FORMAT_PULSE_IN
 
 /datum/integrated_io/proc/scramble()
 	if(isnull(data))
@@ -177,7 +177,7 @@ D [1]/  ||
 
 
 /datum/integrated_io/proc/ask_for_data_type(mob/user, var/default, var/list/allowed_data_types = list("string","number","null"))
-	var/type_to_use = input("Please choose a type to use.","[src] type setting") as null|anything in allowed_data_types
+	var/type_to_use = input("Please choose a type to use.", "[src] type setting") as null|anything in allowed_data_types
 	if(!holder.check_interactivity(user))
 		return
 
@@ -186,16 +186,16 @@ D [1]/  ||
 		if("string")
 			new_data = stripped_multiline_input(user, "Now type in a string.","[src] string writing", istext(default) ? default : null, no_trim = TRUE)
 			if(istext(new_data) && holder.check_interactivity(user) )
-				to_chat(user, "<span class='notice'>You input "+new_data+" into the pin.</span>")
+				to_chat(user, span_notice("You input [new_data] into the pin."))
 				return new_data
 		if("number")
 			new_data = input("Now type in a number.","[src] number writing", isnum(default) ? default : null) as null|num
 			if(isnum(new_data) && holder.check_interactivity(user) )
-				to_chat(user, "<span class='notice'>You input [new_data] into the pin.</span>")
+				to_chat(user, span_notice("You input [new_data] into the pin."))
 				return new_data
 		if("null")
 			if(holder.check_interactivity(user))
-				to_chat(user, "<span class='notice'>You clear the pin's memory.</span>")
+				to_chat(user, span_notice("You clear the pin's memory."))
 				return new_data
 
 // Basically a null check
@@ -210,7 +210,7 @@ D [1]/  ||
 /datum/integrated_io/activate/ask_for_pin_data(mob/user) // This just pulses the pin.
 	holder.investigate_log(" was manually pulsed by [key_name(user)].", INVESTIGATE_CIRCUIT)
 	holder.check_then_do_work(ord,ignore_power = TRUE)
-	to_chat(user, "<span class='notice'>You pulse \the [holder]'s [src] pin.</span>")
+	to_chat(user, span_notice("You pulse \the [holder]'s [src] pin."))
 
 /datum/integrated_io/activate
 	name = "activation pin"
@@ -218,3 +218,6 @@ D [1]/  ||
 
 /datum/integrated_io/activate/out // All this does is just make the UI say 'out' instead of 'in'
 	data = 1
+
+/datum/integrated_io/activate/out/display_pin_type()
+	return IC_FORMAT_PULSE_OUT

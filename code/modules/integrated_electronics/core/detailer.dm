@@ -31,7 +31,7 @@
 		)
 
 /obj/item/integrated_electronics/detailer/Initialize(mapload)
-	.=..()
+	. = ..()
 	update_icon()
 
 /obj/item/integrated_electronics/detailer/update_overlays()
@@ -46,7 +46,7 @@
 	if(!in_range(src, user))
 		return
 	if(color_choice == "custom")
-		detail_color = input(user,"","Choose Color",detail_color) as color|null
+		detail_color = input(user, "", "Choose Color", detail_color) as color|null
 	else
 		detail_color = color_list[color_choice]
 	update_icon()

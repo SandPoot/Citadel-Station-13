@@ -110,27 +110,30 @@ a creative player the means to solve many problems.  Circuits are held inside an
 		A.scramble()
 
 
-/obj/item/integrated_circuit/verb/rename_component()
+/obj/item/integrated_circuit/verb/rename_component(user = usr as mob, new_name as null|text)
 	set name = "Rename Circuit"
 	set category = "Object"
 	set desc = "Rename your circuit, useful to stay organized."
 
-	var/mob/M = usr
-	if(!check_interactivity(M))
-		return
+	if(!check_interactivity(user))
+		return FALSE
 
-	var/input = reject_bad_name(stripped_input(M, "What do you want to name this?", "Rename", name), TRUE)
-	if(check_interactivity(M))
-		if(!input)
-			input = name
-		to_chat(M, "<span class='notice'>The circuit '[name]' is now labeled '[input]'.</span>")
-		displayed_name = input
-
-/obj/item/integrated_circuit/interact(mob/user)
-	ui_interact(user)
+	if(!new_name)
+		new_name = stripped_input(user, "What do you want to name this?", "Rename", name)
+		if(!new_name)
+			return FALSE
+	if(!check_interactivity(user))
+		return FALSE
+	new_name = reject_bad_name(new_name, TRUE)
+	if(!new_name)
+		return FALSE
+	to_chat(user, span_notice("The circuit '[name]' is now labeled '[new_name]'."))
+	displayed_name = new_name
+	return TRUE
 
 /obj/item/integrated_circuit/ui_interact(mob/user)
-	. = ..()
+
+/obj/item/integrated_circuit/interact(mob/user)
 	if(!check_interactivity(user))
 		return
 
@@ -281,9 +284,9 @@ a creative player the means to solve many problems.  Circuits are held inside an
 			if(D.accepting_refs)
 				D.afterattack(src, usr, TRUE)
 			else
-				to_chat(usr, "<span class='warning'>The debugger's 'ref scanner' needs to be on.</span>")
+				to_chat(usr, span_warning("The debugger's 'ref scanner' needs to be on."))
 		else
-			to_chat(usr, "<span class='warning'>You need a debugger set to 'ref' mode to do that.</span>")
+			to_chat(usr, span_warning("You need a debugger set to 'ref' mode to do that."))
 
 	if(href_list["return"])
 		update_to_assembly = TRUE

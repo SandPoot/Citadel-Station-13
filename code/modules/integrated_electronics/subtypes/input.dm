@@ -18,7 +18,7 @@
 	spawn_flags = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 
 /obj/item/integrated_circuit/input/button/ask_for_input(mob/user) //Bit misleading name for this specific use.
-	to_chat(user, "<span class='notice'>You press the button labeled '[displayed_name]'.</span>")
+	to_chat(user, span_notice("You press the button labeled '[displayed_name]'."))
 	activate_pin(1)
 
 /obj/item/integrated_circuit/input/toggle_button
@@ -36,7 +36,7 @@
 	set_pin_data(IC_OUTPUT, 1, !get_pin_data(IC_OUTPUT, 1))
 	push_data()
 	activate_pin(1)
-	to_chat(user, "<span class='notice'>You toggle the button labeled '[displayed_name]' [get_pin_data(IC_OUTPUT, 1) ? "on" : "off"].</span>")
+	to_chat(user, span_notice("You toggle the button labeled '[displayed_name]' [get_pin_data(IC_OUTPUT, 1) ? "on" : "off"]."))
 
 /obj/item/integrated_circuit/input/numberpad
 	name = "number pad"
@@ -51,7 +51,7 @@
 	power_draw_per_use = 4
 
 /obj/item/integrated_circuit/input/numberpad/ask_for_input(mob/user)
-	var/new_input = input(user, "Enter a number, please.",displayed_name) as null|num
+	var/new_input = input(user, "Enter a number, please.", displayed_name || name) as null|num
 	if(isnum(new_input) && user.IsAdvancedToolUser())
 		set_pin_data(IC_OUTPUT, 1, new_input)
 		push_data()
@@ -70,7 +70,7 @@
 	power_draw_per_use = 4
 
 /obj/item/integrated_circuit/input/textpad/ask_for_input(mob/user)
-	var/new_input = stripped_multiline_input(user, "Enter some words, please.",displayed_name)
+	var/new_input = stripped_multiline_input(user, "Enter some words, please.", displayed_name)
 	if(istext(new_input) && user.IsAdvancedToolUser())
 		set_pin_data(IC_OUTPUT, 1, new_input)
 		push_data()
@@ -89,7 +89,7 @@
 	power_draw_per_use = 4
 
 /obj/item/integrated_circuit/input/colorpad/ask_for_input(mob/user)
-	var/new_color = input(user, "Enter a color, please.", "Color", "#ffffff") as color|null
+	var/new_color = input(user, "Enter a color, please.", displayed_name || name, "#ffffff") as color|null
 	if(new_color && user.IsAdvancedToolUser())
 		set_pin_data(IC_OUTPUT, 1, new_color)
 		push_data()
@@ -897,7 +897,7 @@
 			return FALSE
 	set_pin_data(IC_OUTPUT, 1, WEAKREF(A))
 	push_data()
-	to_chat(user, "<span class='notice'>You scan [A] with [assembly].</span>")
+	to_chat(user, span_notice("You scan [A] with [assembly]."))
 	activate_pin(1)
 	return TRUE
 
@@ -930,7 +930,7 @@
 			return FALSE
 	set_pin_data(IC_OUTPUT, 1, WEAKREF(A))
 	push_data()
-	to_chat(user, "<span class='notice'>You scan [A] with [assembly].</span>")
+	to_chat(user, span_notice("You scan [A] with [assembly]."))
 	activate_pin(1)
 	return TRUE
 
@@ -957,7 +957,7 @@
 		user.transferItemToLoc(A,drop_location())
 	set_pin_data(IC_OUTPUT, 1, WEAKREF(A))
 	push_data()
-	to_chat(user, "<span class='notice'>You let [assembly] scan [A].</span>")
+	to_chat(user, span_notice("You let [assembly] scan [A]."))
 	activate_pin(1)
 	return TRUE
 
@@ -1283,7 +1283,7 @@
 		var/I = get_pin_data(IC_INPUT, k)
 		if(istext(I))
 			selection.Add(I)
-	var/selected = input(user,"Choose input.","Selection") in selection
+	var/selected = input(user, "Choose input.", displayed_name || name) in selection
 	if(!selected)
 		return
 	set_pin_data(IC_OUTPUT, 1, selected)
