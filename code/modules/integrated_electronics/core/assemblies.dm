@@ -59,10 +59,10 @@
 		COLOR_ASSEMBLY_PURPLE
 		)
 
-/obj/item/electronic_assembly/New()
-	..()
+/obj/item/electronic_assembly/Initialize(mapload)
 	src.max_components = round(max_components)
 	src.max_complexity = round(max_complexity)
+	return ..()
 
 /obj/item/electronic_assembly/GenerateTag()
 	tag = "assembly_[next_assembly_id++]"

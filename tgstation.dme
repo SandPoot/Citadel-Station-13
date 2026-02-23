@@ -1900,6 +1900,7 @@
 #include "code\modules\asset_cache\assets\fontawesome.dm"
 #include "code\modules\asset_cache\assets\genetics.dm"
 #include "code\modules\asset_cache\assets\headers.dm"
+#include "code\modules\asset_cache\assets\integrated_circuits.dm"
 #include "code\modules\asset_cache\assets\inventory.dm"
 #include "code\modules\asset_cache\assets\irv.dm"
 #include "code\modules\asset_cache\assets\jobs.dm"

@@ -104,10 +104,183 @@
 
 	return ..()
 
-/obj/item/integrated_circuit_printer/attack_self(mob/user)
-	interact(user)
+/obj/item/integrated_circuit_printer/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "IntegratedCircuitPrinter")
+		ui.open()
 
-/obj/item/integrated_circuit_printer/interact(mob/user)
+/obj/item/integrated_circuit_printer/ui_data(mob/user)
+	. = ..()
+	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
+	.["materialAmount"] = materials.total_amount
+	.["materialMaxAmount"] = materials.max_amount
+	.["debug"] = debug
+	.["upgrade"] = upgraded
+	.["canClone"] = (can_clone && CONFIG_GET(flag/ic_printing)) || debug
+	.["fastClone"] = fast_clone
+	.["cloning"] = cloning
+	.["program"] = !!length(program)
+
+/obj/item/integrated_circuit_printer/ui_static_data(mob/user)
+	. = ..()
+	var/list/current_list = SScircuit.circuit_fabricator_recipe_list
+	var/list/categories = list()
+	for(var/category in current_list)
+		var/list/stuff = list()
+		for(var/obj/item/printable as anything in current_list[category])
+			var/list/single_item = list()
+			single_item["name"] = initial(printable.name)
+			single_item["desc"] = initial(printable.desc)
+			var/obj/item/cache_ref
+			if(ispath(printable, /obj/item/electronic_assembly))
+				cache_ref = SScircuit.cached_assemblies[printable]
+			else if(ispath(printable, /obj/item/integrated_circuit))
+				cache_ref = SScircuit.cached_components[printable]
+			single_item["cost"] = cache_ref?.custom_materials[SSmaterials.GetMaterialRef(/datum/material/iron)] || 400
+			single_item["path"] = printable
+			single_item["icon"] = replacetext("[printable]", "/", "-")
+			single_item["can_build"] = TRUE
+			if(ispath(printable, /obj/item/integrated_circuit))
+				var/obj/item/integrated_circuit/IC = printable
+				single_item["can_build"] = !((initial(IC.spawn_flags) & IC_SPAWN_RESEARCH) && (!(initial(IC.spawn_flags) & IC_SPAWN_DEFAULT)) && !upgraded)
+				single_item["complexity"] = initial(IC.complexity)
+				single_item["size"] = initial(IC.size)
+			stuff += list(single_item)
+		categories[category] = stuff
+	.["categories"] = categories
+
+/obj/item/integrated_circuit_printer/ui_assets(mob/user)
+	return list(
+		get_asset_datum(/datum/asset/spritesheet/integrated_circuits)
+	)
+
+/obj/item/integrated_circuit_printer/ui_act(action, params)
+	. = ..()
+	switch(action)
+		if("print")
+			var/build_type = text2path(params["build"])
+			if(!build_type || !ispath(build_type))
+				return TRUE
+
+			var/cost = 400
+			if(ispath(build_type, /obj/item/electronic_assembly))
+				var/obj/item/electronic_assembly/E = SScircuit.cached_assemblies[build_type]
+				cost = E.custom_materials[SSmaterials.GetMaterialRef(/datum/material/iron)]
+			else if(ispath(build_type, /obj/item/integrated_circuit))
+				var/obj/item/integrated_circuit/IC = SScircuit.cached_components[build_type]
+				cost = IC.custom_materials[SSmaterials.GetMaterialRef(/datum/material/iron)]
+			else if(!(build_type in SScircuit.circuit_fabricator_recipe_list["Tools"]))
+				return
+
+			var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
+
+			if(!debug && !materials.use_amount_mat(cost, /datum/material/iron))
+				to_chat(usr, span_warning("You need [cost] metal to build that!"))
+				return TRUE
+
+			var/obj/item/built = new build_type(drop_location())
+			usr.put_in_hands(built)
+
+			if(istype(built, /obj/item/electronic_assembly))
+				var/obj/item/electronic_assembly/E = built
+				E.creator = key_name(usr)
+				E.opened = TRUE
+				E.update_icon()
+				//reupdate diagnostic hud because it was put_in_hands() and not pickup()'ed
+				E.diag_hud_set_circuithealth()
+				E.diag_hud_set_circuitcell()
+				E.diag_hud_set_circuitstat()
+				E.diag_hud_set_circuittracking()
+				E.investigate_log("was printed by [E.creator].", INVESTIGATE_CIRCUIT)
+
+			to_chat(usr, span_notice("[capitalize(built.name)] printed."))
+			playsound(src, 'sound/items/jaws_pry.ogg', 50, TRUE)
+		if("clone")
+			if(!CONFIG_GET(flag/ic_printing) && !debug)
+				to_chat(usr, span_warning("CentCom has disabled printing of custom circuitry due to recent allegations of copyright infringement."))
+				return
+			if(!can_clone) // Copying and printing ICs is cloning
+				to_chat(usr, span_warning("This printer does not have the cloning upgrade."))
+				return
+			switch(params["option"])
+				if("load")
+					if(cloning)
+						return
+					var/input = params["content"]
+					if(!check_interactivity(usr) || cloning)
+						return
+					if(!input)
+						program = null
+						return
+
+					var/validation = SScircuit.validate_electronic_assembly(input)
+
+					// Validation error codes are returned as text.
+					if(istext(validation))
+						to_chat(usr, span_warning("Error: [validation]"))
+						return
+					else if(islist(validation))
+						program = validation
+						to_chat(usr, span_notice("This is a valid program for [program["assembly"]["type"]]."))
+						if(program["requires_upgrades"])
+							if(upgraded)
+								to_chat(usr, span_notice("It uses advanced component designs."))
+							else
+								to_chat(usr, span_warning("It uses unknown component designs. Printer upgrade is required to proceed."))
+						if(program["unsupported_circuit"])
+							to_chat(usr, span_warning("This program uses components not supported by the specified assembly. Please change the assembly type in the save file to a supported one."))
+						to_chat(usr, span_notice("Used space: [program["used_space"]]/[program["max_space"]]."))
+						to_chat(usr, span_notice("Complexity: [program["complexity"]]/[program["max_complexity"]]."))
+						to_chat(usr, span_notice("Metal cost: [program["metal_cost"]]."))
+
+				if("print")
+					if(!program || cloning)
+						return
+
+					if(program["requires_upgrades"] && !upgraded && !debug)
+						to_chat(usr, span_warning("This program uses unknown component designs. Printer upgrade is required to proceed."))
+						return
+					if(program["unsupported_circuit"] && !debug)
+						to_chat(usr, span_warning("This program uses components not supported by the specified assembly. Please change the assembly type in the save file to a supported one."))
+						return
+					else if(fast_clone)
+						var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
+						if(debug || materials.use_amount_mat(program["metal_cost"], /datum/material/iron))
+							cloning = TRUE
+							print_program(usr)
+						else
+							to_chat(usr, span_warning("You need [program["metal_cost"]] metal to build that!"))
+					else
+						var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
+						if(!materials.use_amount_mat(program["metal_cost"], /datum/material/iron))
+							to_chat(usr, span_warning("You need [program["metal_cost"]] metal to build that!"))
+							return
+						var/cloning_time = round(program["metal_cost"] / 15)
+						cloning_time = min(cloning_time, MAX_CIRCUIT_CLONE_TIME)
+						cloning = TRUE
+						to_chat(usr, "<span class='notice'>You begin printing a custom assembly. This will take approximately [DisplayTimeText(cloning_time)]. You can still print \
+						off normal parts during this time.</span>")
+						playsound(src, 'sound/items/poster_being_created.ogg', 50, TRUE)
+						addtimer(CALLBACK(src, PROC_REF(print_program), usr), cloning_time)
+
+				if("cancel")
+					if(!cloning || !program)
+						return
+
+					to_chat(usr, span_notice("Cloning has been canceled. Metal cost has been refunded."))
+					cloning = FALSE
+					var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
+					materials.use_amount_mat(-program["metal_cost"], /datum/material/iron) //use negative amount to regain the cost
+
+/obj/item/integrated_circuit_printer/verb/open_old_ui()
+	set name = "Open OLD UI"
+	set desc = "If this ends up in the main server, you can shoot me"
+	set src in view(1)
+
+	open_ui(usr)
+
+/obj/item/integrated_circuit_printer/proc/open_ui(mob/user)
 	if(!(in_range(src, user) || hasSiliconAccessInArea(user)))
 		return
 

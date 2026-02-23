@@ -19,6 +19,20 @@ export const clamp01 = value => {
 };
 
 /**
+ * Picks the greater number between 'value' and 'max'.
+ */
+export const max = (value, max) => {
+  return value > max ? value : max;
+};
+
+/**
+ * Picks the lower number between 'value' and 'min'.
+*/
+export const min = (value, min) => {
+  return value < min ? min : value;
+};
+
+/**
  * Scales a number to fit into the range between min and max.
  */
 export const scale = (value, min, max) => {
