@@ -139,16 +139,11 @@
 			if(!draw_power(IC.power_draw_idle))
 				IC.power_fail()
 
-/obj/item/electronic_assembly/verb/open_tgui()
-	set name = "Open TGUI"
-	set desc = "If this ends up in the main server, you can shoot me"
-	set src in view(1)
-
-	ui_interact(usr)
-
-/obj/item/electronic_assembly/CtrlShiftClick(mob/user)
+/obj/item/electronic_assembly/ui_status(mob/user)
 	. = ..()
-	ui_interact(user)
+	if(opened)
+		return
+	return UI_CLOSE
 
 /obj/item/electronic_assembly/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -340,7 +335,18 @@
 			to_chat(usr, params["say"])
 	update_static_data(usr, ui)
 
-/obj/item/electronic_assembly/interact(mob/user)
+/obj/item/electronic_assembly/CtrlShiftClick(mob/user)
+	. = ..()
+	open_ui(user)
+
+/obj/item/electronic_assembly/verb/open_old_ui()
+	set name = "Open OLD UI"
+	set desc = "If this ends up in the main server, you can shoot me"
+	set src in view(1)
+
+	open_old_ui(usr)
+
+/obj/item/electronic_assembly/proc/open_ui(mob/user)
 	if(!check_interactivity(user))
 		return
 

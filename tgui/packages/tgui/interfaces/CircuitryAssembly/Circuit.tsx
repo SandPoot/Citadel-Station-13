@@ -238,8 +238,11 @@ export const PinTemplate = (props, context) => {
             </Stack.Item>
             <Stack.Item grow basis={0}>
               <Button
-                content={decodeHtmlEntities(input_entry.data)}
+                content={decodeHtmlEntities(input_entry.type) === IC_FORMAT.BOOLEAN ? "" : decodeHtmlEntities(input_entry.data)}
                 tooltip={decodeHtmlEntities(input_entry.data)}
+                icon={decodeHtmlEntities(input_entry.type) === IC_FORMAT.BOOLEAN
+                  ? (decodeHtmlEntities(input_entry.data) === "(TRUE)" ? "toggle-on" : "toggle-off")
+                  : ""}
                 fluid
                 height="100%"
                 align="center"
