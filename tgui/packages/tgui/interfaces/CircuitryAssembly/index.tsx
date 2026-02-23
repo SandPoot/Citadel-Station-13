@@ -21,7 +21,7 @@ export const CircuitryAssembly = (props, context) => {
   } = data;
   return (
     <Window
-      width={1220}
+      width={940}
       height={650}
       buttons={(
         <Box
@@ -128,6 +128,9 @@ export const ComponentList = (props, context) => {
                 key={circuit.ref}
                 selected={currentCircuit === circuit.ref}
                 onClick={() => setCircuit(circuit.ref)}
+                align="center"
+                style={{ 'display': "block" }}
+                className={currentCircuit === circuit.ref ? "" : "candystripe"}
                 rightSlot={(
                   <>
                     <Button.Input

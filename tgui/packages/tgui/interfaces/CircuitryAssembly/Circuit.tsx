@@ -4,8 +4,8 @@ import { Box, Button, Input, Section, Stack, Icon, Flex } from '../../components
 
 import { expectedData } from './types';
 
-const buttonHeight = "100px";
-const pinBasis = 2;
+const buttonHeight = "80px";
+const pinBasis = 5;
 
 export const IC_FORMAT = {
   ANY: "<ANY>",
@@ -119,14 +119,16 @@ export const Circuit = (props, context) => {
             (
               <Stack.Item key={activator_entry.index} align="center" height={buttonHeight} minWidth="400px">
                 <Stack vertical fill>
-                  <Stack.Item grow>
+                  <Stack.Item grow basis={0}>
                     <Stack fill>
-                      <Stack.Item grow>
+                      <Stack.Item grow basis={9}>
                         <Button
                           content={activator_entry.name}
+                          tooltip={activator_entry.name}
                           fluid
                           height="100%"
                           align="center"
+                          ellipsis
                           selected={activator_entry.ref === data_ref}
                           onClick={() => act("pin", {
                             circuit: circuit.ref,
@@ -135,11 +137,13 @@ export const Circuit = (props, context) => {
                           })}
                         />
                       </Stack.Item>
-                      <Stack.Item>
+                      <Stack.Item grow basis={0}>
                         <Button
                           content={decodeHtmlEntities(activator_entry.type)}
                           tooltip={decodeHtmlEntities(activator_entry.type)}
+                          fluid
                           height="100%"
+                          align="center"
                           ellipsis
                           onClick={() => act("pin", {
                             circuit: circuit.ref,
@@ -152,10 +156,10 @@ export const Circuit = (props, context) => {
                   </Stack.Item>
                   {!!activator_entry.links.length
                       && (
-                        <Stack.Item basis={pinBasis}>
-                          <Section fill overflowY="auto">
+                        <Stack.Item grow basis={0}>
+                          <Section fill overflowY={activator_entry.links.length > 1 ? "auto" : ""}>
                             {activator_entry.links.map(link => (
-                              <Stack key={link.source}>
+                              <Stack key={link.source} mb="2px">
                                 <Stack.Item grow basis={0}>
                                   <Button
                                     key={link.source}
@@ -211,13 +215,13 @@ export const PinTemplate = (props, context) => {
   return (
     <Stack.Item key={input_entry.index} height={buttonHeight}>
       <Stack vertical fill>
-        <Stack.Item grow>
+        <Stack.Item grow basis={0}>
           <Stack fill>
-            <Stack.Item grow>
+            <Stack.Item grow basis={9}>
               <Button
                 content={
                   <>
-                    <Box>{decodeHtmlEntities(input_entry.type)}</Box>
+                    <Box fontSize="10px" mb="-0.8em">{decodeHtmlEntities(input_entry.type)}</Box>
                     <Box>{input_entry.name}</Box>
                   </>
                 }
@@ -232,11 +236,13 @@ export const PinTemplate = (props, context) => {
                 })}
               />
             </Stack.Item>
-            <Stack.Item>
+            <Stack.Item grow basis={0}>
               <Button
                 content={decodeHtmlEntities(input_entry.data)}
                 tooltip={decodeHtmlEntities(input_entry.data)}
+                fluid
                 height="100%"
+                align="center"
                 ellipsis
                 onClick={() =>
                   act("pin", {
@@ -250,10 +256,10 @@ export const PinTemplate = (props, context) => {
         </Stack.Item>
         {!!input_entry.links.length
           && (
-            <Stack.Item grow basis={pinBasis}>
-              <Section fill overflowY="auto">
+            <Stack.Item grow basis={0}>
+              <Section fill overflowY={input_entry.links.length > 1 ? "auto" : ""}>
                 {input_entry.links.map(link => (
-                  <Stack key={link.source} fill>
+                  <Stack key={link.source} mb="2px">
                     <Stack.Item grow basis={0}>
                       <Button
                         key={link.source}
@@ -271,7 +277,7 @@ export const PinTemplate = (props, context) => {
                       />
                     </Stack.Item>
                     <Stack.Item>
-                      @
+                      <Icon name="link" />
                     </Stack.Item>
                     <Stack.Item grow basis={0}>
                       <Button
