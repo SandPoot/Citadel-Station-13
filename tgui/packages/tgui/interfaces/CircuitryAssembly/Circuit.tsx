@@ -5,7 +5,6 @@ import { Box, Button, Input, Section, Stack, Icon, Flex } from '../../components
 import { expectedData } from './types';
 
 const buttonHeight = "80px";
-const pinBasis = 5;
 
 export const IC_FORMAT = {
   ANY: "<ANY>",
@@ -23,14 +22,14 @@ export const IC_FORMAT = {
 export const ProgrammingWindow = (props, context) => {
   const { act, data } = useBackend<expectedData>(context);
   const circuits = data.circuits || [];
-  const [currentCircuit, setCircuit] = useLocalState<string | null>(context, "currentCircuit", null);
+  const [currentCircuit, setCircuit] = useLocalState(context, "currentCircuit", null);
   const circuit = circuits.find(c => c.ref === currentCircuit);
 
   if (!circuit) {
     return (
       <Section title="Select a component to begin editing" fill>
         <Flex fill justify="center" align="center">
-          <Icon name="terminal" size={32} color="grey" />
+          <Icon name="terminal" fontSize="64vh" color="grey" />
         </Flex>
       </Section>
     );

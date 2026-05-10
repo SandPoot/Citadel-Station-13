@@ -84,7 +84,7 @@ export const CircuitryAssembly = (props, context) => {
                 )}
             </Section>
           </Stack.Item>
-          <Stack.Item grow>
+          <Stack.Item grow basis={0}>
             <Stack fill>
               <Stack.Item grow>
                 <ComponentList />
@@ -185,7 +185,6 @@ export const ComponentList = (props, context) => {
                       tooltip="Remove"
                       color="transparent"
                       onClick={(ev) => {
-                        ev.stopPropagation();
                         if (circuit === currentCircuit) {
                           setCircuit(null);
                         }

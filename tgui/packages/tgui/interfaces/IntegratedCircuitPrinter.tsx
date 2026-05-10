@@ -1,7 +1,7 @@
 import { max } from 'common/math';
 import { classes } from 'common/react';
 import { useBackend, useLocalState } from '../backend';
-import { Box, Button, Collapsible, Icon, LabeledList, ProgressBar, Section, Stack, Table, Tabs, TextArea } from '../components';
+import { Box, Button, Collapsible, Icon, LabeledList, Modal, ProgressBar, Section, Stack, Table, Tabs, TextArea } from '../components';
 import { ButtonConfirm } from '../components/Button';
 import { TableCell, TableRow } from '../components/Table';
 import { Window } from '../layouts';
@@ -48,84 +48,137 @@ export const IntegratedCircuitPrinter = (props, context) => {
   } = data;
   const categories = data.categories || [];
   const [activeCategory, setCategory] = useLocalState(context, "activeCategory", Object.keys(categories)[0]);
+  const [importMenu, setImportMenu] = useLocalState(context, "importMenu", false);
   return (
     <Window resizable width={800} height={630} title="Integrated Circuit Printer">
       <Window.Content>
-        <Section fill>
-          <Stack vertical fill>
-            <Stack.Item>
-              <LabeledList>
-                <LabeledList.Item label="Material">
-                  {debug
-                    ? <marquee>DEBUG PRINTER -- Infinite materials. Cloning available.</marquee>
-                    : (
-                      <ProgressBar value={materialMaxAmount - materialAmount} maxValue={materialMaxAmount} color="black" backgroundColor={"#878687"} style={{
-                        transform: 'scaleX(-1) scaleY(1)',
-                      }}>
-                        <div style={{ transform: 'scaleX(-1)' }}>{materialAmount} cm³ / {materialMaxAmount} cm³</div>
-                      </ProgressBar>
-                    )}
-                </LabeledList.Item>
-                {!!(canClone || debug)
-                  && (
-                    <LabeledList.Item label="Assembly Cloning">
-                      {(fastClone || debug) ? "Instant" : "Available"}<br />
-                      {!upgrade && "Crossed out circuits mean that the printer is not sufficiently upgraded to create that circuit."}
-                    </LabeledList.Item>
-                  )}
-                <LabeledList.Item label="Circuits Available">
-                  {upgrade || debug ? "Advanced" : "Regular"}
-                </LabeledList.Item>
-              </LabeledList>
-            </Stack.Item>
-            {!!(canClone || debug)
-              && (
-                <>
-                  <Stack.Divider />
-                  <Collapsible title="Here you can load script for your assembly" color="transparent" mt="2px">
-                    <Stack fill height="10vh" vertical={cloning}>
-                      {cloning
-                        ? (
-                          <>
-                            <Stack.Item grow textAlign="center">
-                              <Icon name="spinner" spin size="4" />
-                            </Stack.Item>
-                            <Stack.Item textAlign="center">
-                              <ButtonConfirm content="Cancel" color="red" onClick={() => act("clone", {
-                                option: "cancel",
-                              })} />
-                            </Stack.Item>
-                          </>
-                        ) : (
-                          <>
-                            <Stack.Item grow>
-                              <TextArea
+        {importMenu
+          && (
+            <Modal height="60vh" width="80vw">
+              <Section title="Circuit Importing" fill textAlign="center">
+                <Stack fill vertical>
+                  {cloning
+                    ? (
+                      <>
+                        <Stack.Item grow textAlign="center">
+                          <Icon name="spinner" spin fontSize="25vh" />
+                        </Stack.Item>
+                        <Stack.Item>
+                          <Stack fill>
+                            <Stack.Item grow basis={0}>
+                              <Button
                                 fluid
+                                icon="arrow-left"
                                 height="100%"
-                                placeholder="A program is still loaded and can be printed"
-                                onChange={(e, value) => act("clone", {
-                                  option: "load",
-                                  content: value,
+                                textAlign="center"
+                                fontSize="6vh"
+                                onClick={() => setImportMenu(false)}
+                              />
+                            </Stack.Item>
+                            <Stack.Item grow basis={0}>
+                              <ButtonConfirm
+                                fluid
+                                content="Cancel"
+                                color="red"
+                                height="100%"
+                                textAlign="center"
+                                fontSize="6vh"
+                                onClick={() => act("clone", {
+                                  option: "cancel",
                                 })} />
                             </Stack.Item>
-                            <Stack.Item>
+                          </Stack>
+                        </Stack.Item>
+                      </>
+                    ) : (
+                      <>
+                        <Stack.Item grow>
+                          <TextArea
+                            fluid
+                            height="100%"
+                            placeholder={program ? "A program is still loaded and can be printed" : ""}
+                            onChange={(e, value) => act("clone", {
+                              option: "load",
+                              content: value,
+                            })} />
+                        </Stack.Item>
+                        <Stack.Item>
+                          <Stack fill>
+                            <Stack.Item grow basis={0}>
+                              <Button
+                                fluid
+                                icon="arrow-left"
+                                height="100%"
+                                textAlign="center"
+                                fontSize="6vh"
+                                onClick={() => setImportMenu(false)}
+                              />
+                            </Stack.Item>
+                            <Stack.Item grow basis={0}>
                               <ButtonConfirm
                                 fluid
                                 icon="file-import"
                                 height="100%"
-                                center
-                                verticalAlign="center"
+                                textAlign="center"
                                 fontSize="6vh"
+                                disabled={!program}
                                 onClick={() => act("clone", {
                                   option: "print",
                                 })} />
                             </Stack.Item>
-                          </>
-                        )}
-                    </Stack>
-                  </Collapsible>
-                </>
-              )}
+                          </Stack>
+                        </Stack.Item>
+                      </>
+                    )}
+                </Stack>
+              </Section>
+            </Modal>
+          )}
+        <Section fill>
+          <Stack vertical fill>
+            <Stack.Item height="5vh">
+              {debug
+                ? <Box fontSize="5vh"><marquee>DEBUG PRINTER -- Infinite materials. Cloning available.</marquee></Box>
+                : (
+                  <ProgressBar
+                    value={materialMaxAmount - materialAmount}
+                    maxValue={materialMaxAmount}
+                    color="black"
+                    height="100%"
+                    backgroundColor="#878687"
+                    style={{
+                      transform: 'scaleX(-1) scaleY(1)',
+                    }}>
+                    <Box style={{ transform: 'scaleX(-1)' }}>{materialAmount} cm³ / {materialMaxAmount} cm³</Box>
+                  </ProgressBar>
+                )}
+            </Stack.Item>
+            <Stack.Item>
+              <Stack>
+                <Stack.Item grow basis={0}>
+                  <LabeledList.Item label="Assembly Cloning">
+                    {cloning
+                      ? "Busy!"
+                      : (canClone || debug)
+                        ? `${(fastClone || debug) ? "Instant" : "Available"}`
+                        : "Not allowed"}
+                  </LabeledList.Item>
+                </Stack.Item>
+                <Stack.Item grow basis={0}>
+                  <LabeledList.Item label="Circuits Available">
+                    {upgrade || debug ? "Advanced" : "Regular"}
+                  </LabeledList.Item>
+                </Stack.Item>
+              </Stack>
+            </Stack.Item>
+            <Stack.Divider />
+            <Button
+              content="Here you can load script for your assembly"
+              textAlign="center"
+              disabled={!(canClone || debug)}
+              mt="4px" mb="-4px"
+              onClick={() => setImportMenu(true)}
+            />
             <Stack.Divider />
             <Stack.Item>
               <Tabs fill fluid style={{ 'flex-wrap': "wrap" }}>
